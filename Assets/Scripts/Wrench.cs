@@ -21,10 +21,10 @@ public class Wrench : EquipableObject {
 		Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2));
 		if(Physics.Raycast(ray, out raycastHit)) {
 			Collider collider = raycastHit.collider;
-			ShipSystem system = collider.gameObject.GetComponent<ShipSystem>();
+			/*ShipSystem system = collider.gameObject.GetComponent<ShipSystem>();
 			if(system != null) {
 				system.Repair(repairStrength);
-			}
+			}*/
 		}
 	}
 

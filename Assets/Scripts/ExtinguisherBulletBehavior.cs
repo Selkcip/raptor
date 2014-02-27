@@ -30,7 +30,7 @@ public class ExtinguisherBulletBehavior : MonoBehaviour {
 		rigidbody.isKinematic = true;
 		if(other.gameObject.tag == "pipeLeak") {
 			//other.gameObject.GetComponent<PipeEmitters>().DisableLeak(other.gameObject.GetComponent<ExplosionPipe>().index);
-			other.gameObject.GetComponent<ExplosionPipe>().Seal();
+			//other.gameObject.GetComponent<ExplosionPipe>().Seal();
 		}
 		this.audio.Play();
 

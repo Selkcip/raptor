@@ -4,7 +4,7 @@ using System.Collections;
 public class LocationMapReticle : MonoBehaviour {
 
 	public Transform spinner;
-	public LocationMapReticleScreen panel;
+	//public LocationMapReticleScreen panel;
 	public float fadeTime = 5;
 	public bool fades = true;
 	public Color color;
@@ -14,9 +14,6 @@ public class LocationMapReticle : MonoBehaviour {
 	public Location location { get { return m_location; }
 		set {
 			m_location = value;
-			if(panel != null) { 
-				panel.location = value; 
-			}
 		}
 	}
 
@@ -37,10 +34,6 @@ public class LocationMapReticle : MonoBehaviour {
 		if(spinner != null) {
 			//spinner.renderer.enabled = fade > 0;
 			spinner.renderer.material.color = newColor;
-		}
-		if(panel != null){
-			//panel.renderer.enabled = fade > 0;
-			panel.renderer.material.color = newColor;
 		}
 
 		transform.LookAt(Camera.main.transform);

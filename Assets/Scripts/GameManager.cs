@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviour {
 
 	void StartGame() {
 		// Initialize Managers
-		gameObject.AddComponent<EncounterManager>();
+		//gameObject.AddComponent<EncounterManager>();
 		gameObject.AddComponent<LocationManager>();
 		gameObject.AddComponent<ResourceManager>();
 		gameObject.AddComponent<SoundManager>();

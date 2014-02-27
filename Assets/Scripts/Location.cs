@@ -11,7 +11,7 @@ public class Location {
 	public string name = "Unidentified Location";
 	public List<Location> neighbors;
     public EncounterType encounterType;
-    public Encounter encounter;
+    //public Encounter encounter;
 	public Vector3 point;
 
 	public bool start = false;
@@ -31,7 +31,7 @@ public class Location {
 		neighbors = new List<Location>();
 		encounterType = EncounterType.normal;
 		locationType = (LocationType)UnityEngine.Random.Range(0, Enum.GetNames(typeof(LocationType)).Length);
-		encounter = null;
+		//encounter = null;
 	}
 
 	public Location() {

@@ -26,8 +26,8 @@ public class LocationManager : MonoBehaviour {
 
 		LocationMap.instance.GenerateMap();
 		m_currentLocation = LocationMap.instance.locationList[0];
-		m_currentLocation.encounter = EncounterManager.instance.NextEncounter();
-		EncounterManager.instance.LoadEncounter(m_currentLocation.encounter);
+		//m_currentLocation.encounter = EncounterManager.instance.NextEncounter();
+		//EncounterManager.instance.LoadEncounter(m_currentLocation.encounter);
 
 		m_currentDest = LocationMap.instance.end;
 	}
@@ -37,12 +37,12 @@ public class LocationManager : MonoBehaviour {
 			Debug.LogError("Move() received invalid input: " + newLocation + " out of " + (m_currentLocation.neighbors.Count - 1) + ".", this);
 
         m_currentLocation = m_currentLocation.neighbors[newLocation];
-		if(m_currentLocation.encounter == null) {
+		/*if(m_currentLocation.encounter == null) {
 			// Store new encounter in location and load it.
 			m_currentLocation.encounter = EncounterManager.instance.NextEncounter();
 			SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/voices/demo/init jump"), SoundManager.SoundType.Dialogue);
 			Invoke("StartWarp", 2.0f);
-		}
+		}*/
     }
 
 	void StartWarp() {
@@ -57,7 +57,7 @@ public class LocationManager : MonoBehaviour {
 
 	IEnumerator EndWarp() {
 		yield return new WaitForSeconds(5.0f);
-		EncounterManager.instance.LoadEncounter(m_currentLocation.encounter);
+		//EncounterManager.instance.LoadEncounter(m_currentLocation.encounter);
 		GameObject tunnel = GameObject.Find("WarpTunnel");
 		tunnel.renderer.enabled = false;
 		tunnel.audio.Stop();

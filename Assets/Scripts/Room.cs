@@ -65,7 +65,7 @@ public class Room : MonoBehaviour {
 				}
 			}
 			oldFireCount = fires;
-			DisplayPanel.ShowMessage("A fire is spreading in the " + name + " room.");
+			//DisplayPanel.ShowMessage("A fire is spreading in the " + name + " room.");
 		}
 
 		/*
@@ -91,13 +91,13 @@ public class Room : MonoBehaviour {
 	}
 
 	public void Damage(float damage) {
-		damage = ShieldGenerator.ReduceDamage(damage);
+		/*damage = ShieldGenerator.ReduceDamage(damage);
 		foreach(ShipSystem system in Ship.instance.shipSystems) {
 			system.Damage(damage);
 		}
 		foreach(Incident incident in incidents) {
 			incident.Damage(damage);
-		}
+		}*/
 	}
 
 	public void ventRoom() {

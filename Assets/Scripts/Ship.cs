@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Ship : MonoBehaviour {
 	public static Ship s_instance = null;
 
-	public ShipSystem[] shipSystems;
+	//public ShipSystem[] shipSystems;
 	public List<Room> rooms = new List<Room>();
 	
 	public float health;

@@ -13,7 +13,7 @@ public class PipeEmitters : MonoBehaviour {
 		foreach(GameObject emitter in Emitters) {
 			emitter.particleSystem.Pause();
 			emitter.audio.Pause();
-			emitter.GetComponent<ExplosionPipe>().index = counter;  
+			//emitter.GetComponent<ExplosionPipe>().index = counter;  
 			counter++;
 		}
 	}
@@ -21,8 +21,8 @@ public class PipeEmitters : MonoBehaviour {
 	public void ActivateLeak() {
 		int rand = Random.Range(0, Emitters.Length);
 		if(Emitters[rand].particleSystem.isPlaying && !allOn) ActivateLeak();
-		if(!Emitters[rand].particleSystem.isPlaying) SoundManager.instance.Play3DSound(Emitters[rand].GetComponent<ExplosionPipe>().burstSound, 
-			SoundManager.SoundType.Sfx, Emitters[rand]);
+		//if(!Emitters[rand].particleSystem.isPlaying) SoundManager.instance.Play3DSound(Emitters[rand].GetComponent<ExplosionPipe>().burstSound, 
+			//SoundManager.SoundType.Sfx, Emitters[rand]);
 		Emitters[rand].particleSystem.Play();
 		Emitters[rand].audio.Play();
 	}
