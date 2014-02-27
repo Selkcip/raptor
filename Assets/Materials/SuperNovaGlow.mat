@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: SuperNovaGlow
+  m_Shader: {fileID: 4800000, guid: e7190b4a23127409d99cac19f0efc82e, type: 3}
+  m_ShaderKeywords:
+  - GLOW11_GLOW_GLOWCOLOR
+  - GLOW11_MULTIPLY_OFF
+  m_CustomRenderQueue: -1
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+      data:
+        first:
+          name: _MainTex
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _GlowTex
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+    m_Floats:
+      data:
+        first:
+          name: _GlowStrength
+        second: 1.07000005
+    m_Colors:
+      data:
+        first:
+          name: _Color
+        second: {r: 1, g: .865111589, b: .301470578, a: 0}
+      data:
+        first:
+          name: _GlowColor
+        second: {r: 1, g: .492697716, b: .102941155, a: 1}
