@@ -2,12 +2,12 @@
 
 public class FirstPersonCharacter : MonoBehaviour
 {
-	[SerializeField] private float runSpeed = 8f;                                       // The speed at which we want the character to move
-	[SerializeField] private float strafeSpeed = 4f;                                    // The speed at which we want the character to be able to strafe
+	[SerializeField] public float runSpeed = 8f;                                       // The speed at which we want the character to move
+	[SerializeField] public float strafeSpeed = 4f;                                    // The speed at which we want the character to be able to strafe
     [SerializeField] private float jumpPower = 5f;                                      // The power behind the characters jump. increase for higher jumps
 #if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8)
     [SerializeField] private bool walkByDefault = true;									// controls how the walk/run modifier key behaves.
-	[SerializeField] private float walkSpeed = 3f;                                      // The speed at which we want the character to move
+	[SerializeField] public float walkSpeed = 3f;                                      // The speed at which we want the character to move
 #endif
     [SerializeField] private AdvancedSettings advanced = new AdvancedSettings();        // The container for the advanced settings ( done this way so that the advanced setting are exposed under a foldout
 
@@ -117,5 +117,4 @@ public class FirstPersonCharacter : MonoBehaviour
 		// add extra gravity
         rigidbody.AddForce(Physics.gravity * (advanced.gravityMultiplier - 1));
 	}
-
 }
