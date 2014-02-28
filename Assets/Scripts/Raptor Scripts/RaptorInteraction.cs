@@ -49,9 +49,15 @@ public class RaptorInteraction : MonoBehaviour {
 		Transform cam = Camera.main.transform;
 		if(crouching) {
 			HOTween.To(cam, 0.3f, new TweenParms().Prop("localPosition", new Vector3(0f, -1f, 0f), false));
+			fpc.walkSpeed = 1.75f;
+			fpc.strafeSpeed = 1.25f;
+			fpc.runSpeed = 1.75f;
 		}
 		else if (!crouching){
 			HOTween.To(cam, 0.3f, new TweenParms().Prop("localPosition", new Vector3(0f, -0.325f, 0f), false));
+			fpc.walkSpeed = 4f;
+			fpc.strafeSpeed = 3;
+			fpc.runSpeed = 8f;
 		}
 	}
 
