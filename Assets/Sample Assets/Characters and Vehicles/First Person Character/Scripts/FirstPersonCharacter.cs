@@ -117,5 +117,4 @@ public class FirstPersonCharacter : MonoBehaviour
 		// add extra gravity
         rigidbody.AddForce(Physics.gravity * (advanced.gravityMultiplier - 1));
 	}
-
 }
