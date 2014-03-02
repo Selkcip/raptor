@@ -6,7 +6,7 @@ public class RaptorInteraction : MonoBehaviour {
 
 	public Texture2D crosshair;
 	public float maxHealth = 100;
-	public float attack = 10f;
+	public float attack = 20f;
 
 	[HideInInspector]
 	public float health;
@@ -58,7 +58,7 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void Controls() {
-		if(Input.GetMouseButtonDown(0)) {
+		if(Input.GetMouseButton(0)) {
 			Slash();
 		}
 		else if(Input.GetMouseButtonDown(1)) {
@@ -94,7 +94,7 @@ public class RaptorInteraction : MonoBehaviour {
 				if(hit.transform.tag == "enemy") {
 					//do damage
 					if(isPouncing) {
-						hit.transform.GetComponent<Enemy>().health -= attack * 5f;
+						hit.transform.GetComponent<Enemy>().health -= attack * 3f;
 					}
 					else {
 						hit.transform.GetComponent<Enemy>().health -= attack;
@@ -107,7 +107,7 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	IEnumerator SlashCoolDown() {
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(0.4f);
 		isSlashing = false;
 	}
 
@@ -153,6 +153,7 @@ public class RaptorInteraction : MonoBehaviour {
 			fpc.enabled = true;
 			//Chain pouncing
 			if(other.gameObject.tag == "enemy") {
+				other.transform.GetComponent<Enemy>().knockedOut = true;
 				canPounce = true;
 			}
 		}
