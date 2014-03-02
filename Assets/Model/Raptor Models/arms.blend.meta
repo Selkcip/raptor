@@ -1,13 +1,20 @@
 fileFormatVersion: 2
-guid: a82c73d274a4acc41bba9cbd81ab2be1
+guid: bf069032ab67977478bce89685f83e6e
 ModelImporter:
-  serializedVersion: 15
+  serializedVersion: 16
   fileIDToRecycleName:
     100000: //RootNode
+    100002: left-arm
+    100004: right-arm
     400000: //RootNode
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: Cube
+    400002: left-arm
+    400004: right-arm
+    2300000: left-arm
+    2300002: right-arm
+    3300000: left-arm
+    3300002: right-arm
+    4300000: right-arm
+    4300002: left-arm
     7400000: Default Take
     9500000: //RootNode
   materials:
@@ -61,4 +68,5 @@ ModelImporter:
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2
+  additionalBone: 0
   userData: 

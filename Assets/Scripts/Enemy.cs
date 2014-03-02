@@ -6,13 +6,13 @@ public class Enemy : MonoBehaviour {
 
 	public float walkSpeed = 0.25f;
 	public float runSpeed = 1.0f;
-	public float viewDis = 10;
-	public float fov = 45;
-	public float health = 100;
-	public float standTime = 2;
-	public float patrolTime = 5;
+	public float viewDis = 10f;
+	public float fov = 45f;
+	public float health = 100f;
+	public float standTime = 2f;
+	public float patrolTime = 5f;
 	public Weapon weapon;
-	public float sleepTime = 0;
+	public float sleepTime = 0f;
 	public string stateName;
 
 	public ThirdPersonCharacter character { get; private set; }     // the character we are controlling
