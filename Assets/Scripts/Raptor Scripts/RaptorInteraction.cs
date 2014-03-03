@@ -16,15 +16,17 @@ public class RaptorInteraction : MonoBehaviour {
 	private AnimatorStateInfo currentState;
 	static int idleState = Animator.StringToHash("Base Layer.Idle");
 	
-	private bool canPounce = true;
+	private bool chainPounce = true;
 	private bool isPouncing = false;
-	private int pounceCoolDown = 3;
+	private float pounceCoolDown = 1.5f;
 
 	private bool isSlashing = false;
 
 	private bool isCrouching = false;
 
 	private FirstPersonCharacter fpc;
+	private RaptorHUD hud;
+
 
 	//Stuff for changing the color of the cursor
 	private RaycastHit inRange;
@@ -37,6 +39,7 @@ public class RaptorInteraction : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		fpc = gameObject.GetComponent<FirstPersonCharacter>();
+		hud = gameObject.GetComponent<RaptorHUD>();
 		arms = gameObject.GetComponentInChildren<Animator>();
 		health = maxHealth;
 	}
@@ -45,6 +48,25 @@ public class RaptorInteraction : MonoBehaviour {
 	void Update () {
 		Animation();
 		Controls();
+		HUD();
+
+		//prevents the player from getting stuck when pouncing next to a wall
+		if(hud.stamina <= 0f) {
+			isPouncing = false;
+			fpc.enabled = true;
+		}
+	}
+
+	void HUD() {
+		if(isPouncing) {
+			hud.Deplete(1f * Time.deltaTime);
+		}
+		else if(chainPounce) {
+			hud.Regenerate(2.0f * Time.deltaTime);
+		}
+		else {
+			hud.Regenerate(.66f * Time.deltaTime);
+		}
 	}
 
 	void Animation() {
@@ -72,6 +94,7 @@ public class RaptorInteraction : MonoBehaviour {
 
 		if(Input.GetKey(KeyCode.E)) {
 			//interact
+			print("isPouncing: " +isPouncing +"fpc: "+fpc.enabled);
 		}
 	}
 
@@ -94,7 +117,7 @@ public class RaptorInteraction : MonoBehaviour {
 				if(hit.transform.tag == "enemy") {
 					//do damage
 					if(isPouncing) {
-						hit.transform.GetComponent<Enemy>().health -= attack * 3f;
+						hit.transform.GetComponent<Enemy>().health = 0;
 					}
 					else {
 						hit.transform.GetComponent<Enemy>().health -= attack;
@@ -130,23 +153,18 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void Pounce() {
-		if(canPounce && !isPouncing && fpc.grounded) {
-			canPounce = false;
+		if(hud.stamina == 1.0f && !isPouncing && fpc.grounded) {
+			chainPounce = false;
 			isPouncing = true;
 			fpc.enabled = false;
 			rigidbody.drag = 1;
 			rigidbody.AddForce(transform.forward * 15f, ForceMode.Impulse);
 			rigidbody.AddForce(transform.up * 5.5f, ForceMode.Impulse);
-			StartCoroutine("PounceCoolDown");
 		}
 	}
 
-	IEnumerator PounceCoolDown() {
-		yield return new WaitForSeconds(pounceCoolDown);
-		canPounce = true;
-	}
-
 	void OnCollisionEnter(Collision other) {
+		print(other.transform.name + ": " + isPouncing);
 		if(isPouncing) {
 			isPouncing = false;
 			rigidbody.drag = 0;
@@ -154,10 +172,18 @@ public class RaptorInteraction : MonoBehaviour {
 			//Chain pouncing
 			if(other.gameObject.tag == "enemy") {
 				other.transform.GetComponent<Enemy>().knockedOut = true;
-				canPounce = true;
+				chainPounce = true;
 			}
 		}
 	}
+
+	/*void OnCollisionStay(Collision other) {
+		if(isPouncing) {
+			isPouncing = false;
+			rigidbody.drag = 0;
+			fpc.enabled = true;
+		}
+	}*/
 
 	void OnGUI() {
 		if(InAttackRange()) {
