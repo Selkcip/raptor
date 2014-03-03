@@ -27,7 +27,7 @@ public class Alarm : MonoBehaviour {
 	}
 
 	public void SoundAlarm() {
-		print("ALERT!");
+		//print("ALERT!");
 		//SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Alarm and Ticking/AlarmLooped"), SoundManager.SoundType.Sfx, gameObject);
 		if(light != null) {
 			light.enabled = !light.enabled;

@@ -26,6 +26,60 @@ class ShipGridCell {
 		this.y = y;
 		this.z = z;
 	}
+
+	/*public void AddFluid(string type, float amount, float flowRate, float cutoff, List<ShipGridCell> filled) {
+		ShipGridFluid fluid = fluids.Find(delegate(ShipGridFluid item) {
+			return item.type == type;
+		});
+		if(fluid == null) {
+			fluid = new ShipGridFluid(type, amount, flowRate);
+			fluids.Add(fluid);
+		}
+
+		fluid.level += amount;
+		filled.Add(this);
+
+		if(amount > cutoff) {
+			foreach(ShipGridCell neigh in neighbors) {
+				if(!filled.Contains(neigh)) {
+					neigh.AddFluid(type, amount * flowRate, flowRate, cutoff, filled);
+				}
+			}
+		}
+	}*/
+
+	public static void AddFluid(string type, float amount, float flowRate, float cutoff, List<ShipGridCell> current, List<ShipGridCell> filled) {
+		List<ShipGridCell> newCurrent = new List<ShipGridCell>();
+		foreach(ShipGridCell cur in current) {
+			ShipGridFluid fluid = cur.fluids.Find(delegate(ShipGridFluid item) {
+				return item.type == type;
+			});
+			if(fluid == null) {
+				fluid = new ShipGridFluid(type, amount, flowRate);
+				cur.fluids.Add(fluid);
+			}
+			fluid.level += amount;
+			filled.Add(cur);
+
+			if(amount > cutoff) {
+				foreach(ShipGridCell neigh in cur.neighbors) {
+					if(!filled.Contains(neigh) && !newCurrent.Contains(neigh)) {
+						newCurrent.Add(neigh);
+					}
+				}
+			}
+		}
+		//Debug.Log(newCurrent.Count);
+		if(newCurrent.Count > 0) {
+			AddFluid(type, amount * flowRate, flowRate, cutoff, newCurrent, filled);
+		}
+	}
+
+	public void Update(float dTime) {
+		foreach(ShipGridFluid fluid in fluids) {
+			fluid.level *= 0.99f;// fluid.flowRate;
+		}
+	}
 }
 
 class ShipGrid : MonoBehaviour {
@@ -35,6 +89,7 @@ class ShipGrid : MonoBehaviour {
 	/*int divX;
 	int divY;
 	int divZ;*/
+	List<Vector3> nDirs = new List<Vector3>();
 	List<List<List<ShipGridCell>>> cells = new List<List<List<ShipGridCell>>>();
 
 	/*public float width { get { return size * divX; } }
@@ -70,7 +125,6 @@ class ShipGrid : MonoBehaviour {
 				}
 			}
 		}
-		print(cellCount);
 
 		i = 0;
 		j = 0;
@@ -78,6 +132,17 @@ class ShipGrid : MonoBehaviour {
 		List<ShipGridCell> neighbors = new List<ShipGridCell>();
 		neighbors.Add(GetIndex(i, j, k));
 
+		nDirs.Add(new Vector3(1, 0, 0));
+		nDirs.Add(new Vector3(-1, 0, 0));
+		nDirs.Add(new Vector3(0, 1, 0));
+		nDirs.Add(new Vector3(0, -1, 0));
+		nDirs.Add(new Vector3(0, 0, 1));
+		nDirs.Add(new Vector3(0, 0, -1));
+
+		RebuildLinks();
+	}
+
+	public void RebuildLinks() {
 		List<Vector3> nDirs = new List<Vector3>();
 		nDirs.Add(new Vector3(1, 0, 0));
 		nDirs.Add(new Vector3(-1, 0, 0));
@@ -85,30 +150,7 @@ class ShipGrid : MonoBehaviour {
 		nDirs.Add(new Vector3(0, -1, 0));
 		nDirs.Add(new Vector3(0, 0, 1));
 		nDirs.Add(new Vector3(0, 0, -1));
-		/*while(neighbors.Count > 0) {
-			ShipGridCell cur = neighbors[0];
-			if(cur != null) {
-				Vector3 curPos = IndexToPos(cur.x, cur.y, cur.z);
-				curPos += cellSize / 2.0f;
-
-				RaycastHit hit;
-				foreach(Vector3 nDir in nDirs) {
-					Vector3 step = new Vector3(cellSize.x * nDir.x, cellSize.y * nDir.y, cellSize.z * nDir.z);
-					//if(!Physics.Raycast(curPos, nDir, out hit, step.magnitude)) {
-						ShipGridCell neigh = GetIndex(i + (int)nDir.x, j + (int)nDir.y, k + (int)nDir.z);
-						if(neigh != null) {
-							if(!cur.neighbors.Contains(neigh)) {
-								cur.neighbors.Add(neigh);
-								neigh.neighbors.Add(cur);
-								neighbors.Add(neigh);
-							}
-						}
-					//}
-				}
-			}
-			//print(cur.neighbors.Count);
-			neighbors.Remove(cur);
-		}*/
+		int i, j, k;
 		for(i = 0; i < divs.x; i++) {
 			for(j = 0; j < divs.y; j++) {
 				for(k = 0; k < divs.z; k++) {
@@ -187,22 +229,82 @@ class ShipGrid : MonoBehaviour {
 	}
 
 	void Update() {
+		if(Input.GetMouseButtonUp(0)) {
+			ShipGridCell cur = GetIndex(5, 5, 5);
+			string type = "sound";
+			float amount = 1.0f;
+			float flowRate = 0.5f;
+			List<ShipGridCell> current = new List<ShipGridCell>();
+			current.Add(cur);
+			ShipGridCell.AddFluid(type, amount, flowRate, 0.01f, current, new List<ShipGridCell>());
+		}
+
 		int i, j, k;
 		for(i = 0; i < divs.x; i++) {
 			for(j = 0; j < divs.y; j++) {
 				for(k = 0; k < divs.z; k++) {
 					ShipGridCell cur = GetIndex(i, j, k);
 					if(cur != null) {
+						cur.Update(Time.deltaTime);
 						Vector3 curPos = IndexToPos(i, j, k) + cellSize / 2.0f;
+
+						float level = 1.0f;
+						foreach(ShipGridFluid fluid in cur.fluids) {
+							Debug.DrawLine(curPos + transform.forward * 0.1f, curPos + transform.forward * 0.1f + transform.up * fluid.level, Color.red);
+							level = fluid.level;
+						}
+
 						//Debug.DrawLine(curPos, curPos+transform.up);
 						foreach(ShipGridCell neigh in cur.neighbors) {
 							//print(neigh.n);
 							Vector3 nPos = IndexToPos(neigh.x, neigh.y, neigh.z) + cellSize / 2.0f;
-							Debug.DrawLine(curPos, nPos);
+							Debug.DrawLine(curPos, curPos + (nPos - curPos).normalized * 0.5f * level);
 						}
 					}
 				}
 			}
 		}
+
+		/*List<Vector3> nDirs = new List<Vector3>();
+		nDirs.Add(new Vector3(1, 0, 0));
+		nDirs.Add(new Vector3(-1, 0, 0));
+		nDirs.Add(new Vector3(0, 1, 0));
+		nDirs.Add(new Vector3(0, -1, 0));
+		nDirs.Add(new Vector3(0, 0, 1));
+		nDirs.Add(new Vector3(0, 0, -1));
+		for(i = 0; i < divs.x; i++) {
+			for(j = 0; j < divs.y; j++) {
+				for(k = 0; k < divs.z; k++) {
+					ShipGridCell cur = GetIndex(i, j, k);
+					cur.neighbors.Clear();
+					if(cur != null) {
+						Vector3 curPos = IndexToPos(i, j, k) + cellSize / 2.0f;
+						RaycastHit hit;
+						foreach(Vector3 nDir in nDirs) {
+							Vector3 step = new Vector3(cellSize.x * nDir.x, cellSize.y * nDir.y, cellSize.z * nDir.z);
+							//print(step.magnitude);
+							//Debug.DrawLine(curPos, curPos + nDir * step.magnitude);
+							if(!Physics.Raycast(curPos, nDir, out hit, step.magnitude)) {
+								ShipGridCell neigh = GetIndex(i + (int)nDir.x, j + (int)nDir.y, k + (int)nDir.z);
+								if(neigh != null) {
+									if(!cur.neighbors.Contains(neigh)) {
+										cur.neighbors.Add(neigh);
+										//Debug.DrawLine(curPos, curPos + nDir*0.5f);
+										//neigh.neighbors.Add(cur);
+										//neighbors.Add(neigh);
+									}
+								}
+							}
+						}
+
+						foreach(ShipGridCell neigh in cur.neighbors) {
+							//print(neigh.n);
+							Vector3 nPos = IndexToPos(neigh.x, neigh.y, neigh.z) + cellSize / 2.0f;
+							//Debug.DrawLine(curPos, nPos);
+						}
+					}
+				}
+			}
+		}*/
 	}
 }
