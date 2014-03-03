@@ -7,6 +7,12 @@ public class RaptorInteraction : MonoBehaviour {
 	public Texture2D crosshair;
 	public float maxHealth = 100;
 	public float attack = 20f;
+	public float walkNoiseLevel = 1;
+	public float walkNoiseFalloff = 0.25f;
+	public float runNoiseLevel = 5;
+	public float runNoiseFalloff = 0.75f;
+	public float pounceNoiseLevel = 20;
+	public float crouchNoiseDampen = 0.5f;
 
 	[HideInInspector]
 	public float health;
@@ -15,7 +21,9 @@ public class RaptorInteraction : MonoBehaviour {
 	protected Animator arms;
 	private AnimatorStateInfo currentState;
 	static int idleState = Animator.StringToHash("Base Layer.Idle");
-	
+
+	private bool prevGrounded = true;
+
 	private bool canPounce = true;
 	private bool isPouncing = false;
 	private int pounceCoolDown = 3;
@@ -45,6 +53,48 @@ public class RaptorInteraction : MonoBehaviour {
 	void Update () {
 		Animation();
 		Controls();
+
+		GameObject gridObject = GameObject.Find("CA Grid");
+		if(gridObject != null) {
+			ShipGrid grid = gridObject.GetComponent<ShipGrid>();
+			ShipGridCell cell = grid.GetPos(transform.position);
+
+			float noiseLevel = walkNoiseLevel;
+			float noiseFalloff = walkNoiseFalloff;
+
+			if(fpc.grounded) {
+				if(!prevGrounded) {
+					noiseLevel = pounceNoiseLevel;
+					noiseFalloff = runNoiseFalloff;
+				}
+				else {
+					if(fpc.moving) {
+						if(fpc.running && !isCrouching) {
+							noiseLevel = runNoiseLevel;
+							noiseFalloff = runNoiseFalloff;
+						}
+						noiseLevel *= isCrouching ? crouchNoiseDampen : 1;
+					}
+					else {
+						noiseLevel *= 0;
+					}
+				}
+				prevGrounded = true;
+
+			}
+			else {
+				if(prevGrounded) {
+					noiseLevel = pounceNoiseLevel;
+					noiseFalloff = runNoiseFalloff;
+				}
+				else {
+					noiseLevel *= 0;
+				}
+				prevGrounded = false;
+			}
+
+			grid.AddFluid(transform.position, "noise", noiseLevel, noiseFalloff, 0.01f);
+		}
 	}
 
 	void Animation() {
@@ -134,6 +184,7 @@ public class RaptorInteraction : MonoBehaviour {
 			canPounce = false;
 			isPouncing = true;
 			fpc.enabled = false;
+			fpc.grounded = false;
 			rigidbody.drag = 1;
 			rigidbody.AddForce(transform.forward * 15f, ForceMode.Impulse);
 			rigidbody.AddForce(transform.up * 5.5f, ForceMode.Impulse);

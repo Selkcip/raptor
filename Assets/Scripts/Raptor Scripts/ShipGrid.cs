@@ -156,7 +156,7 @@ class ShipGrid : MonoBehaviour {
 				for(k = 0; k < divs.z; k++) {
 					ShipGridCell cur = GetIndex(i, j, k);
 					if(cur != null) {
-						Vector3 curPos = IndexToPos(i, j, k) + cellSize / 2.0f;
+						Vector3 curPos = IndexToPos(i, j, k);// +cellSize / 2.0f;
 						RaycastHit hit;
 						foreach(Vector3 nDir in nDirs) {
 							Vector3 step = new Vector3(cellSize.x * nDir.x, cellSize.y * nDir.y, cellSize.z * nDir.z);
@@ -197,6 +197,10 @@ class ShipGrid : MonoBehaviour {
 		}
 	}*/
 
+	public Vector3 IndexToPos(Vector3 index) {
+		return IndexToPos((int)index.x, (int)index.y, (int)index.z);
+	}
+
 	public Vector3 IndexToPos(int x, int y, int z) {
 		float xpos = Mathf.Max(0, Mathf.Min(divs.x - 1, x));
 		float ypos = Mathf.Max(0, Mathf.Min(divs.y - 1, y));
@@ -205,7 +209,24 @@ class ShipGrid : MonoBehaviour {
 		xpos = (xpos * cellSize.x) - size.x / 2;
 		ypos = (ypos * cellSize.y) - size.y / 2;
 		zpos = (zpos * cellSize.z) - size.z / 2;
-		return new Vector3(xpos, ypos, zpos)+collider.bounds.center;
+		return new Vector3(xpos, ypos, zpos) + collider.bounds.center + cellSize/2;
+	}
+
+	public Vector3 PosToIndex(Vector3 pos) {
+		return PosToIndex(pos.x, pos.y, pos.z);
+	}
+
+	public Vector3 PosToIndex(float xpos, float ypos, float zpos) {
+		xpos -= collider.bounds.center.x;
+		ypos -= collider.bounds.center.y;
+		zpos -= collider.bounds.center.z;
+		int x = Mathf.FloorToInt((xpos + size.x / 2) / cellSize.x);
+		int y = Mathf.FloorToInt((ypos + size.y / 2) / cellSize.y);
+		int z = Mathf.FloorToInt((zpos + size.z / 2) / cellSize.z);
+		x = (int)Mathf.Max(0, Mathf.Min(divs.x - 1, x));
+		y = (int)Mathf.Max(0, Mathf.Min(divs.y - 1, y));
+		z = (int)Mathf.Max(0, Mathf.Min(divs.z - 1, z));
+		return new Vector3(x, y, z);
 	}
 
 	public ShipGridCell GetIndex(int x, int y, int z) {
@@ -213,6 +234,10 @@ class ShipGrid : MonoBehaviour {
 			return null;
 		}
 		return cells[x][y][z];
+	}
+
+	public ShipGridCell GetPos(Vector3 pos) {
+		return GetPos(pos.x, pos.y, pos.z);
 	}
 
 	public ShipGridCell GetPos(float xpos, float ypos, float zpos) {
@@ -228,17 +253,18 @@ class ShipGrid : MonoBehaviour {
 		return cells[x][y][z];
 	}
 
-	void Update() {
-		if(Input.GetMouseButtonUp(0)) {
-			ShipGridCell cur = GetIndex(5, 5, 5);
-			string type = "sound";
-			float amount = 1.0f;
-			float flowRate = 0.5f;
-			List<ShipGridCell> current = new List<ShipGridCell>();
-			current.Add(cur);
-			ShipGridCell.AddFluid(type, amount, flowRate, 0.01f, current, new List<ShipGridCell>());
-		}
+	public void AddFluid(Vector3 pos, string type, float amount, float flowRate, float cutoff) {
+		AddFluid(pos.x, pos.y, pos.z, type, amount, flowRate, cutoff);
+	}
 
+	public void AddFluid(float x, float y, float z, string type, float amount, float flowRate, float cutoff) {
+		ShipGridCell cur = GetPos(x, y, z);
+		List<ShipGridCell> current = new List<ShipGridCell>();
+		current.Add(cur);
+		ShipGridCell.AddFluid(type, amount, flowRate, cutoff, current, new List<ShipGridCell>());
+	}
+
+	void Update() {
 		int i, j, k;
 		for(i = 0; i < divs.x; i++) {
 			for(j = 0; j < divs.y; j++) {
@@ -246,7 +272,7 @@ class ShipGrid : MonoBehaviour {
 					ShipGridCell cur = GetIndex(i, j, k);
 					if(cur != null) {
 						cur.Update(Time.deltaTime);
-						Vector3 curPos = IndexToPos(i, j, k) + cellSize / 2.0f;
+						Vector3 curPos = IndexToPos(i, j, k);
 
 						float level = 1.0f;
 						foreach(ShipGridFluid fluid in cur.fluids) {
@@ -257,7 +283,7 @@ class ShipGrid : MonoBehaviour {
 						//Debug.DrawLine(curPos, curPos+transform.up);
 						foreach(ShipGridCell neigh in cur.neighbors) {
 							//print(neigh.n);
-							Vector3 nPos = IndexToPos(neigh.x, neigh.y, neigh.z) + cellSize / 2.0f;
+							Vector3 nPos = IndexToPos(neigh.x, neigh.y, neigh.z);
 							Debug.DrawLine(curPos, curPos + (nPos - curPos).normalized * 0.5f * level);
 						}
 					}

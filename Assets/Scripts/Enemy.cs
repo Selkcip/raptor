@@ -6,11 +6,14 @@ public class Enemy : MonoBehaviour {
 
 	public float walkSpeed = 0.25f;
 	public float runSpeed = 1.0f;
+	public float collisionDeflectForce = 10;
 	public float viewDis = 10f;
 	public float fov = 45f;
 	public float health = 100f;
 	public float standTime = 2f;
 	public float patrolTime = 5f;
+	public float curiousNoiseLevel = 1;
+	public float alarmedNoiseLevel = 5;
 	public Weapon weapon;
 	public float sleepTime = 0f;
 	public string stateName;
@@ -36,6 +39,8 @@ public class Enemy : MonoBehaviour {
 	Vector3 enemyDir;
 	public bool enemyVisible = false;
 	public bool enemySeen = false;
+	public float noiseLevel = 0;
+	public Vector3 noiseDir = new Vector3();
 
 	StateMachine states;
 
@@ -118,10 +123,11 @@ public class Enemy : MonoBehaviour {
 				targetDir = (enemyPos - transform.position).normalized;
 
 				if(weapon != null) {
+					weapon.transform.LookAt(enemyPos);
 					return weapon.Use();
 				}
 
-				return false;
+				return !(enemyVisible && weapon.ammo > 0);
 			},
 			5
 		);
@@ -190,16 +196,50 @@ public class Enemy : MonoBehaviour {
 			}
 		);
 
+		State followNoise = new State(
+			delegate() {
+				return noiseLevel >= curiousNoiseLevel;
+			},
+			delegate() {
+				stateName = "Follow Noise";
+				speed = walkSpeed;
+
+				targetDir += noiseDir;
+
+				standTimer = standTime;
+
+				return noiseLevel < curiousNoiseLevel;
+			}
+		);
+
+		State chaseNoise = new State(
+			delegate() {
+				return noiseLevel >= alarmedNoiseLevel;
+			},
+			delegate() {
+				stateName = "Chase Noise";
+				speed = runSpeed;
+
+				targetDir += noiseDir;
+
+				standTimer = standTime;
+
+				return noiseLevel < alarmedNoiseLevel;
+			}
+		);
+
 		states.Add(stand);
 
 		//stand.Add(sleep);
 		stand.Add(patrol);
 		stand.Add(shoot);
 		stand.Add(chase);
+		stand.Add(followNoise);
 
 		//patrol.Add(sleep);
 		patrol.Add(shoot);
 		patrol.Add(chase);
+		patrol.Add(followNoise);
 
 		//shoot.Add(sleep);
 		shoot.Add(chase);
@@ -208,6 +248,8 @@ public class Enemy : MonoBehaviour {
 		//chase.Add(sleep);
 		chase.Add(shoot);
 		chase.Add(soundAlarm);
+
+		followNoise.Add(chaseNoise);
 	}
 
 	void OnCollisionEnter(Collision col) {
@@ -228,7 +270,7 @@ public class Enemy : MonoBehaviour {
 				reflect.x = Mathf.Cos(rang) * length;
 				reflect.z = Mathf.Sin(rang) * length;
 				reflect.Normalize();
-				targetDir += reflect * 5;
+				targetDir += reflect * collisionDeflectForce;
 			}
 		}
 	}
@@ -245,18 +287,49 @@ public class Enemy : MonoBehaviour {
 		enemyVisible = false;
 		Transform enemyHead = Camera.main.transform;
 		if(enemyHead != null) {
-			enemyDiff = enemyHead.position - transform.position;
+			enemyDiff = enemyHead.position - (transform.position+ new Vector3(0, 1, 0));
+			enemyDir.x = enemyDiff.x;
+			enemyDir.y = enemyDiff.y;
+			enemyDir.z = enemyDiff.z;
 			enemyDiff.y = 0;
 			enemyDiff.Normalize();
 
 			if(Vector3.Dot(transform.forward, enemyDiff) >= 1.0f - (curFov / 2.0f) / 90.0f) {
 				RaycastHit hit;
-				if(Physics.Raycast(transform.position + new Vector3(0, 1, 0), enemyDiff, out hit, curViewDis)) {
-					if(hit.collider.tag == "Player") {
+				if(Physics.Raycast(transform.position + new Vector3(0, 1, 0), enemyDir, out hit, curViewDis)) {
+					if(hit.collider.tag == "Player" || (hit.collider.transform.parent != null && hit.collider.transform.parent.tag == "Player")) {
 						enemyVisible = true;
 						enemySeen = true;
 						enemyPos = enemyHead.position;
-						enemyDir = enemyHead.forward;
+						//enemyDir = enemyHead.forward;
+					}
+				}
+			}
+		}
+
+		GameObject gridObject = GameObject.Find("CA Grid");
+		if(gridObject != null){
+			ShipGrid grid = gridObject.GetComponent<ShipGrid>();
+
+			Vector3 index = grid.PosToIndex(transform.position);
+
+			ShipGridCell cell = grid.GetPos(transform.position);
+			//grid.AddFluid(transform.position, "noise", 0.1f, 0.5f, 0.01f);
+			ShipGridFluid noise = cell.fluids.Find(delegate(ShipGridFluid item) {
+				return item.type == "noise";
+			});
+			if(noise != null){
+				noiseLevel = noise.level;
+
+				foreach(ShipGridCell neigh in cell.neighbors) {
+					noise = neigh.fluids.Find(delegate(ShipGridFluid item) {
+						return item.type == "noise";
+					});
+					if(noise != null) {
+						if(noise.level > noiseLevel) {
+							noiseLevel = noise.level;
+							noiseDir = grid.IndexToPos(neigh.x, neigh.y, neigh.z) - transform.position;
+						}
 					}
 				}
 			}
@@ -282,7 +355,7 @@ public class Enemy : MonoBehaviour {
 	}
 
 	void Animation() {
-		enemy.SetFloat("Health", health);
-		enemy.SetBool("KnockedOut", knockedOut);
+		//enemy.SetFloat("Health", health);
+		//enemy.SetBool("KnockedOut", knockedOut);
 	}
 }
