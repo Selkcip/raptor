@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour {
 	public float viewDis = 10f;
 	public float fov = 45f;
 	public float health = 100f;
+	public float fleeHealth = 25;
 	public float standTime = 2f;
 	public float patrolTime = 5f;
 	public float curiousNoiseLevel = 1;
@@ -134,7 +135,7 @@ public class Enemy : MonoBehaviour {
 
 		State chase = new State(
 			delegate() {
-				return enemySeen ;//&& (!(enemyVisible && weapon.ammo > 0) || (enemyVisible && weapon != null && weapon.type == WeaponType.melee));
+				return enemySeen && health > fleeHealth;//&& (!(enemyVisible && weapon.ammo > 0) || (enemyVisible && weapon != null && weapon.type == WeaponType.melee));
 			},
 			delegate() {
 				stateName = "Chase";
@@ -158,6 +159,25 @@ public class Enemy : MonoBehaviour {
 
 				return false;
 			}
+		);
+
+		State flee = new State(
+			delegate() {
+				return enemySeen && health <= fleeHealth;//&& (!(enemyVisible && weapon.ammo > 0) || (enemyVisible && weapon != null && weapon.type == WeaponType.melee));
+			},
+			delegate() {
+				stateName = "Chase";
+				speed = runSpeed;
+
+				if(!enemySeen) {
+					return true;
+				}
+
+				targetDir -= (enemyPos - transform.position).normalized * 5;
+
+				return false;
+			},
+			10
 		);
 
 		State soundAlarm = new State(
@@ -234,22 +254,29 @@ public class Enemy : MonoBehaviour {
 		stand.Add(patrol);
 		stand.Add(shoot);
 		stand.Add(chase);
+		stand.Add(flee);
 		stand.Add(followNoise);
 
 		//patrol.Add(sleep);
 		patrol.Add(shoot);
 		patrol.Add(chase);
+		patrol.Add(flee);
 		patrol.Add(followNoise);
 
 		//shoot.Add(sleep);
 		shoot.Add(chase);
+		shoot.Add(flee);
 		shoot.Add(soundAlarm);
 
 		//chase.Add(sleep);
 		chase.Add(shoot);
+		chase.Add(flee);
 		chase.Add(soundAlarm);
 
 		followNoise.Add(chaseNoise);
+		followNoise.Add(flee);
+
+		chaseNoise.Add(flee);
 	}
 
 	void OnCollisionEnter(Collision col) {
@@ -355,7 +382,7 @@ public class Enemy : MonoBehaviour {
 	}
 
 	void Animation() {
-		//enemy.SetFloat("Health", health);
-		//enemy.SetBool("KnockedOut", knockedOut);
+		enemy.SetFloat("Health", health);
+		enemy.SetBool("KnockedOut", knockedOut);
 	}
 }
