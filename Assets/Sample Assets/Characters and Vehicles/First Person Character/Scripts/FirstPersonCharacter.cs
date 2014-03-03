@@ -20,7 +20,7 @@ public class FirstPersonCharacter : MonoBehaviour
     }
 
     private CapsuleCollider capsule;                                                    // The capsule collider for the first person character
-    private const float jumpRayLength = 0.7f;                                           // The length of the ray used for testing against the ground when jumping
+    private const float jumpRayLength = 1.0f; //0.7f                                          // The length of the ray used for testing against the ground when jumping
 	public bool grounded { get; private set; }
 	private Vector2 input;
 
@@ -28,7 +28,7 @@ public class FirstPersonCharacter : MonoBehaviour
 	{
         // Set up a reference to the capsule collider.
 	    capsule = collider as CapsuleCollider;
-		grounded = true;
+		grounded= true;
 	}
 
 	

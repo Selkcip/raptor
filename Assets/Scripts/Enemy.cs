@@ -6,14 +6,17 @@ public class Enemy : MonoBehaviour {
 
 	public float walkSpeed = 0.25f;
 	public float runSpeed = 1.0f;
-	public float viewDis = 10;
-	public float fov = 45;
-	public float health = 100;
-	public float standTime = 2;
-	public float patrolTime = 5;
+	public float viewDis = 10f;
+	public float fov = 45f;
+	public float health = 100f;
+	public float standTime = 2f;
+	public float patrolTime = 5f;
 	public Weapon weapon;
-	public float sleepTime = 0;
+	public float sleepTime = 0f;
 	public string stateName;
+
+	//knocking the enemy out?
+	public bool knockedOut = false;
 
 	public ThirdPersonCharacter character { get; private set; }     // the character we are controlling
 	public Transform target;										// target to aim for
@@ -36,11 +39,15 @@ public class Enemy : MonoBehaviour {
 
 	StateMachine states;
 
+	//Animation stuff
+	protected Animator enemy;
+
 	// Use this for initialization
 	void Start() {
 
 		// get the components on the object we need ( should not be null due to require component so no need to check )
 		character = GetComponent<ThirdPersonCharacter>();
+		enemy = GetComponent<Animator>();
 
 		targetDir = transform.forward;
 
@@ -255,18 +262,27 @@ public class Enemy : MonoBehaviour {
 			}
 		}
 
-		if(health > 0) {
+		if(health > 0 && !knockedOut) {
 			states.Update();
 		}
 		else {
 			speed = 0;
+			GetComponent<BoxCollider>().enabled = true;
+			GetComponent<CapsuleCollider>().enabled = false;
 		}
 
 		targetDir.Normalize();
 		character.Move(targetDir * speed, false, false, transform.position + transform.forward * 10);
+
+		Animation();
 	}
 
 	public void SetTarget(Transform target) {
 		this.target = target;
+	}
+
+	void Animation() {
+		enemy.SetFloat("Health", health);
+		enemy.SetBool("KnockedOut", knockedOut);
 	}
 }
