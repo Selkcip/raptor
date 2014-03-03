@@ -161,15 +161,35 @@ public class Enemy : MonoBehaviour {
 			}
 		);
 
-		State flee = new State(
+		float oldHealth = health;
+
+		State hurt = new State(
 			delegate() {
-				return enemySeen && health <= fleeHealth;//&& (!(enemyVisible && weapon.ammo > 0) || (enemyVisible && weapon != null && weapon.type == WeaponType.melee));
+				return health < oldHealth;//&& (!(enemyVisible && weapon.ammo > 0) || (enemyVisible && weapon != null && weapon.type == WeaponType.melee));
 			},
 			delegate() {
-				stateName = "Chase";
+				stateName = "Hurt";
+
+				curFov = alertFov;
+				curViewDis = viewDis * 2;
+
+				oldHealth = health;
+
+				return true;
+			},
+			10
+		);
+
+		State flee = new State(
+			delegate() {
+				return enemyVisible && health <= fleeHealth;//&& (!(enemyVisible && weapon.ammo > 0) || (enemyVisible && weapon != null && weapon.type == WeaponType.melee));
+			},
+			delegate() {
+				stateName = "Flee";
 				speed = runSpeed;
 
-				if(!enemySeen) {
+				if(!enemyVisible) {
+					enemySeen = false;
 					return true;
 				}
 
@@ -252,12 +272,14 @@ public class Enemy : MonoBehaviour {
 
 		//stand.Add(sleep);
 		stand.Add(patrol);
+		stand.Add(hurt);
 		stand.Add(shoot);
 		stand.Add(chase);
 		stand.Add(flee);
 		stand.Add(followNoise);
 
 		//patrol.Add(sleep);
+		patrol.Add(hurt);
 		patrol.Add(shoot);
 		patrol.Add(chase);
 		patrol.Add(flee);
@@ -273,9 +295,11 @@ public class Enemy : MonoBehaviour {
 		chase.Add(flee);
 		chase.Add(soundAlarm);
 
+		followNoise.Add(hurt);
 		followNoise.Add(chaseNoise);
 		followNoise.Add(flee);
 
+		chaseNoise.Add(hurt);
 		chaseNoise.Add(flee);
 	}
 
@@ -284,6 +308,10 @@ public class Enemy : MonoBehaviour {
 	}
 
 	void OnCollisionStay(Collision col) {
+		if(col.other.tag == "Player") {
+			curFov = alertFov;
+			curViewDis = viewDis * 2;
+		}
 		if(col.contacts.Length > 0) {
 			Vector3 norm = col.contacts[0].normal;
 			/*foreach(ContactPoint point in col.contacts) {

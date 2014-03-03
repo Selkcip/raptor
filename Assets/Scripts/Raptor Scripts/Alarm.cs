@@ -8,18 +8,22 @@ public class Alarm : MonoBehaviour {
 
 	public static List<Alarm> alarms = new List<Alarm>();
 
-	// Use this for initialization
-	void Start() {
-		alarms.Add(this);
-	}
-
-	public void Activate() {
+	public static void ActivateAlarms() {
 		if(!activated) {
 			activated = true;
 			foreach(Alarm alarm in alarms) {
 				alarm.SoundAlarm();
 			}
 		}
+	}
+
+	// Use this for initialization
+	void Start() {
+		alarms.Add(this);
+	}
+
+	public void Activate() {
+		ActivateAlarms();
 	}
 
 	// Update is called once per frame
