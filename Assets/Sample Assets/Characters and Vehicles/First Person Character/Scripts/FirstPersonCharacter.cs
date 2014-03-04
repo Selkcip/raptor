@@ -63,7 +63,6 @@ public class FirstPersonCharacter : MonoBehaviour
 		
 		// Raycast slightly further than the capsule (as determined by jumpRayLength)
 		RaycastHit[] hits = Physics.RaycastAll(ray, capsule.height * jumpRayLength );
-
 	       
         float nearest = Mathf.Infinity;
 	
@@ -75,8 +74,8 @@ public class FirstPersonCharacter : MonoBehaviour
             // Check every collider hit by the ray
 			for (int i = 0; i < hits.Length; i++)
 			{
-				// Check it's not a trigger
-				if (!hits[i].collider.isTrigger && hits[i].distance < nearest)
+				// Check it's not a trigger and not the player
+				if (!hits[i].collider.isTrigger && hits[i].distance < nearest && hits[i].transform.tag != "Player")
 				{
 					// The character is grounded, and we store the ground angle (calculated from the normal)
 					grounded = true;
