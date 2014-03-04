@@ -297,9 +297,11 @@ public class Enemy : MonoBehaviour {
 
 		followNoise.Add(hurt);
 		followNoise.Add(chaseNoise);
+		followNoise.Add(chase);
 		followNoise.Add(flee);
 
 		chaseNoise.Add(hurt);
+		chaseNoise.Add(chase);
 		chaseNoise.Add(flee);
 	}
 
