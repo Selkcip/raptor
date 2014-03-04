@@ -13,6 +13,7 @@ public class RaptorInteraction : MonoBehaviour {
 	public float runNoiseFalloff = 0.75f;
 	public float pounceNoiseLevel = 20;
 	public float crouchNoiseDampen = 0;
+	public float mapAmountNeeded = 5;
 
 	[HideInInspector]
 	public float health;
@@ -43,6 +44,8 @@ public class RaptorInteraction : MonoBehaviour {
 	private RaycastHit hit;
 	private float meleeRange = 1.0f;
 
+	private float mapAmountAcquired = 0;
+
 	// Use this for initialization
 	void Start () {
 		fpc = gameObject.GetComponent<FirstPersonCharacter>();
@@ -55,15 +58,29 @@ public class RaptorInteraction : MonoBehaviour {
 	void Update () {
 		Animation();
 		Controls();
-		
 		HUD();
+		MakeNoise();
 
 		//prevents the player from getting stuck when pouncing next to a wall
 		if(hud.stamina <= 0f) {
 			isPouncing = false;
 			fpc.enabled = true;
 		}
+	}
+	
+	void HUD() {
+		if(isPouncing) {
+			hud.Deplete(1f * Time.deltaTime);
+		}
+		else if(chainPounce) {
+			hud.Regenerate(2.0f * Time.deltaTime);
+		}
+		else {
+			hud.Regenerate(.66f * Time.deltaTime);
+		}
+	}
 
+	void MakeNoise() {
 		GameObject gridObject = GameObject.Find("CA Grid");
 		if(gridObject != null) {
 			ShipGrid grid = gridObject.GetComponent<ShipGrid>();
@@ -106,18 +123,6 @@ public class RaptorInteraction : MonoBehaviour {
 			grid.AddFluid(transform.position, "noise", noiseLevel, noiseFalloff, 0.01f);
 		}
 	}
-	
-	void HUD() {
-		if(isPouncing) {
-			hud.Deplete(1f * Time.deltaTime);
-		}
-		else if(chainPounce) {
-			hud.Regenerate(2.0f * Time.deltaTime);
-		}
-		else {
-			hud.Regenerate(.66f * Time.deltaTime);
-		}
-	}
 
 	void Animation() {
 		currentState = arms.GetCurrentAnimatorStateInfo(0);
@@ -143,8 +148,10 @@ public class RaptorInteraction : MonoBehaviour {
 		}
 
 		if(Input.GetKey(KeyCode.E)) {
-			//interact
-			print("isPouncing: " +isPouncing +"fpc: "+fpc.enabled);
+			RaycastHit hit;
+			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2)) {
+				hit.transform.gameObject.SendMessage("Use", this, SendMessageOptions.DontRequireReceiver);
+			}
 		}
 	}
 
@@ -249,5 +256,9 @@ public class RaptorInteraction : MonoBehaviour {
 			}
 		}
 		return false;
+	}
+
+	public void TransferMap(float amount) {
+		mapAmountAcquired += amount;
 	}
 }

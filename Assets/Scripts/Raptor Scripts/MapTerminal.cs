@@ -15,12 +15,11 @@ public class MapTerminal : MonoBehaviour {
 	void Start() {
 	}
 
-	public float Hack() {
+	public void Use(RaptorInteraction player) {
 		hacked = hacked ? hacked : true;
 		if(hackable) {
-			return mapAvailable / alarmCountDown;
+			player.SendMessage("TransferMap", mapAvailable / alarmCountDown, SendMessageOptions.DontRequireReceiver);
 		}
-		return 0;
 	}
 
 	// Update is called once per frame

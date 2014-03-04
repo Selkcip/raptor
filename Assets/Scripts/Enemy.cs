@@ -43,6 +43,8 @@ public class Enemy : MonoBehaviour {
 	public float noiseLevel = 0;
 	public Vector3 noiseDir = new Vector3();
 
+	private float bodyRemaining = 1;
+
 	StateMachine states;
 
 	//Animation stuff
@@ -411,8 +413,25 @@ public class Enemy : MonoBehaviour {
 		Animation();
 	}
 
-	public void SetTarget(Transform target) {
-		this.target = target;
+	public void Use(RaptorInteraction player) {
+		if(!knockedOut) {
+			player.SendMessage("TakeMoney", 1, SendMessageOptions.DontRequireReceiver);
+		}
+		else {
+			if(health > 0) {
+				health = 0;
+			}
+			else {
+				bodyRemaining -= 0.1f * Time.deltaTime;
+					player.SendMessage("Heal", 1, SendMessageOptions.DontRequireReceiver);
+				if(bodyRemaining > 0.25) {
+					transform.localScale = new Vector3(bodyRemaining, bodyRemaining, bodyRemaining);
+				}
+				else {
+					Destroy(gameObject);
+				}
+			}
+		}
 	}
 
 	void Animation() {
