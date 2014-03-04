@@ -67,7 +67,7 @@ public class Enemy : MonoBehaviour {
 		float standTimer = 0;
 		State stand = new State(
 			delegate() {
-				return false;
+				return true;
 			},
 			delegate() {
 				stateName = "Stand";
@@ -86,10 +86,44 @@ public class Enemy : MonoBehaviour {
 				stateName = "Sleep";
 				speed = 0;
 
+				curFov = 0;
+				curViewDis = 0;
+
+				if(sleepTime > 0 && !knockedOut) {
+					knockedOut = true;
+
+					character.enabled = false;
+					rigidbody.useGravity = true;
+					GetComponent<BoxCollider>().enabled = true;
+					GetComponent<CapsuleCollider>().enabled = false;
+					//rigidbody.isKinematic = true;
+					if(weapon != null) {
+						weapon.Drop();
+						weapon = null;
+					}
+				}
+
 				sleepTime -= Time.deltaTime;
-				return sleepTime <= 0;
+				return !knockedOut;
 			},
 			10
+		);
+
+		State wakeUp = new State(
+			delegate() {
+				return knockedOut && sleepTime <= 0;
+			},
+			delegate() {
+				stateName = "Wake Up";
+				speed = 0;
+
+				knockedOut = false;
+
+				GetComponent<BoxCollider>().enabled = false;
+				GetComponent<CapsuleCollider>().enabled = true;
+				character.enabled = true;
+				return true;
+			}
 		);
 
 		float patrolTimer = 0;
@@ -116,11 +150,11 @@ public class Enemy : MonoBehaviour {
 
 		State shoot = new State(
 			delegate() {
-				return enemyVisible && weapon != null && weapon.type == WeaponType.projectile && weapon.ammo > 0;
+				return enemyVisible && weapon != null && weapon.type == WeaponType.projectile && (weapon.ammo > 0 || weapon.clip > 0);
 			},
 			delegate() {
 				stateName = "Shoot";
-				speed = walkSpeed;
+				speed = 0.0001f;
 
 				float enemyDis = (enemyPos - transform.position).magnitude;
 				targetDir = (enemyPos - transform.position).normalized;
@@ -227,7 +261,7 @@ public class Enemy : MonoBehaviour {
 
 				if(minAlarmDis <= targetChangeTolerance) {
 					if(minAlarm != null) {
-						minAlarm.Activate();
+						minAlarm.Use();
 					}
 				}
 				else {
@@ -272,7 +306,7 @@ public class Enemy : MonoBehaviour {
 
 		states.Add(stand);
 
-		//stand.Add(sleep);
+		stand.Add(sleep);
 		stand.Add(patrol);
 		stand.Add(hurt);
 		stand.Add(shoot);
@@ -280,7 +314,11 @@ public class Enemy : MonoBehaviour {
 		stand.Add(flee);
 		stand.Add(followNoise);
 
-		//patrol.Add(sleep);
+		sleep.Add(wakeUp);
+
+		wakeUp.Add(stand);
+
+		patrol.Add(sleep);
 		patrol.Add(hurt);
 		patrol.Add(shoot);
 		patrol.Add(chase);
@@ -288,20 +326,22 @@ public class Enemy : MonoBehaviour {
 		patrol.Add(followNoise);
 
 		//shoot.Add(sleep);
-		shoot.Add(chase);
+		//shoot.Add(chase);
 		shoot.Add(flee);
 		shoot.Add(soundAlarm);
 
-		//chase.Add(sleep);
+		chase.Add(sleep);
 		chase.Add(shoot);
 		chase.Add(flee);
 		chase.Add(soundAlarm);
 
+		followNoise.Add(sleep);
 		followNoise.Add(hurt);
 		followNoise.Add(chaseNoise);
 		followNoise.Add(chase);
 		followNoise.Add(flee);
 
+		chaseNoise.Add(sleep);
 		chaseNoise.Add(hurt);
 		chaseNoise.Add(chase);
 		chaseNoise.Add(flee);
@@ -343,10 +383,37 @@ public class Enemy : MonoBehaviour {
 			curViewDis = viewDis*2;
 		}
 
+		LookForEnemy();
+		ListenForNoise();
+
+		if(health > 0) {
+			states.Update();
+		}
+		else {
+			character.enabled = false;
+			rigidbody.useGravity = true;
+			GetComponent<BoxCollider>().enabled = true;
+			GetComponent<CapsuleCollider>().enabled = false;
+			//rigidbody.isKinematic = true;
+			if(weapon != null) {
+				weapon.Drop();
+				weapon = null;
+			}
+		}
+
+		if(health > 0 && !knockedOut) {
+			targetDir.Normalize();
+			character.Move(targetDir * speed, false, false, transform.position + transform.forward * 10);
+		}
+
+		Animation();
+	}
+
+	void LookForEnemy() {
 		enemyVisible = false;
 		Transform enemyHead = Camera.main.transform;
 		if(enemyHead != null) {
-			enemyDiff = enemyHead.position - (transform.position+ new Vector3(0, 1, 0));
+			enemyDiff = enemyHead.position - (transform.position + new Vector3(0, 1, 0));
 			enemyDir.x = enemyDiff.x;
 			enemyDir.y = enemyDiff.y;
 			enemyDir.z = enemyDiff.z;
@@ -365,9 +432,11 @@ public class Enemy : MonoBehaviour {
 				}
 			}
 		}
+	}
 
+	void ListenForNoise() {
 		GameObject gridObject = GameObject.Find("CA Grid");
-		if(gridObject != null){
+		if(gridObject != null) {
 			ShipGrid grid = gridObject.GetComponent<ShipGrid>();
 
 			Vector3 index = grid.PosToIndex(transform.position);
@@ -377,7 +446,7 @@ public class Enemy : MonoBehaviour {
 			ShipGridFluid noise = cell.fluids.Find(delegate(ShipGridFluid item) {
 				return item.type == "noise";
 			});
-			if(noise != null){
+			if(noise != null) {
 				noiseLevel = noise.level;
 
 				foreach(ShipGridCell neigh in cell.neighbors) {
@@ -393,24 +462,6 @@ public class Enemy : MonoBehaviour {
 				}
 			}
 		}
-
-		if(health > 0 && !knockedOut) {
-			states.Update();
-		}
-		else {
-			speed = 0;
-			GetComponent<BoxCollider>().enabled = true;
-			GetComponent<CapsuleCollider>().enabled = false;
-			if(weapon != null) {
-				weapon.Drop();
-				weapon = null;
-			}
-		}
-
-		targetDir.Normalize();
-		character.Move(targetDir * speed, false, false, transform.position + transform.forward * 10);
-
-		Animation();
 	}
 
 	public void Use(RaptorInteraction player) {
@@ -423,7 +474,7 @@ public class Enemy : MonoBehaviour {
 			}
 			else {
 				bodyRemaining -= 0.1f * Time.deltaTime;
-					player.SendMessage("Heal", 1, SendMessageOptions.DontRequireReceiver);
+					player.SendMessage("Eat", 1, SendMessageOptions.DontRequireReceiver);
 				if(bodyRemaining > 0.25) {
 					transform.localScale = new Vector3(bodyRemaining, bodyRemaining, bodyRemaining);
 				}
@@ -432,6 +483,16 @@ public class Enemy : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	public void KnockOut(float time) {
+		if(!enemyVisible && sleepTime <= 0) {
+			sleepTime = time;
+		}
+	}
+
+	public void Hurt(float damage) {
+		health -= damage;
 	}
 
 	void Animation() {

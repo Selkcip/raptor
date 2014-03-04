@@ -20,6 +20,9 @@ public class MapTerminal : MonoBehaviour {
 		if(hackable) {
 			player.SendMessage("TransferMap", mapAvailable / alarmCountDown, SendMessageOptions.DontRequireReceiver);
 		}
+		else {
+			Alarm.ActivateAlarms();
+		}
 	}
 
 	// Update is called once per frame
@@ -29,7 +32,6 @@ public class MapTerminal : MonoBehaviour {
 				hackTime += Time.deltaTime;
 			}
 			else {
-				Alarm.ActivateAlarms();
 				hackable = false;
 			}
 		}

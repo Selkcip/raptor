@@ -14,6 +14,8 @@ public class RaptorInteraction : MonoBehaviour {
 	public float pounceNoiseLevel = 20;
 	public float crouchNoiseDampen = 0;
 	public float mapAmountNeeded = 5;
+	public float knockOutTime = 30;
+	public ParticleSystem bloodSpurt;
 
 	[HideInInspector]
 	public float health;
@@ -57,14 +59,19 @@ public class RaptorInteraction : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		Animation();
-		Controls();
-		HUD();
-		MakeNoise();
+		if(health > 0) {
+			Controls();
+			HUD();
+			MakeNoise();
 
-		//prevents the player from getting stuck when pouncing next to a wall
-		if(hud.stamina <= 0f) {
-			isPouncing = false;
-			fpc.enabled = true;
+			//prevents the player from getting stuck when pouncing next to a wall
+			if(hud.stamina <= 0f) {
+				isPouncing = false;
+				fpc.enabled = true;
+			}
+		}
+		else {
+			fpc.enabled = false;
 		}
 	}
 	
@@ -91,8 +98,8 @@ public class RaptorInteraction : MonoBehaviour {
 
 			if(fpc.grounded) {
 				if(!prevGrounded) {
-					noiseLevel = pounceNoiseLevel;
-					noiseFalloff = runNoiseFalloff;
+					//noiseLevel = pounceNoiseLevel;
+					//noiseFalloff = runNoiseFalloff;
 				}
 				else {
 					if(fpc.moving) {
@@ -111,8 +118,8 @@ public class RaptorInteraction : MonoBehaviour {
 			}
 			else {
 				if(prevGrounded) {
-					noiseLevel = pounceNoiseLevel;
-					noiseFalloff = runNoiseFalloff;
+					//noiseLevel = pounceNoiseLevel;
+					//noiseFalloff = runNoiseFalloff;
 				}
 				else {
 					noiseLevel *= 0;
@@ -174,11 +181,12 @@ public class RaptorInteraction : MonoBehaviour {
 				if(hit.transform.tag == "enemy") {
 					//do damage
 					if(isPouncing) {
-						hit.transform.GetComponent<Enemy>().health = 0;
+						hit.transform.GetComponent<Enemy>().Hurt(1000);
 					}
 					else {
-						hit.transform.GetComponent<Enemy>().health -= attack;
+						hit.transform.GetComponent<Enemy>().Hurt(attack);
 					}
+					bloodSpurt.Play();
 					//print(hit.transform.GetComponent<Enemy>().health);
 				}
 			}
@@ -228,7 +236,7 @@ public class RaptorInteraction : MonoBehaviour {
 			fpc.enabled = true;
 			//Chain pouncing
 			if(other.gameObject.tag == "enemy") {
-				other.transform.GetComponent<Enemy>().knockedOut = true;
+				other.transform.GetComponent<Enemy>().KnockOut(knockOutTime);
 				chainPounce = true;
 			}
 		}
@@ -260,5 +268,13 @@ public class RaptorInteraction : MonoBehaviour {
 
 	public void TransferMap(float amount) {
 		mapAmountAcquired += amount;
+	}
+
+	public void Eat(float amount) {
+		bloodSpurt.Play();
+	}
+
+	public void Hurt(float damage) {
+		health -= damage;
 	}
 }
