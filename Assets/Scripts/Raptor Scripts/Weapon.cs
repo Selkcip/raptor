@@ -46,6 +46,17 @@ public class Weapon : MonoBehaviour {
 		return false;
 	}
 
+	public void Drop() {
+		rigidbody.isKinematic = false;
+		transform.parent = null;
+		collider.enabled = true;
+	}
+
+	public void PickUp() {
+		rigidbody.isKinematic = true;
+		collider.enabled = false;
+	}
+
 	// Update is called once per frame
 	void Update() {
 		fireCoolDown = Mathf.Max(0, fireCoolDown - Time.deltaTime);

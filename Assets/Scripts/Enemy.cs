@@ -397,6 +397,10 @@ public class Enemy : MonoBehaviour {
 			speed = 0;
 			GetComponent<BoxCollider>().enabled = true;
 			GetComponent<CapsuleCollider>().enabled = false;
+			if(weapon != null) {
+				weapon.Drop();
+				weapon = null;
+			}
 		}
 
 		targetDir.Normalize();

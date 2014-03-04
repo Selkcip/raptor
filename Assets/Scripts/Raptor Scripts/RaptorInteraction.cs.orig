@@ -12,7 +12,7 @@ public class RaptorInteraction : MonoBehaviour {
 	public float runNoiseLevel = 5;
 	public float runNoiseFalloff = 0.75f;
 	public float pounceNoiseLevel = 20;
-	public float crouchNoiseDampen = 0;
+	public float crouchNoiseDampen = 0.5f;
 
 	[HideInInspector]
 	public float health;
@@ -24,7 +24,7 @@ public class RaptorInteraction : MonoBehaviour {
 
 	private bool prevGrounded = true;
 
-	private bool chainPounce = true;
+	private bool canPounce = true;
 	private bool isPouncing = false;
 	private int pounceCoolDown = 3;
 
@@ -213,8 +213,13 @@ public class RaptorInteraction : MonoBehaviour {
 			rigidbody.AddForce(transform.up * 5.5f, ForceMode.Impulse);
 		}
 	}
+
+	IEnumerator PounceCoolDown() {
+		yield return new WaitForSeconds(pounceCoolDown);
+		canPounce = true;
+	}
+
 	void OnCollisionEnter(Collision other) {
-		print(other.transform.name + ": " + isPouncing);
 		if(isPouncing) {
 			isPouncing = false;
 			rigidbody.drag = 0;
@@ -222,11 +227,10 @@ public class RaptorInteraction : MonoBehaviour {
 			//Chain pouncing
 			if(other.gameObject.tag == "enemy") {
 				other.transform.GetComponent<Enemy>().knockedOut = true;
-				chainPounce = true;
+				canPounce = true;
 			}
 		}
 	}
-
 
 	void OnGUI() {
 		if(InAttackRange()) {
