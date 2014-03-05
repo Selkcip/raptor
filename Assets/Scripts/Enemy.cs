@@ -93,10 +93,11 @@ public class Enemy : MonoBehaviour {
 					knockedOut = true;
 
 					character.enabled = false;
-					rigidbody.useGravity = true;
-					GetComponent<BoxCollider>().enabled = true;
+					rigidbody.isKinematic = true;
+					RagDoll(transform, true);
 					GetComponent<CapsuleCollider>().enabled = false;
-					//rigidbody.isKinematic = true;
+					GetComponent<Animator>().enabled = false;
+
 					if(weapon != null) {
 						weapon.Drop();
 						weapon = null;
@@ -119,7 +120,9 @@ public class Enemy : MonoBehaviour {
 
 				knockedOut = false;
 
-				GetComponent<BoxCollider>().enabled = false;
+				rigidbody.isKinematic = false;
+				RagDoll(transform, false);
+				GetComponent<Animator>().enabled = true;
 				GetComponent<CapsuleCollider>().enabled = true;
 				character.enabled = true;
 				return true;
@@ -345,6 +348,8 @@ public class Enemy : MonoBehaviour {
 		chaseNoise.Add(hurt);
 		chaseNoise.Add(chase);
 		chaseNoise.Add(flee);
+
+		RagDoll(transform, false);
 	}
 
 	void OnCollisionEnter(Collision col) {
@@ -392,10 +397,11 @@ public class Enemy : MonoBehaviour {
 		else {
 			knockedOut = true;
 			character.enabled = false;
-			rigidbody.useGravity = true;
-			GetComponent<BoxCollider>().enabled = true;
+			rigidbody.isKinematic = true;
+			RagDoll(transform, true);
 			GetComponent<CapsuleCollider>().enabled = false;
-			//rigidbody.isKinematic = true;
+			GetComponent<Animator>().enabled = false;
+
 			if(weapon != null) {
 				weapon.Drop();
 				weapon = null;
@@ -502,5 +508,18 @@ public class Enemy : MonoBehaviour {
 	void Animation() {
 		enemy.SetFloat("Health", health);
 		enemy.SetBool("KnockedOut", knockedOut);
+	}
+
+	void RagDoll(Transform obj, bool on) {
+		foreach(Transform child in obj) {
+			child.tag = "enemy";
+			rigidbody.isKinematic = on;
+
+			if(child.collider != null) {
+				child.collider.enabled = on;
+			}
+			RagDoll(child, on);
+		}
+
 	}
 }

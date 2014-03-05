@@ -164,7 +164,7 @@ public class RaptorInteraction : MonoBehaviour {
 		if(Input.GetKey(KeyCode.E)) {
 			RaycastHit hit;
 			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2)) {
-				hit.transform.gameObject.SendMessage("Use", this, SendMessageOptions.DontRequireReceiver);
+				hit.transform.root.gameObject.SendMessage("Use", this, SendMessageOptions.DontRequireReceiver);
 			}
 		}
 	}
@@ -188,10 +188,10 @@ public class RaptorInteraction : MonoBehaviour {
 				if(hit.transform.tag == "enemy") {
 					//do damage
 					if(isPouncing) {
-						hit.transform.GetComponent<Enemy>().Hurt(1000);
+						hit.transform.root.GetComponent<Enemy>().Hurt(1000);
 					}
 					else {
-						hit.transform.GetComponent<Enemy>().Hurt(attack);
+						hit.transform.root.GetComponent<Enemy>().Hurt(attack);
 					}
 					bloodSpurt.Play();
 				}
