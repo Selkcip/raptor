@@ -5,17 +5,18 @@ using Holoville.HOTween;
 public class RaptorInteraction : MonoBehaviour {
 
 	public Texture2D crosshair;
-	public float maxHealth = 100;
+	public float health = 5f; //Number of hits it takes to kill you
 	public float attack = 20f;
+
+	//sound stuff
 	public float walkNoiseLevel = 1;
 	public float walkNoiseFalloff = 0.25f;
 	public float runNoiseLevel = 5;
 	public float runNoiseFalloff = 0.75f;
 	public float pounceNoiseLevel = 20;
 	public float crouchNoiseDampen = 0;
-
-	[HideInInspector]
-	public float health;
+	private float noiseLevel;
+	private float noiseFalloff;
 
 	//animation stuff
 	protected Animator arms;
@@ -48,15 +49,14 @@ public class RaptorInteraction : MonoBehaviour {
 		fpc = gameObject.GetComponent<FirstPersonCharacter>();
 		hud = gameObject.GetComponent<RaptorHUD>();
 		arms = gameObject.GetComponentInChildren<Animator>();
-		health = maxHealth;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		Animation();
 		Controls();
-		
 		HUD();
+		Die();
 
 		//prevents the player from getting stuck when pouncing next to a wall
 		if(hud.stamina <= 0f) {
@@ -69,8 +69,8 @@ public class RaptorInteraction : MonoBehaviour {
 			ShipGrid grid = gridObject.GetComponent<ShipGrid>();
 			ShipGridCell cell = grid.GetPos(transform.position);
 
-			float noiseLevel = walkNoiseLevel;
-			float noiseFalloff = walkNoiseFalloff;
+			noiseLevel = walkNoiseLevel;
+			noiseFalloff = walkNoiseFalloff;
 
 			if(fpc.grounded) {
 				if(!prevGrounded) {
@@ -102,20 +102,20 @@ public class RaptorInteraction : MonoBehaviour {
 				}
 				prevGrounded = false;
 			}
-
 			grid.AddFluid(transform.position, "noise", noiseLevel, noiseFalloff, 0.01f);
 		}
 	}
 	
 	void HUD() {
+		//stamina updates
 		if(isPouncing) {
-			hud.Deplete(1f * Time.deltaTime);
+			hud.Deplete("stamina", 1f * Time.deltaTime);
 		}
 		else if(chainPounce) {
-			hud.Regenerate(2.0f * Time.deltaTime);
+			hud.Regenerate("stamina", 2.0f * Time.deltaTime);
 		}
 		else {
-			hud.Regenerate(.66f * Time.deltaTime);
+			hud.Regenerate("stamina", .66f * Time.deltaTime);
 		}
 	}
 
@@ -213,8 +213,8 @@ public class RaptorInteraction : MonoBehaviour {
 			rigidbody.AddForce(transform.up * 5.5f, ForceMode.Impulse);
 		}
 	}
+
 	void OnCollisionEnter(Collision other) {
-		print(other.transform.name + ": " + isPouncing);
 		if(isPouncing) {
 			isPouncing = false;
 			rigidbody.drag = 0;
@@ -249,5 +249,15 @@ public class RaptorInteraction : MonoBehaviour {
 			}
 		}
 		return false;
+	}
+
+	void Die() {
+		if(hud.health < 0.1f) {
+			fpc.enabled = false;
+			gameObject.GetComponent<SimpleMouseRotator>().enabled = false;
+			rigidbody.isKinematic = true;
+			this.enabled = false;
+
+		}
 	}
 }
