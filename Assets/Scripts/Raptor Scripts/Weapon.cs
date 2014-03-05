@@ -15,7 +15,7 @@ public class Weapon : MonoBehaviour {
 	public GameObject projectile;
 
 	private float fireCoolDown = 0;
-	private int clip;
+	public int clip;
 
 	// Use this for initialization
 	void Start() {
@@ -25,6 +25,7 @@ public class Weapon : MonoBehaviour {
 
 	public bool Reload() {
 		fireCoolDown = reloadTime;
+		clip = Mathf.Max(0, clip);
 		int newClip = Mathf.Min(Mathf.Max(0, clipSize-clip), ammo);
 		clip += newClip;
 		ammo -= newClip;

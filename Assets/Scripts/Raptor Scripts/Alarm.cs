@@ -22,7 +22,7 @@ public class Alarm : MonoBehaviour {
 		alarms.Add(this);
 	}
 
-	public void Activate() {
+	public void Use() {
 		ActivateAlarms();
 	}
 
@@ -32,10 +32,19 @@ public class Alarm : MonoBehaviour {
 
 	public void SoundAlarm() {
 		//print("ALERT!");
-		SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Alarm and Ticking/AlarmLooped"), SoundManager.SoundType.Sfx, gameObject);
+		//SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Alarm and Ticking/AlarmLooped"), SoundManager.SoundType.Sfx, gameObject);
 		if(light != null) {
 			light.enabled = !light.enabled;
 		}
+
+		GameObject gridObject = GameObject.Find("CA Grid");
+		if(gridObject != null) {
+			ShipGrid grid = gridObject.GetComponent<ShipGrid>();
+			ShipGridCell cell = grid.GetPos(transform.position);
+
+			grid.AddFluid(transform.position, "noise", -50, 0.75f, 0.01f);
+		}
+
 		Invoke("SoundAlarm", 1);
 	}
 }

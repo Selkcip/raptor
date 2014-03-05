@@ -61,7 +61,7 @@ class ShipGridCell {
 			fluid.level += amount;
 			filled.Add(cur);
 
-			if(amount > cutoff) {
+			if(Mathf.Abs(amount) > cutoff) {
 				foreach(ShipGridCell neigh in cur.neighbors) {
 					if(!filled.Contains(neigh) && !newCurrent.Contains(neigh)) {
 						newCurrent.Add(neigh);

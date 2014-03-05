@@ -4,7 +4,7 @@ using System.Collections;
 public class RaptorHUD : MonoBehaviour {
 
 	private UISlider healthBar;
-	public float health {get; private set;}
+	public float health;
 
 	private UISlider staminaBar;
 	public float stamina {get; private set;}
