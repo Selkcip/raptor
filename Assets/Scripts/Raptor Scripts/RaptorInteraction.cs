@@ -5,14 +5,18 @@ using Holoville.HOTween;
 public class RaptorInteraction : MonoBehaviour {
 
 	public Texture2D crosshair;
-	public float maxHealth = 100;
+	public float maxHealth = 10;	//the number of times you can get hit
 	public float attack = 20f;
+
+	//sound stuff
 	public float walkNoiseLevel = 1;
 	public float walkNoiseFalloff = 0.25f;
 	public float runNoiseLevel = 5;
 	public float runNoiseFalloff = 0.75f;
 	public float pounceNoiseLevel = 20;
 	public float crouchNoiseDampen = 0;
+
+
 	public float mapAmountNeeded = 5;
 	public float knockOutTime = 30;
 	public ParticleSystem bloodSpurt;
@@ -49,15 +53,15 @@ public class RaptorInteraction : MonoBehaviour {
 	private float mapAmountAcquired = 0;
 
 	// Use this for initialization
-	void Start () {
+	void Start() {
 		fpc = gameObject.GetComponent<FirstPersonCharacter>();
 		hud = gameObject.GetComponent<RaptorHUD>();
 		arms = gameObject.GetComponentInChildren<Animator>();
 		health = maxHealth;
 	}
-	
+
 	// Update is called once per frame
-	void Update () {
+	void Update() {
 		Animation();
 		if(health > 0) {
 			Controls();
@@ -71,19 +75,22 @@ public class RaptorInteraction : MonoBehaviour {
 			}
 		}
 		else {
+			//Die
 			fpc.enabled = false;
+			rigidbody.isKinematic = true;
 		}
 	}
-	
+
 	void HUD() {
+		//Stamina updates
 		if(isPouncing) {
-			hud.Deplete(1f * Time.deltaTime);
+			hud.Deplete("stamina", 1f * Time.deltaTime);
 		}
 		else if(chainPounce) {
-			hud.Regenerate(2.0f * Time.deltaTime);
+			hud.Regenerate("stamina", 2.0f * Time.deltaTime);
 		}
 		else {
-			hud.Regenerate(.66f * Time.deltaTime);
+			hud.Regenerate("stamina", .66f * Time.deltaTime);
 		}
 	}
 
@@ -157,7 +164,7 @@ public class RaptorInteraction : MonoBehaviour {
 		if(Input.GetKey(KeyCode.E)) {
 			RaycastHit hit;
 			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2)) {
-				hit.transform.gameObject.SendMessage("Use", this, SendMessageOptions.DontRequireReceiver);
+				hit.transform.root.gameObject.SendMessage("Use", this, SendMessageOptions.DontRequireReceiver);
 			}
 		}
 	}
@@ -181,13 +188,12 @@ public class RaptorInteraction : MonoBehaviour {
 				if(hit.transform.tag == "enemy") {
 					//do damage
 					if(isPouncing) {
-						hit.transform.GetComponent<Enemy>().Hurt(1000);
+						hit.transform.root.GetComponent<Enemy>().Hurt(1000);
 					}
 					else {
-						hit.transform.GetComponent<Enemy>().Hurt(attack);
+						hit.transform.root.GetComponent<Enemy>().Hurt(attack);
 					}
 					bloodSpurt.Play();
-					//print(hit.transform.GetComponent<Enemy>().health);
 				}
 			}
 			StartCoroutine("SlashCoolDown");
@@ -208,7 +214,7 @@ public class RaptorInteraction : MonoBehaviour {
 			fpc.strafeSpeed = 1.25f;
 			fpc.runSpeed = 1.75f;
 		}
-		else if (!crouching){
+		else if(!crouching) {
 			HOTween.To(cam, 0.3f, new TweenParms().Prop("localPosition", new Vector3(0f, -0.325f, 0f), false));
 			//GetComponent<CapsuleCollider>().height = 1.5f;
 			fpc.walkSpeed = 4f;
@@ -228,8 +234,8 @@ public class RaptorInteraction : MonoBehaviour {
 			rigidbody.AddForce(transform.up * 5.5f, ForceMode.Impulse);
 		}
 	}
+
 	void OnCollisionEnter(Collision other) {
-		print(other.transform.name + ": " + isPouncing);
 		if(isPouncing) {
 			isPouncing = false;
 			rigidbody.drag = 0;
@@ -242,7 +248,6 @@ public class RaptorInteraction : MonoBehaviour {
 		}
 	}
 
-
 	void OnGUI() {
 		if(InAttackRange()) {
 			GUI.color = Color.red;
@@ -252,7 +257,7 @@ public class RaptorInteraction : MonoBehaviour {
 		}
 		float x = (Screen.width / 2) - (crosshair.width / 6);
 		float y = (Screen.height / 2) - (crosshair.height / 6);
-		GUI.DrawTexture(new Rect(x, y, crosshair.width/3, crosshair.height/3),crosshair);
+		GUI.DrawTexture(new Rect(x, y, crosshair.width / 3, crosshair.height / 3), crosshair);
 	}
 
 	bool InAttackRange() {
@@ -272,9 +277,15 @@ public class RaptorInteraction : MonoBehaviour {
 
 	public void Eat(float amount) {
 		bloodSpurt.Play();
+		if(health < maxHealth) {
+			health += 0.02f;
+			hud.health = health / maxHealth;
+		}
+		//print(health + " : " + hud.health);
 	}
 
 	public void Hurt(float damage) {
-		health -= damage;
+		health -= 1;
+		hud.Deplete("health", 1.0f/maxHealth);
 	}
 }
