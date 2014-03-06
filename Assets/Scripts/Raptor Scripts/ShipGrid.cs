@@ -91,12 +91,6 @@ class ShipGridCell {
 		foreach(KeyValuePair<string, ShipGridFluid> item in fluids) {
 			ShipGridFluid fluid = item.Value;
 			float nCount = Mathf.Max(1, neighbors.Count);
-			float absLevel = Mathf.Abs(fluid.level);
-			float flowRate = fluid.flowRate * dTime;// Mathf.Min(absLevel, fluid.flowRate * dTime);
-			//flowRate *= fluid.level < 0 ? -1 : 1;
-			float amount = (1.0f-fluid.level*flowRate) / nCount;
-			//Debug.Log(fluid.level+" "+fluid.level * flowRate);
-			//fluid.level -= fluid.level * flowRate;// fluid.level* flowRate;
 			float change = fluid.level;
 			fluid.level *= fluid.flowRate;
 			change -= fluid.level;
