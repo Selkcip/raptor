@@ -96,7 +96,21 @@ class ShipGrid : MonoBehaviour {
 	public float height { get { return size * divY; } }
 	public float depth { get { return size * divZ; } }*/
 
+	private static ShipGrid m_instance;
+
+	public static ShipGrid instance {
+		get {
+			if(m_instance != null) {
+				return m_instance;
+			}
+			Debug.LogError("No ShipGrid in scene!");
+			return null;
+		}
+	}
+
 	void Start() {
+		m_instance = this;
+
 		if(collider != null) {
 			Bounds bounds = collider.bounds;
 			/*width = bounds.size.x;
@@ -140,6 +154,12 @@ class ShipGrid : MonoBehaviour {
 		nDirs.Add(new Vector3(0, 0, -1));
 
 		RebuildLinks();
+	}
+
+	public static void RebuildLinksI() {
+		if(m_instance != null) {
+			m_instance.RebuildLinks();
+		}
 	}
 
 	public void RebuildLinks() {
@@ -197,6 +217,14 @@ class ShipGrid : MonoBehaviour {
 		}
 	}*/
 
+	public static Vector3 IndexToPosI(Vector3 index) {
+		return IndexToPosI((int)index.x, (int)index.x, (int)index.z);
+	}
+
+	public static Vector3 IndexToPosI(int x, int y, int z) {
+		return instance.IndexToPos(x, y, z);
+	}
+
 	public Vector3 IndexToPos(Vector3 index) {
 		return IndexToPos((int)index.x, (int)index.y, (int)index.z);
 	}
@@ -210,6 +238,14 @@ class ShipGrid : MonoBehaviour {
 		ypos = (ypos * cellSize.y) - size.y / 2;
 		zpos = (zpos * cellSize.z) - size.z / 2;
 		return new Vector3(xpos, ypos, zpos) + collider.bounds.center + cellSize/2;
+	}
+
+	public static Vector3 PosToIndexI(Vector3 pos) {
+		return PosToIndexI(pos.x, pos.y, pos.z);
+	}
+
+	public static Vector3 PosToIndexI(float xpos, float ypos, float zpos) {
+		return instance.PosToIndex(xpos, ypos, zpos);
 	}
 
 	public Vector3 PosToIndex(Vector3 pos) {
@@ -229,11 +265,31 @@ class ShipGrid : MonoBehaviour {
 		return new Vector3(x, y, z);
 	}
 
+	public static ShipGridCell GetIndexI(Vector3 index) {
+		return GetIndexI((int)index.x, (int)index.y, (int)index.z);
+	}
+
+	public static ShipGridCell GetIndexI(int x, int y, int z) {
+		return instance.GetIndex(x, y, z);
+	}
+
+	public ShipGridCell GetIndex(Vector3 index) {
+		return GetIndex((int)index.x, (int)index.y, (int)index.z);
+	}
+
 	public ShipGridCell GetIndex(int x, int y, int z) {
 		if(x < 0 || x >= divs.x || y < 0 || y >= divs.y || z < 0 || z >= divs.z) {
 			return null;
 		}
 		return cells[x][y][z];
+	}
+
+	public static ShipGridCell GetPosI(Vector3 pos) {
+		return GetPosI(pos.x, pos.y, pos.z);
+	}
+
+	public static ShipGridCell GetPosI(float x, float y, float z) {
+		return instance.GetPos(x, y, z);
 	}
 
 	public ShipGridCell GetPos(Vector3 pos) {
@@ -251,6 +307,14 @@ class ShipGrid : MonoBehaviour {
 		y = (int)Mathf.Max(0, Mathf.Min(divs.y - 1, y));
 		z = (int)Mathf.Max(0, Mathf.Min(divs.z - 1, z));
 		return cells[x][y][z];
+	}
+
+	public static void AddFluidI(Vector3 pos, string type, float amount, float flowRate, float cutoff) {
+		AddFluidI(pos.x, pos.y, pos.z, type, amount, flowRate, cutoff);
+	}
+
+	public static void AddFluidI(float x, float y, float z, string type, float amount, float flowRate, float cutoff) {
+		instance.AddFluid(x, y, z, type, amount, flowRate, cutoff);
 	}
 
 	public void AddFluid(Vector3 pos, string type, float amount, float flowRate, float cutoff) {
