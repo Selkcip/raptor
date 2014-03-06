@@ -16,6 +16,8 @@ public class Enemy : MonoBehaviour {
 	public float curiousNoiseLevel = 1;
 	public float alarmedNoiseLevel = 5;
 	public Weapon weapon;
+	public float heat = 10;
+	public float heatFalloff = 0.25f;
 	public float sleepTime = 0f;
 	public string stateName;
 
@@ -393,6 +395,7 @@ public class Enemy : MonoBehaviour {
 
 		if(health > 0) {
 			states.Update();
+			ShipGrid.AddFluidI(transform.position, "heat", heat, heatFalloff, 0.01f);
 		}
 		else {
 			knockedOut = true;
@@ -450,7 +453,7 @@ public class Enemy : MonoBehaviour {
 
 			ShipGridCell cell = grid.GetPos(transform.position);
 			//grid.AddFluid(transform.position, "noise", 0.1f, 0.5f, 0.01f);
-			ShipGridFluid noise = cell.fluids.Find(delegate(ShipGridFluid item) {
+			/*ShipGridFluid noise = cell.fluids.Find(delegate(ShipGridFluid item) {
 				return item.type == "noise";
 			});
 			if(noise != null) {
@@ -467,7 +470,7 @@ public class Enemy : MonoBehaviour {
 						}
 					}
 				}
-			}
+			}*/
 		}
 	}
 

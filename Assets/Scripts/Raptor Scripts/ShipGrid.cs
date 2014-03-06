@@ -19,12 +19,24 @@ class ShipGridCell {
 	public int x, y, z;
 	public List<ShipGridCell> neighbors = new List<ShipGridCell>();
 	public List<GameObject> contents = new List<GameObject>();
-	public List<ShipGridFluid> fluids = new List<ShipGridFluid>();
+	//public List<ShipGridFluid> fluids = new List<ShipGridFluid>();
+	public Dictionary<string, ShipGridFluid> fluids = new Dictionary<string, ShipGridFluid>();
 
 	public ShipGridCell(int x, int y, int z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+
+	public void AddFluid(string type, float amount, float flowRate) {
+		ShipGridFluid fluid;
+		fluids.TryGetValue(type, out fluid);
+		if(fluid == null) {
+			fluid = new ShipGridFluid(type, 0, 0);
+			fluids.Add(type, fluid);
+		}
+		fluid.level += amount;
+		fluid.flowRate = flowRate;
 	}
 
 	/*public void AddFluid(string type, float amount, float flowRate, float cutoff, List<ShipGridCell> filled) {
@@ -48,7 +60,7 @@ class ShipGridCell {
 		}
 	}*/
 
-	public static void AddFluid(string type, float amount, float flowRate, float cutoff, List<ShipGridCell> current, List<ShipGridCell> filled) {
+	/*public static void AddFluid(string type, float amount, float flowRate, float cutoff, List<ShipGridCell> current, List<ShipGridCell> filled) {
 		List<ShipGridCell> newCurrent = new List<ShipGridCell>();
 		foreach(ShipGridCell cur in current) {
 			ShipGridFluid fluid = cur.fluids.Find(delegate(ShipGridFluid item) {
@@ -73,18 +85,33 @@ class ShipGridCell {
 		if(newCurrent.Count > 0) {
 			AddFluid(type, amount * flowRate, flowRate, cutoff, newCurrent, filled);
 		}
-	}
+	}*/
 
 	public void Update(float dTime) {
-		foreach(ShipGridFluid fluid in fluids) {
-			fluid.level *= 0.99f;// fluid.flowRate;
+		foreach(KeyValuePair<string, ShipGridFluid> item in fluids) {
+			ShipGridFluid fluid = item.Value;
+			float nCount = Mathf.Max(1, neighbors.Count);
+			float absLevel = Mathf.Abs(fluid.level);
+			float flowRate = fluid.flowRate * dTime;// Mathf.Min(absLevel, fluid.flowRate * dTime);
+			//flowRate *= fluid.level < 0 ? -1 : 1;
+			float amount = (1.0f-fluid.level*flowRate) / nCount;
+			//Debug.Log(fluid.level+" "+fluid.level * flowRate);
+			//fluid.level -= fluid.level * flowRate;// fluid.level* flowRate;
+			float change = fluid.level;
+			fluid.level *= fluid.flowRate;
+			change -= fluid.level;
+			change *= 0.99f;
+			foreach(ShipGridCell neigh in neighbors) {
+				neigh.AddFluid(fluid.type, change/nCount, fluid.flowRate);
+			}
 		}
 	}
 }
 
 class ShipGrid : MonoBehaviour {
+	public Vector3 cellSize = new Vector3(5, 5, 5);
+	public int updateStepSize = 10;
 	public Vector3 divs;
-	Vector3 cellSize;
 	Vector3 size = new Vector3(10, 10, 10);
 	/*int divX;
 	int divY;
@@ -119,9 +146,17 @@ class ShipGrid : MonoBehaviour {
 			size = bounds.size;
 		}
 
-		cellSize.x = size.x / divs.x;
+		/*cellSize.x = size.x / divs.x;
 		cellSize.y = size.y / divs.y;
-		cellSize.z = size.z / divs.z;
+		cellSize.z = size.z / divs.z;*/
+
+		divs.x = Mathf.Ceil(size.x / cellSize.x);
+		divs.y = Mathf.Ceil(size.y / cellSize.y);
+		divs.z = Mathf.Ceil(size.z / cellSize.z);
+
+		size.x = divs.x * cellSize.x;
+		size.y = divs.y * cellSize.y;
+		size.z = divs.z * cellSize.z;
 
 		int cellCount = 0;
 		int i, j, k;
@@ -323,24 +358,28 @@ class ShipGrid : MonoBehaviour {
 
 	public void AddFluid(float x, float y, float z, string type, float amount, float flowRate, float cutoff) {
 		ShipGridCell cur = GetPos(x, y, z);
-		List<ShipGridCell> current = new List<ShipGridCell>();
-		current.Add(cur);
-		ShipGridCell.AddFluid(type, amount, flowRate, cutoff, current, new List<ShipGridCell>());
+		cur.AddFluid(type, amount, flowRate);
+		/*List<ShipGridCell> current = new List<ShipGridCell>();
+		current.Add(cur);*/
+		//ShipGridCell.AddFluid(type, amount, flowRate, cutoff, current, new List<ShipGridCell>());
 	}
 
+	int startIndex = 0;
+	int stepSize = 4;
 	void Update() {
 		int i, j, k;
-		for(i = 0; i < divs.x; i++) {
-			for(j = 0; j < divs.y; j++) {
-				for(k = 0; k < divs.z; k++) {
+		for(i = 0; i < divs.x; i += 1) {
+			for(j = 0; j < divs.y; j += 1) {
+				for(k = startIndex; k < divs.z; k += updateStepSize) {
 					ShipGridCell cur = GetIndex(i, j, k);
 					if(cur != null) {
 						cur.Update(Time.deltaTime);
 						Vector3 curPos = IndexToPos(i, j, k);
 
 						float level = 1.0f;
-						foreach(ShipGridFluid fluid in cur.fluids) {
-							Debug.DrawLine(curPos + transform.forward * 0.1f, curPos + transform.forward * 0.1f + transform.up * fluid.level, Color.red);
+						foreach(KeyValuePair<string, ShipGridFluid> item in cur.fluids) {
+							ShipGridFluid fluid = item.Value;
+							Debug.DrawLine(curPos + transform.forward * 0.1f, curPos + transform.forward * 0.1f + transform.up * fluid.level, Color.red, 0, true);
 							level = fluid.level;
 						}
 
@@ -348,12 +387,14 @@ class ShipGrid : MonoBehaviour {
 						foreach(ShipGridCell neigh in cur.neighbors) {
 							//print(neigh.n);
 							Vector3 nPos = IndexToPos(neigh.x, neigh.y, neigh.z);
-							Debug.DrawLine(curPos, curPos + (nPos - curPos).normalized * 0.5f * level);
+							Debug.DrawLine(curPos, curPos + (nPos - curPos).normalized * 0.5f * level, Color.white, 0, true);
 						}
 					}
 				}
 			}
 		}
+
+		startIndex = (startIndex + 1) % updateStepSize;
 
 		/*List<Vector3> nDirs = new List<Vector3>();
 		nDirs.Add(new Vector3(1, 0, 0));

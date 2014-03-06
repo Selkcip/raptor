@@ -97,8 +97,8 @@ public class RaptorInteraction : MonoBehaviour {
 	void MakeNoise() {
 		GameObject gridObject = GameObject.Find("CA Grid");
 		if(gridObject != null) {
-			ShipGrid grid = gridObject.GetComponent<ShipGrid>();
-			ShipGridCell cell = grid.GetPos(transform.position);
+			//ShipGrid grid = gridObject.GetComponent<ShipGrid>();
+			ShipGridCell cell = ShipGrid.GetPosI(transform.position);
 
 			float noiseLevel = walkNoiseLevel;
 			float noiseFalloff = walkNoiseFalloff;
@@ -134,7 +134,8 @@ public class RaptorInteraction : MonoBehaviour {
 				prevGrounded = false;
 			}
 
-			grid.AddFluid(transform.position, "noise", noiseLevel, noiseFalloff, 0.01f);
+			ShipGrid.AddFluidI(transform.position, "noise", noiseLevel, noiseFalloff, 0.01f);
+			//ShipGrid.AddFluidI(transform.position, "noise", 0, noiseFalloff, 0.01f);
 		}
 	}
 
