@@ -22,8 +22,9 @@ public class Enemy : MonoBehaviour {
 	public float sleepTime = 0f;
 	public string stateName;
 
-	//knocking the enemy out?
+	//knocking the enemy out
 	public bool knockedOut = false;
+	private bool ragDoll = false;
 
 	public ThirdPersonCharacter character { get; private set; }     // the character we are controlling
 	public Transform target;										// target to aim for
@@ -421,7 +422,12 @@ public class Enemy : MonoBehaviour {
 			knockedOut = true;
 			character.enabled = false;
 			rigidbody.isKinematic = true;
-			RagDoll(transform, true);
+			if(!ragDoll) {
+				RagDoll(transform, true);
+				//transform.position = transform.position + transform.Find("Ethan/char_ethan_skeleton/char_ethan_Hips").localPosition;
+				//rigidbody.AddForce(Camera.main.transform.forward * 10, ForceMode.Impulse);
+
+			}
 			GetComponent<CapsuleCollider>().enabled = false;
 			GetComponent<Animator>().enabled = false;
 
@@ -529,14 +535,24 @@ public class Enemy : MonoBehaviour {
 
 	void RagDoll(Transform obj, bool on) {
 		foreach(Transform child in obj) {
+			if(child.name == "Gun") {
+				continue;
+			}
+
 			child.tag = "enemy";
-			rigidbody.isKinematic = on;
+			if(child.rigidbody != null) {
+				child.rigidbody.isKinematic = !on;
+
+				if(on) {
+					child.rigidbody.AddForce(Camera.main.transform.forward * 5f, ForceMode.Impulse);
+				}
+			}
 
 			if(child.collider != null) {
 				child.collider.enabled = on;
 			}
 			RagDoll(child, on);
 		}
-
+		ragDoll = on;
 	}
 }

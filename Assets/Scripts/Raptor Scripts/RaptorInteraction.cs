@@ -243,7 +243,7 @@ public class RaptorInteraction : MonoBehaviour {
 			fpc.enabled = true;
 			//Chain pouncing
 			if(other.gameObject.tag == "enemy") {
-				other.transform.GetComponent<Enemy>().KnockOut(knockOutTime);
+				other.transform.root.GetComponent<Enemy>().KnockOut(knockOutTime);
 				chainPounce = true;
 			}
 		}
