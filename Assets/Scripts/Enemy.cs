@@ -447,30 +447,23 @@ public class Enemy : MonoBehaviour {
 	void ListenForNoise() {
 		GameObject gridObject = GameObject.Find("CA Grid");
 		if(gridObject != null) {
-			ShipGrid grid = gridObject.GetComponent<ShipGrid>();
-
-			Vector3 index = grid.PosToIndex(transform.position);
-
-			ShipGridCell cell = grid.GetPos(transform.position);
+			ShipGridCell cell = ShipGrid.GetPosI(transform.position);
 			//grid.AddFluid(transform.position, "noise", 0.1f, 0.5f, 0.01f);
-			/*ShipGridFluid noise = cell.fluids.Find(delegate(ShipGridFluid item) {
-				return item.type == "noise";
-			});
+			ShipGridFluid noise;
+			cell.fluids.TryGetValue("noise", out noise);
 			if(noise != null) {
 				noiseLevel = noise.level;
 
 				foreach(ShipGridCell neigh in cell.neighbors) {
-					noise = neigh.fluids.Find(delegate(ShipGridFluid item) {
-						return item.type == "noise";
-					});
+					neigh.fluids.TryGetValue("noise", out noise);
 					if(noise != null) {
 						if(noise.level > noiseLevel) {
 							noiseLevel = noise.level;
-							noiseDir = grid.IndexToPos(neigh.x, neigh.y, neigh.z) - transform.position;
+							noiseDir = ShipGrid.IndexToPosI(neigh.x, neigh.y, neigh.z) - transform.position;
 						}
 					}
 				}
-			}*/
+			}
 		}
 	}
 
