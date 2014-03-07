@@ -106,6 +106,7 @@ class ShipGrid : MonoBehaviour {
 	public Vector3 cellSize = new Vector3(5, 5, 5);
 	public int updateStepSize = 10;
 	public Vector3 divs;
+	public bool debugLines = false;
 	Vector3 size = new Vector3(10, 10, 10);
 	/*int divX;
 	int divY;
@@ -368,20 +369,22 @@ class ShipGrid : MonoBehaviour {
 					ShipGridCell cur = GetIndex(i, j, k);
 					if(cur != null) {
 						cur.Update(Time.deltaTime);
-						Vector3 curPos = IndexToPos(i, j, k);
+						if(debugLines) {
+							Vector3 curPos = IndexToPos(i, j, k);
 
-						float level = 1.0f;
-						foreach(KeyValuePair<string, ShipGridFluid> item in cur.fluids) {
-							ShipGridFluid fluid = item.Value;
-							Debug.DrawLine(curPos + transform.forward * 0.1f, curPos + transform.forward * 0.1f + transform.up * fluid.level, Color.red, 0, true);
-							level = fluid.level;
-						}
+							float level = 1.0f;
+							foreach(KeyValuePair<string, ShipGridFluid> item in cur.fluids) {
+								ShipGridFluid fluid = item.Value;
+								Debug.DrawLine(curPos + transform.forward * 0.1f, curPos + transform.forward * 0.1f + transform.up * fluid.level, Color.red, 0, true);
+								level = fluid.level;
+							}
 
-						//Debug.DrawLine(curPos, curPos+transform.up);
-						foreach(ShipGridCell neigh in cur.neighbors) {
-							//print(neigh.n);
-							Vector3 nPos = IndexToPos(neigh.x, neigh.y, neigh.z);
-							Debug.DrawLine(curPos, curPos + (nPos - curPos).normalized * 0.5f * level, Color.white, 0, true);
+							//Debug.DrawLine(curPos, curPos+transform.up);
+							foreach(ShipGridCell neigh in cur.neighbors) {
+								//print(neigh.n);
+								Vector3 nPos = IndexToPos(neigh.x, neigh.y, neigh.z);
+								Debug.DrawLine(curPos, curPos + (nPos - curPos).normalized * 0.5f * level, Color.white, 0, true);
+							}
 						}
 					}
 				}

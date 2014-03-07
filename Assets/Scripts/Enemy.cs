@@ -6,21 +6,26 @@ public class Enemy : MonoBehaviour {
 
 	public float walkSpeed = 0.25f;
 	public float runSpeed = 1.0f;
-	public float collisionDeflectForce = 10;
+	public float avoidDis = 2f;
+	public float collisionDeflectForce = 10f;
 	public float viewDis = 10f;
 	public float fov = 45f;
 	public float health = 100f;
-	public float fleeHealth = 25;
+	public float fleeHealth = 25f;
 	public float standTime = 5f;
 	public float lookTime = 1f;
+	public float inspectAfter = 30f;
+	public float inspectTime = 5f;
 	public float patrolTime = 5f;
-	public float curiousNoiseLevel = 1;
-	public float alarmedNoiseLevel = 5;
+	public float curiousNoiseLevel = 1f;
+	public float alarmedNoiseLevel = 5f;
 	public Weapon weapon;
-	public float heat = 10;
+	public float heat = 10f;
 	public float heatFalloff = 0.25f;
 	public float sleepTime = 0f;
 	public string stateName;
+
+	private bool crouch = false;
 
 	//knocking the enemy out
 	public bool knockedOut = false;
@@ -71,6 +76,8 @@ public class Enemy : MonoBehaviour {
 		float standTimer = 0;
 		float lookTimer = 0;
 		Vector3 lookDir = -transform.forward;
+		float inspectTimer = 0;
+		float inspectCountDown = inspectAfter;
 		State stand = new State(
 			delegate() {
 				return true;
@@ -79,24 +86,61 @@ public class Enemy : MonoBehaviour {
 				stateName = "Stand";
 				speed = 0;
 
-				//targetDir = Vector3.Cross(transform.forward, transform.up);
-
-				if(Vector3.Dot(lookDir, targetDir) < 0.9f) {
-					//speed = 0.0001f;
-					targetDir = Vector3.Lerp(targetDir, lookDir, 0.25f);
+				lookTimer += Time.deltaTime;
+				if(targetDir != lookDir) {
+					targetDir = Vector3.Lerp(targetDir, lookDir, lookTimer / lookTime);
 				}
 				else {
-					lookTimer += Time.deltaTime;
 					if(lookTimer >= lookTime) {
-						float ang = Mathf.Atan2(lookDir.z, lookDir.x) + Mathf.PI + Random.Range(-0.01f, 0.01f);
+						float ang = Mathf.Atan2(lookDir.z, lookDir.x) + Mathf.PI + Random.Range(-Mathf.PI/6, Mathf.PI/6);
 						lookDir.x = Mathf.Cos(ang);
-						//targetDir.y = Random.Range(-1, 1);
+						lookDir.y = 0;
 						lookDir.z = Mathf.Sin(ang);
+						lookDir.Normalize();
 						lookTimer = 0;
 					}
 				}
 
 				standTimer += Time.deltaTime;
+				inspectCountDown -= Time.deltaTime;
+				return false;
+			}
+		);
+
+		State inspect = new State(
+			delegate() {
+				return inspectCountDown <= 0;
+			},
+			delegate() {
+				stateName = "Inspect";
+				speed = 0;
+
+				crouch = true;
+				//targetDir = transform.position + transform.forward;
+
+				lookTimer += Time.deltaTime;
+				if(targetDir != lookDir) {
+					targetDir = Vector3.Lerp(targetDir, lookDir, lookTimer / lookTime);
+				}
+				else {
+					if(lookTimer >= lookTime) {
+						float ang = Mathf.Atan2(lookDir.z, lookDir.x) + Mathf.PI + Random.Range(-Mathf.PI / 6, Mathf.PI / 6);
+						lookDir.x = Mathf.Cos(ang);
+						lookDir.y = 0;
+						lookDir.z = Mathf.Sin(ang);
+						lookDir.Normalize();
+						lookTimer = 0;
+					}
+				}
+
+				if(inspectTimer >= inspectTime) {
+					inspectTimer = 0;
+					inspectCountDown = inspectAfter;
+					crouch = false;
+					return true;
+				}
+
+				inspectTimer += Time.deltaTime;
 				return false;
 			}
 		);
@@ -333,10 +377,11 @@ public class Enemy : MonoBehaviour {
 		states.Add(stand);
 
 		stand.Add(sleep);
+		stand.Add(inspect);
 		stand.Add(patrol);
 		stand.Add(hurt);
-		//stand.Add(shoot);
-		//stand.Add(chase);
+		stand.Add(shoot);
+		stand.Add(chase);
 		stand.Add(flee);
 		stand.Add(followNoise);
 
@@ -346,30 +391,30 @@ public class Enemy : MonoBehaviour {
 
 		patrol.Add(sleep);
 		patrol.Add(hurt);
-		//patrol.Add(shoot);
-		//patrol.Add(chase);
+		patrol.Add(shoot);
+		patrol.Add(chase);
 		patrol.Add(flee);
 		patrol.Add(followNoise);
 
-		//shoot.Add(sleep);
-		//shoot.Add(chase);
+		shoot.Add(sleep);
+		shoot.Add(chase);
 		shoot.Add(flee);
 		shoot.Add(soundAlarm);
 
 		chase.Add(sleep);
-		//chase.Add(shoot);
+		chase.Add(shoot);
 		chase.Add(flee);
 		chase.Add(soundAlarm);
 
 		followNoise.Add(sleep);
 		followNoise.Add(hurt);
 		followNoise.Add(chaseNoise);
-		//followNoise.Add(chase);
+		followNoise.Add(chase);
 		followNoise.Add(flee);
 
 		chaseNoise.Add(sleep);
 		chaseNoise.Add(hurt);
-		//chaseNoise.Add(chase);
+		chaseNoise.Add(chase);
 		chaseNoise.Add(flee);
 
 		RagDoll(transform, false);
@@ -390,7 +435,7 @@ public class Enemy : MonoBehaviour {
 				norm += point.normal;
 			}*/
 			//print(norm+": "+Vector3.Dot(norm, transform.up));
-			if(Vector3.Dot(norm, transform.up) < 1) {
+			if(Vector3.Dot(norm, transform.up) < 0.5f) {
 				Vector3 reflect = Vector3.Reflect(transform.forward, norm);
 				float length = new Vector2(reflect.x, reflect.z).magnitude;
 				float rang = Mathf.Atan2(reflect.z, reflect.x) + Random.Range(-0.1f, 0.1f);
@@ -413,6 +458,8 @@ public class Enemy : MonoBehaviour {
 
 		LookForEnemy();
 		ListenForNoise();
+
+		AvoidObstacles();
 
 		if(health > 0) {
 			states.Update();
@@ -440,31 +487,53 @@ public class Enemy : MonoBehaviour {
 		if(health > 0 && !knockedOut) {
 			targetDir.Normalize();
 			//character.Move(targetDir * speed, false, false, transform.position + transform.forward * 10);
-			character.Move(targetDir * speed, false, false, transform.position + targetDir * 10);
+			character.Move(targetDir * speed, crouch, false, transform.position + targetDir * 10);
+			//character.Move(targetDir * speed, false, false, Camera.main.transform.position);
 		}
 
 		Animation();
 	}
 
+	void AvoidObstacles() {
+		RaycastHit hit;
+		if(rigidbody.SweepTest(transform.forward, out hit, avoidDis)) {
+			Vector3 norm = hit.normal;
+			if(Vector3.Dot(norm, transform.up) < 0.5f) {
+				Vector3 reflect = Vector3.Reflect(transform.forward, norm);
+				float length = new Vector2(reflect.x, reflect.z).magnitude;
+				float rang = Mathf.Atan2(reflect.z, reflect.x) + Random.Range(-0.1f, 0.1f);
+				reflect.x = Mathf.Cos(rang) * length;
+				reflect.z = Mathf.Sin(rang) * length;
+				reflect.Normalize();
+				targetDir += reflect * collisionDeflectForce * (1.0f - hit.distance / avoidDis);
+				if(hit.distance < 0.25f) {
+					targetDir = -transform.forward;
+				}
+			}
+		}
+	}
+
 	void LookForEnemy() {
 		enemyVisible = false;
-		Transform enemyHead = Camera.main.transform;
-		if(enemyHead != null) {
-			enemyDiff = enemyHead.position - (transform.position + new Vector3(0, 1, 0));
-			enemyDir.x = enemyDiff.x;
-			enemyDir.y = enemyDiff.y;
-			enemyDir.z = enemyDiff.z;
-			enemyDiff.y = 0;
-			enemyDiff.Normalize();
+		if(GameObject.Find("Player") != null) {
+			Transform enemyHead = Camera.main.transform;
+			if(enemyHead != null) {
+				enemyDiff = enemyHead.position - (transform.position + new Vector3(0, 1, 0));
+				enemyDir.x = enemyDiff.x;
+				enemyDir.y = enemyDiff.y;
+				enemyDir.z = enemyDiff.z;
+				enemyDiff.y = 0;
+				enemyDiff.Normalize();
 
-			if(Vector3.Dot(transform.forward, enemyDiff) >= 1.0f - (curFov / 2.0f) / 90.0f) {
-				RaycastHit hit;
-				if(Physics.Raycast(transform.position + new Vector3(0, 1, 0), enemyDir, out hit, curViewDis)) {
-					if(hit.collider.tag == "Player" || (hit.collider.transform.parent != null && hit.collider.transform.parent.tag == "Player")) {
-						enemyVisible = true;
-						enemySeen = true;
-						enemyPos = enemyHead.position;
-						//enemyDir = enemyHead.forward;
+				if(Vector3.Dot(transform.forward, enemyDiff) >= 1.0f - (curFov / 2.0f) / 90.0f) {
+					RaycastHit hit;
+					if(Physics.Raycast(transform.position + new Vector3(0, 1, 0), enemyDir, out hit, curViewDis)) {
+						if(hit.collider.tag == "Player" || (hit.collider.transform.parent != null && hit.collider.transform.parent.tag == "Player")) {
+							enemyVisible = true;
+							enemySeen = true;
+							enemyPos = enemyHead.position;
+							//enemyDir = enemyHead.forward;
+						}
 					}
 				}
 			}
