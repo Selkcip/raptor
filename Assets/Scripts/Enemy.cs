@@ -11,7 +11,8 @@ public class Enemy : MonoBehaviour {
 	public float fov = 45f;
 	public float health = 100f;
 	public float fleeHealth = 25;
-	public float standTime = 2f;
+	public float standTime = 5f;
+	public float lookTime = 1f;
 	public float patrolTime = 5f;
 	public float curiousNoiseLevel = 1;
 	public float alarmedNoiseLevel = 5;
@@ -67,6 +68,8 @@ public class Enemy : MonoBehaviour {
 		states = new StateMachine();
 
 		float standTimer = 0;
+		float lookTimer = 0;
+		Vector3 lookDir = -transform.forward;
 		State stand = new State(
 			delegate() {
 				return true;
@@ -74,6 +77,23 @@ public class Enemy : MonoBehaviour {
 			delegate() {
 				stateName = "Stand";
 				speed = 0;
+
+				//targetDir = Vector3.Cross(transform.forward, transform.up);
+
+				if(Vector3.Dot(lookDir, targetDir) < 0.9f) {
+					//speed = 0.0001f;
+					targetDir = Vector3.Lerp(targetDir, lookDir, 0.25f);
+				}
+				else {
+					lookTimer += Time.deltaTime;
+					if(lookTimer >= lookTime) {
+						float ang = Mathf.Atan2(lookDir.z, lookDir.x) + Mathf.PI + Random.Range(-0.01f, 0.01f);
+						lookDir.x = Mathf.Cos(ang);
+						//targetDir.y = Random.Range(-1, 1);
+						lookDir.z = Mathf.Sin(ang);
+						lookTimer = 0;
+					}
+				}
 
 				standTimer += Time.deltaTime;
 				return false;
@@ -413,7 +433,8 @@ public class Enemy : MonoBehaviour {
 
 		if(health > 0 && !knockedOut) {
 			targetDir.Normalize();
-			character.Move(targetDir * speed, false, false, transform.position + transform.forward * 10);
+			//character.Move(targetDir * speed, false, false, transform.position + transform.forward * 10);
+			character.Move(targetDir * speed, false, false, transform.position + targetDir * 10);
 		}
 
 		Animation();

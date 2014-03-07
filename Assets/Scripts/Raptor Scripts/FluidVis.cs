@@ -61,16 +61,28 @@ public class FluidVis : MonoBehaviour {
 				hit.distance = viewDis;
 				hit.point = pos + dir * viewDis;
 			}
+			float stepSize = 1.0f;
+			int steps = (int)Mathf.Floor(hit.distance / stepSize);
+			float heatSum = 0;
 			ShipGridFluid heat;
+			for(int j = 0; j < steps; j++) {
+				//ShipGrid.GetPosI(hit.point).fluids.TryGetValue(fluidType, out heat);
+				ShipGrid.GetPosI(pos + dir * (j*stepSize)).fluids.TryGetValue(fluidType, out heat);
+				if(heat != null) {
+					//points[i].size = particleSize * Mathf.Floor(heat.level) * fluidScale;
+					//colors[i] = Color.Lerp(colors[i], Color.Lerp(Color.black, Color.red, heat.level / maxHeat), 0.5f);
+					heatSum += heat.level;
+				}
+				else {
+					//colors[i] = colors[i] = Color.Lerp(colors[i], Color.black, 0.5f);
+				}
+			}
 			ShipGrid.GetPosI(hit.point).fluids.TryGetValue(fluidType, out heat);
 			if(heat != null) {
-				//points[i].size = particleSize * Mathf.Floor(heat.level) * fluidScale;
-				colors[i] = Color.Lerp(colors[i], Color.Lerp(Color.black, Color.red, heat.level / maxHeat), 0.5f);
+				heatSum += heat.level;
 			}
-			else {
-				colors[i] = colors[i] = Color.Lerp(colors[i], Color.black, 0.5f);
-			}
-			//colors[i] = Color.Lerp(Color.red, Color.green, hit.distance/viewDis);
+			heatSum /= steps + 1;
+			colors[i] = Color.Lerp(colors[i], Color.Lerp(Color.black, Color.red, Mathf.Pow(heatSum / maxHeat, 2)), 0.5f);
 		}
 		mesh.colors = colors;
 
