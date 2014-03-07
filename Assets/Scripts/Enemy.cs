@@ -314,8 +314,8 @@ public class Enemy : MonoBehaviour {
 		stand.Add(sleep);
 		stand.Add(patrol);
 		stand.Add(hurt);
-		stand.Add(shoot);
-		stand.Add(chase);
+		//stand.Add(shoot);
+		//stand.Add(chase);
 		stand.Add(flee);
 		stand.Add(followNoise);
 
@@ -325,8 +325,8 @@ public class Enemy : MonoBehaviour {
 
 		patrol.Add(sleep);
 		patrol.Add(hurt);
-		patrol.Add(shoot);
-		patrol.Add(chase);
+		//patrol.Add(shoot);
+		//patrol.Add(chase);
 		patrol.Add(flee);
 		patrol.Add(followNoise);
 
@@ -336,19 +336,19 @@ public class Enemy : MonoBehaviour {
 		shoot.Add(soundAlarm);
 
 		chase.Add(sleep);
-		chase.Add(shoot);
+		//chase.Add(shoot);
 		chase.Add(flee);
 		chase.Add(soundAlarm);
 
 		followNoise.Add(sleep);
 		followNoise.Add(hurt);
 		followNoise.Add(chaseNoise);
-		followNoise.Add(chase);
+		//followNoise.Add(chase);
 		followNoise.Add(flee);
 
 		chaseNoise.Add(sleep);
 		chaseNoise.Add(hurt);
-		chaseNoise.Add(chase);
+		//chaseNoise.Add(chase);
 		chaseNoise.Add(flee);
 
 		RagDoll(transform, false);
@@ -395,7 +395,7 @@ public class Enemy : MonoBehaviour {
 
 		if(health > 0) {
 			states.Update();
-			ShipGrid.AddFluidI(transform.position, "heat", heat, heatFalloff, 0.01f);
+			ShipGrid.AddFluidI(transform.position, "heat", heat*Time.deltaTime, heatFalloff, 0.01f);
 		}
 		else {
 			knockedOut = true;
