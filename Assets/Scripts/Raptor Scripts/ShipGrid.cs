@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-class ShipGridFluid {
+public class ShipGridFluid {
 	public string type;
 	public float level;
 	public float flowRate;
@@ -14,11 +14,11 @@ class ShipGridFluid {
 	}
 }
 
-class ShipGridCell {
+public class ShipGridCell {
 	public int n;
 	public int x, y, z;
 	public List<ShipGridCell> neighbors = new List<ShipGridCell>();
-	public List<GameObject> contents = new List<GameObject>();
+	public List<ShipGridItem> contents = new List<ShipGridItem>();
 	//public List<ShipGridFluid> fluids = new List<ShipGridFluid>();
 	public Dictionary<string, ShipGridFluid> fluids = new Dictionary<string, ShipGridFluid>();
 
@@ -26,6 +26,11 @@ class ShipGridCell {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+
+	public void AddItem(ShipGridItem item) {
+		contents.Remove(item);
+		contents.Add(item);
 	}
 
 	public void AddFluid(string type, float amount, float flowRate) {
@@ -102,7 +107,7 @@ class ShipGridCell {
 	}
 }
 
-class ShipGrid : MonoBehaviour {
+public class ShipGrid : MonoBehaviour {
 	public Vector3 cellSize = new Vector3(5, 5, 5);
 	public int updateStepSize = 10;
 	public Vector3 divs;
@@ -130,7 +135,7 @@ class ShipGrid : MonoBehaviour {
 		}
 	}
 
-	void Start() {
+	void Awake() {
 		m_instance = this;
 
 		if(collider != null) {

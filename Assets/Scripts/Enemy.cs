@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(ThirdPersonCharacter))]
 public class Enemy : MonoBehaviour {
@@ -10,16 +11,17 @@ public class Enemy : MonoBehaviour {
 	public float collisionDeflectForce = 10f;
 	public float viewDis = 10f;
 	public float fov = 45f;
+	public float noticeTime = 2;
 	public float health = 100f;
 	public float fleeHealth = 25f;
 	public float standTime = 5f;
 	public float lookTime = 1f;
-	public float inspectAfter = 30f;
 	public float inspectTime = 5f;
 	public float patrolTime = 5f;
 	public float curiousNoiseLevel = 1f;
 	public float alarmedNoiseLevel = 5f;
 	public Weapon weapon;
+	public int money = 0;
 	public float heat = 10f;
 	public float heatFalloff = 0.25f;
 	public float sleepTime = 0f;
@@ -47,10 +49,14 @@ public class Enemy : MonoBehaviour {
 	Vector3 enemyDiff;
 	Vector3 enemyPos;
 	Vector3 enemyDir;
+	float noticeTimer = 0;
 	public bool enemyVisible = false;
 	public bool enemySeen = false;
 	public float noiseLevel = 0;
 	public Vector3 noiseDir = new Vector3();
+
+	public float boredomLevel = 0;
+	public ShipGridItem mostInteresting;
 
 	private float bodyRemaining = 1;
 
@@ -76,8 +82,7 @@ public class Enemy : MonoBehaviour {
 		float standTimer = 0;
 		float lookTimer = 0;
 		Vector3 lookDir = -transform.forward;
-		float inspectTimer = 0;
-		float inspectCountDown = inspectAfter;
+		Vector3 lookPos = new Vector3();
 		State stand = new State(
 			delegate() {
 				return true;
@@ -87,8 +92,10 @@ public class Enemy : MonoBehaviour {
 				speed = 0;
 
 				lookTimer += Time.deltaTime;
-				if(targetDir != lookDir) {
-					targetDir = Vector3.Lerp(targetDir, lookDir, lookTimer / lookTime);
+				//if(targetDir != lookDir) {
+				if(targetPos != lookPos) {
+					//targetDir = Vector3.Lerp(targetDir, lookDir, lookTimer / lookTime);
+					targetPos = Vector3.Lerp(targetPos, lookPos, lookTimer / lookTime);
 				}
 				else {
 					if(lookTimer >= lookTime) {
@@ -97,50 +104,75 @@ public class Enemy : MonoBehaviour {
 						lookDir.y = 0;
 						lookDir.z = Mathf.Sin(ang);
 						lookDir.Normalize();
+
+						float lookDis = 5;
+						lookPos.x = transform.position.x + Random.Range(-lookDis, lookDis);
+						lookPos.y = transform.position.y + Random.Range(-lookDis, lookDis);
+						lookPos.z = transform.position.z + Random.Range(-lookDis, lookDis);
+
 						lookTimer = 0;
 					}
 				}
 
 				standTimer += Time.deltaTime;
-				inspectCountDown -= Time.deltaTime;
 				return false;
 			}
 		);
 
+		float inspectTimer = 0;
+		//Vector3 itemPos = new Vector3();
 		State inspect = new State(
 			delegate() {
-				return inspectCountDown <= 0;
+				return mostInteresting != null && boredomLevel >= mostInteresting.interestLevel;
 			},
 			delegate() {
 				stateName = "Inspect";
 				speed = 0;
 
-				crouch = true;
-				//targetDir = transform.position + transform.forward;
+				boredomLevel = 0;
 
-				lookTimer += Time.deltaTime;
-				if(targetDir != lookDir) {
-					targetDir = Vector3.Lerp(targetDir, lookDir, lookTimer / lookTime);
+				if(mostInteresting != null){
+					targetDir = mostInteresting.transform.position - transform.position;
+				}
+				//targetDir = itemPos - transform.position;
+
+				//if(targetPos-transform.position)
+
+				float itemDis = targetDir.magnitude;
+				if(itemDis > targetChangeTolerance) {
+					speed = walkSpeed;
+					targetPos = Vector3.zero + mostInteresting.transform.position;
 				}
 				else {
-					if(lookTimer >= lookTime) {
-						float ang = Mathf.Atan2(lookDir.z, lookDir.x) + Mathf.PI + Random.Range(-Mathf.PI / 6, Mathf.PI / 6);
-						lookDir.x = Mathf.Cos(ang);
-						lookDir.y = 0;
-						lookDir.z = Mathf.Sin(ang);
-						lookDir.Normalize();
-						lookTimer = 0;
+					lookTimer += Time.deltaTime;
+					if(targetPos != lookPos) {
+						targetPos = Vector3.Lerp(targetPos, lookPos, lookTimer / lookTime);
+					}
+					else {
+						inspectTimer += Time.deltaTime;
+						if(lookTimer >= lookTime) {
+							float lookDis = 0.25f;
+							if(mostInteresting != null) {
+								lookPos.x = mostInteresting.transform.position.x + Random.Range(-lookDis, lookDis);
+								lookPos.y = mostInteresting.transform.position.y + Random.Range(-lookDis, lookDis);
+								lookPos.z = mostInteresting.transform.position.z + Random.Range(-lookDis, lookDis);
+							}
+
+							lookTimer = 0;
+						}
 					}
 				}
 
+				//crouch = true;
+				//targetDir = transform.position + transform.forward;
+
 				if(inspectTimer >= inspectTime) {
 					inspectTimer = 0;
-					inspectCountDown = inspectAfter;
-					crouch = false;
+					mostInteresting = null;
+					//crouch = false;
 					return true;
 				}
 
-				inspectTimer += Time.deltaTime;
 				return false;
 			}
 		);
@@ -209,6 +241,10 @@ public class Enemy : MonoBehaviour {
 				stateName = "Patrol";
 				speed = walkSpeed;
 
+				AvoidObstacles();
+
+				targetPos = transform.position + targetDir * 10;
+
 				patrolTimer += Time.deltaTime;
 				if(patrolTimer >= patrolTime) {
 					patrolTimer = 0;
@@ -229,6 +265,8 @@ public class Enemy : MonoBehaviour {
 				float enemyDis = (enemyPos - transform.position).magnitude;
 				targetDir = (enemyPos - transform.position).normalized;
 
+				targetPos = enemyPos;
+
 				if(weapon != null) {
 					weapon.transform.LookAt(enemyPos);
 					return weapon.Use();
@@ -246,6 +284,10 @@ public class Enemy : MonoBehaviour {
 			delegate() {
 				stateName = "Chase";
 				speed = runSpeed;
+
+				AvoidObstacles();
+
+				targetPos = enemyPos;
 
 				if(!enemySeen) {
 					return true;
@@ -294,6 +336,10 @@ public class Enemy : MonoBehaviour {
 				stateName = "Flee";
 				speed = runSpeed;
 
+				AvoidObstacles();
+
+				targetPos = transform.position + targetDir * 10;
+
 				if(!enemyVisible) {
 					enemySeen = false;
 					return true;
@@ -314,6 +360,8 @@ public class Enemy : MonoBehaviour {
 				stateName = "Sound Alarm";
 				speed = runSpeed;
 
+				AvoidObstacles();
+
 				float minAlarmDis = Mathf.Infinity;
 				Alarm minAlarm;
 				Vector3 minAlarmPos = transform.position;
@@ -328,6 +376,8 @@ public class Enemy : MonoBehaviour {
 						}
 					}
 				}
+
+				targetPos = minAlarmPos;
 
 				if(minAlarmDis <= targetChangeTolerance) {
 					if(minAlarm != null) {
@@ -350,7 +400,10 @@ public class Enemy : MonoBehaviour {
 				stateName = "Follow Noise";
 				speed = walkSpeed;
 
+				AvoidObstacles();
+
 				targetDir += noiseDir;
+				targetPos = transform.position + targetDir * 10;
 
 				standTimer = standTime;
 
@@ -366,7 +419,10 @@ public class Enemy : MonoBehaviour {
 				stateName = "Chase Noise";
 				speed = runSpeed;
 
+				AvoidObstacles();
+
 				targetDir += noiseDir;
+				targetPos = transform.position + targetDir * 10;
 
 				standTimer = standTime;
 
@@ -391,6 +447,7 @@ public class Enemy : MonoBehaviour {
 
 		patrol.Add(sleep);
 		patrol.Add(hurt);
+		patrol.Add(inspect);
 		patrol.Add(shoot);
 		patrol.Add(chase);
 		patrol.Add(flee);
@@ -408,12 +465,14 @@ public class Enemy : MonoBehaviour {
 
 		followNoise.Add(sleep);
 		followNoise.Add(hurt);
+		followNoise.Add(inspect);
 		followNoise.Add(chaseNoise);
 		followNoise.Add(chase);
 		followNoise.Add(flee);
 
 		chaseNoise.Add(sleep);
 		chaseNoise.Add(hurt);
+		chaseNoise.Add(inspect);
 		chaseNoise.Add(chase);
 		chaseNoise.Add(flee);
 
@@ -456,10 +515,12 @@ public class Enemy : MonoBehaviour {
 			curViewDis = viewDis*2;
 		}
 
-		LookForEnemy();
-		ListenForNoise();
+		boredomLevel += Time.deltaTime;
 
-		AvoidObstacles();
+		LookForEnemy();
+		CheckGrid();
+
+		//AvoidObstacles();
 
 		if(health > 0) {
 			states.Update();
@@ -487,7 +548,8 @@ public class Enemy : MonoBehaviour {
 		if(health > 0 && !knockedOut) {
 			targetDir.Normalize();
 			//character.Move(targetDir * speed, false, false, transform.position + transform.forward * 10);
-			character.Move(targetDir * speed, crouch, false, transform.position + targetDir * 10);
+			//character.Move(targetDir * speed, crouch, false, transform.position + targetDir * 10);
+			character.Move(targetDir * speed, crouch, false, targetPos);
 			//character.Move(targetDir * speed, false, false, Camera.main.transform.position);
 		}
 
@@ -529,10 +591,13 @@ public class Enemy : MonoBehaviour {
 					RaycastHit hit;
 					if(Physics.Raycast(transform.position + new Vector3(0, 1, 0), enemyDir, out hit, curViewDis)) {
 						if(hit.collider.tag == "Player" || (hit.collider.transform.parent != null && hit.collider.transform.parent.tag == "Player")) {
-							enemyVisible = true;
-							enemySeen = true;
-							enemyPos = enemyHead.position;
-							//enemyDir = enemyHead.forward;
+							noticeTimer += (1.0f-hit.distance/curViewDis)*Time.deltaTime;
+							if(noticeTimer >= noticeTime) {
+								enemyVisible = true;
+								enemySeen = true;
+								enemyPos = enemyHead.position;
+								//enemyDir = enemyHead.forward;
+							}
 						}
 					}
 				}
@@ -540,11 +605,12 @@ public class Enemy : MonoBehaviour {
 		}
 	}
 
-	void ListenForNoise() {
-		GameObject gridObject = GameObject.Find("CA Grid");
-		if(gridObject != null) {
+	void CheckGrid() {
+		//GameObject gridObject = GameObject.Find("CA Grid");
+		if(ShipGrid.instance != null) {
 			ShipGridCell cell = ShipGrid.GetPosI(transform.position);
-			//grid.AddFluid(transform.position, "noise", 0.1f, 0.5f, 0.01f);
+			
+			//Listen for noise
 			ShipGridFluid noise;
 			cell.fluids.TryGetValue("noise", out noise);
 			if(noise != null) {
@@ -560,25 +626,44 @@ public class Enemy : MonoBehaviour {
 					}
 				}
 			}
+
+			//Look for objects to inspect and bodies
+			List<ShipGridItem> contents = new List<ShipGridItem>();
+			contents.AddRange(cell.contents);
+			foreach(ShipGridCell neigh in cell.neighbors){
+				contents.AddRange(neigh.contents);
+			}
+			contents.Sort(delegate(ShipGridItem a, ShipGridItem b) {
+				return Mathf.RoundToInt(a.interestLevel - b.interestLevel);
+			});
+			if(contents.Count > 0) {
+				mostInteresting = contents[0];
+			}
+			else {
+				mostInteresting = null;
+			}
 		}
 	}
 
-	public void Use(RaptorInteraction player) {
-		if(!knockedOut) {
-			player.SendMessage("TakeMoney", 1, SendMessageOptions.DontRequireReceiver);
-		}
-		else {
-			if(health > 0) {
-				health = 0;
+	public void Use(GameObject user) {
+		if(user.tag == "Player") {
+			RaptorInteraction player = user.GetComponent<RaptorInteraction>();
+			if(!knockedOut) {
+				player.SendMessage("TakeMoney", 1, SendMessageOptions.DontRequireReceiver);
 			}
 			else {
-				bodyRemaining -= 0.1f * Time.deltaTime;
-					player.SendMessage("Eat", 1, SendMessageOptions.DontRequireReceiver);
-				if(bodyRemaining > 0.25) {
-					transform.localScale = new Vector3(bodyRemaining, bodyRemaining, bodyRemaining);
+				if(health > 0) {
+					health = 0;
 				}
 				else {
-					Destroy(gameObject);
+					bodyRemaining -= 0.1f * Time.deltaTime;
+					player.SendMessage("Eat", 1, SendMessageOptions.DontRequireReceiver);
+					if(bodyRemaining > 0.25) {
+						transform.localScale = new Vector3(bodyRemaining, bodyRemaining, bodyRemaining);
+					}
+					else {
+						Destroy(gameObject);
+					}
 				}
 			}
 		}
@@ -595,6 +680,10 @@ public class Enemy : MonoBehaviour {
 
 	public void Hurt(float damage) {
 		health -= damage;
+	}
+
+	public void TakeMoney(int amount) {
+		money += amount;
 	}
 
 	void Animation() {

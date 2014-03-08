@@ -16,7 +16,6 @@ public class RaptorInteraction : MonoBehaviour {
 	public float pounceNoiseLevel = 20;
 	public float crouchNoiseDampen = 0;
 
-
 	public float mapAmountNeeded = 5;
 	public float knockOutTime = 30;
 	public ParticleSystem bloodSpurt;
@@ -50,7 +49,9 @@ public class RaptorInteraction : MonoBehaviour {
 	private RaycastHit hit;
 	private float meleeRange = 1.0f;
 
+	//Collection data
 	private float mapAmountAcquired = 0;
+	private int money = 0;
 
 	// Use this for initialization
 	void Start() {
@@ -165,7 +166,24 @@ public class RaptorInteraction : MonoBehaviour {
 		if(Input.GetKey(KeyCode.E)) {
 			RaycastHit hit;
 			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2)) {
-				hit.transform.root.gameObject.SendMessage("Use", this, SendMessageOptions.DontRequireReceiver);
+				hit.transform.root.gameObject.SendMessage("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+			}
+		}
+
+		if(Input.GetKeyUp(KeyCode.F)) {
+			MeshRenderer heatRenderer = GameObject.Find("HeatVisPlane").GetComponent<MeshRenderer>();
+			if(heatRenderer != null) {
+				heatRenderer.enabled = !heatRenderer.enabled;
+
+				EdgeDetectEffectNormals edge = Camera.main.GetComponent<EdgeDetectEffectNormals>();
+				if(edge != null) {
+					edge.enabled = heatRenderer.enabled;
+				}
+
+				/*Light[] lights = GameObject.FindObjectsOfType<Light>();
+				foreach(Light light in lights) {
+					light.enabled = !heatRenderer.enabled;
+				}*/
 			}
 		}
 	}
@@ -274,6 +292,10 @@ public class RaptorInteraction : MonoBehaviour {
 
 	public void TransferMap(float amount) {
 		mapAmountAcquired += amount;
+	}
+
+	public void TakeMoney(int amount) {
+		money += amount;
 	}
 
 	public void Eat(float amount) {
