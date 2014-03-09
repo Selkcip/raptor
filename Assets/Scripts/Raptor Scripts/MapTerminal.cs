@@ -5,22 +5,37 @@ using System.Collections.Generic;
 public class MapTerminal : MonoBehaviour {
 
 	public float mapAvailable = 0.25f;
+	private float transferRate = 29;
 	public float alarmCountDown = 30;
 	public bool hackable = true;
 	public bool hacked = false;
+	public UISlider mapBar;
+	public UISlider alarmBar;
+	public UILabel alarmLabel;
+
+	private float initMapAvailable;
 
 	private float hackTime = 0;
 
+	public float mapRemaining { get { return mapAvailable / initMapAvailable; } }
+	public float timeRemaining { get { return hackTime / alarmCountDown; } }
+
 	// Use this for initialization
 	void Start() {
+		transferRate = mapAvailable / alarmCountDown;
+		initMapAvailable = mapAvailable;
 	}
 
-	public void Use(RaptorInteraction player) {
+	public void Use(GameObject user) {
 		hacked = hacked ? hacked : true;
+		RaptorInteraction.notoriety += Notoriety.hack*Time.deltaTime;
 		if(hackable) {
-			player.SendMessage("TransferMap", mapAvailable / alarmCountDown, SendMessageOptions.DontRequireReceiver);
+			float amount = Mathf.Min(transferRate*Time.deltaTime, mapAvailable);
+			mapAvailable -= amount;
+			user.SendMessage("TransferMap", amount, SendMessageOptions.DontRequireReceiver);
 		}
 		else {
+			alarmLabel.enabled = true;
 			Alarm.ActivateAlarms();
 		}
 	}
@@ -35,5 +50,7 @@ public class MapTerminal : MonoBehaviour {
 				hackable = false;
 			}
 		}
+		mapBar.value = mapRemaining;
+		alarmBar.value = timeRemaining;
 	}
 }

@@ -17,6 +17,7 @@ public class Enemy : MonoBehaviour {
 	public float standTime = 5f;
 	public float lookTime = 1f;
 	public float inspectTime = 5f;
+	public float useTime = 5f;
 	public float patrolTime = 5f;
 	public float curiousNoiseLevel = 1f;
 	public float alarmedNoiseLevel = 5f;
@@ -57,6 +58,10 @@ public class Enemy : MonoBehaviour {
 
 	public float boredomLevel = 0;
 	public ShipGridItem mostInteresting;
+	public bool usingObject = false;
+	public Transform useTarget;
+	public Vector3 leftHandPos;
+	public float leftHandWeight = 0;
 
 	private float bodyRemaining = 1;
 
@@ -141,7 +146,9 @@ public class Enemy : MonoBehaviour {
 				float itemDis = targetDir.magnitude;
 				if(itemDis > targetChangeTolerance) {
 					speed = walkSpeed;
-					targetPos = Vector3.zero + mostInteresting.transform.position;
+					if(mostInteresting != null) {
+						targetPos = Vector3.zero + mostInteresting.transform.position;
+					}
 				}
 				else {
 					lookTimer += Time.deltaTime;
@@ -156,7 +163,15 @@ public class Enemy : MonoBehaviour {
 								lookPos.x = mostInteresting.transform.position.x + Random.Range(-lookDis, lookDis);
 								lookPos.y = mostInteresting.transform.position.y + Random.Range(-lookDis, lookDis);
 								lookPos.z = mostInteresting.transform.position.z + Random.Range(-lookDis, lookDis);
+
+								if(mostInteresting.useTarget != null) {
+									useTarget = mostInteresting.useTarget;
+									usingObject = true;
+								}
 							}
+
+							//mostInteresting.SendMessage("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+							
 
 							lookTimer = 0;
 						}
@@ -174,6 +189,39 @@ public class Enemy : MonoBehaviour {
 				}
 
 				return false;
+			}
+		);
+
+		bool initUse = true;
+		float useTimer = 0;
+		State use = new State(
+			delegate() {
+				return usingObject && useTarget != null;
+			},
+			delegate() {
+				stateName = "Use";
+				speed = 0;
+
+				if(initUse) {
+					//leftHandPos = enemy.
+				}
+
+				enemy.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1.0f);
+
+				Vector3 useTargetPos = useTarget.position;
+				if(usingObject && (leftHandPos != useTargetPos || leftHandWeight < 1)) {
+					leftHandPos = useTargetPos;// Vector3.Lerp(leftHandPos, useTargetPos, useTimer / useTime);
+					//leftHandWeight = Mathf.Min(1, leftHandWeight + Time.deltaTime);
+					leftHandWeight = Mathf.Min(1, useTimer / useTime);
+				}
+				else {
+					usingObject = false;
+					useTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+				}
+
+				useTimer += Time.deltaTime;
+
+				return !usingObject;
 			}
 		);
 
@@ -381,7 +429,9 @@ public class Enemy : MonoBehaviour {
 
 				if(minAlarmDis <= targetChangeTolerance) {
 					if(minAlarm != null) {
-						minAlarm.Use();
+						//minAlarm.Use();
+						usingObject = true;
+						useTarget = minAlarm.transform;
 					}
 				}
 				else {
@@ -445,6 +495,8 @@ public class Enemy : MonoBehaviour {
 
 		wakeUp.Add(stand);
 
+		inspect.Add(use);
+
 		patrol.Add(sleep);
 		patrol.Add(hurt);
 		patrol.Add(inspect);
@@ -462,6 +514,8 @@ public class Enemy : MonoBehaviour {
 		chase.Add(shoot);
 		chase.Add(flee);
 		chase.Add(soundAlarm);
+		 
+		soundAlarm.Add(use);
 
 		followNoise.Add(sleep);
 		followNoise.Add(hurt);
@@ -538,6 +592,8 @@ public class Enemy : MonoBehaviour {
 			}
 			GetComponent<CapsuleCollider>().enabled = false;
 			GetComponent<Animator>().enabled = false;
+
+			RaptorInteraction.notoriety += Notoriety.kill;
 
 			if(weapon != null) {
 				weapon.Drop();
@@ -649,6 +705,7 @@ public class Enemy : MonoBehaviour {
 		if(user.tag == "Player") {
 			RaptorInteraction player = user.GetComponent<RaptorInteraction>();
 			if(!knockedOut) {
+				RaptorInteraction.notoriety += Notoriety.steal;
 				player.SendMessage("TakeMoney", 1, SendMessageOptions.DontRequireReceiver);
 			}
 			else {
@@ -689,6 +746,17 @@ public class Enemy : MonoBehaviour {
 	void Animation() {
 		enemy.SetFloat("Health", health);
 		enemy.SetBool("KnockedOut", knockedOut);
+	}
+
+	void OnAnimatorIK() {
+		if(!usingObject) {
+			leftHandWeight = Mathf.Max(0, leftHandWeight-Time.deltaTime);
+			//enemy.SetIKPositionWeight(AvatarIKGoal.LeftHand, leftHandWeight - Time.deltaTime);
+		}
+		enemy.SetIKPositionWeight(AvatarIKGoal.LeftHand, leftHandWeight);
+		//enemy.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1.0f);
+		enemy.SetIKPosition(AvatarIKGoal.LeftHand, leftHandPos);
+		//enemy.SetIKRotation(AvatarIKGoal.LeftHand, leftHandObj.rotation);
 	}
 
 	void RagDoll(Transform obj, bool on) {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class ShipGridItem : MonoBehaviour {
 	public float interestLevel = 15;
+	public Transform useTarget;
 
 	private ShipGridCell cell;
 

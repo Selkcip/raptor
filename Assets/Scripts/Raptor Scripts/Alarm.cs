@@ -22,7 +22,7 @@ public class Alarm : MonoBehaviour {
 		alarms.Add(this);
 	}
 
-	public void Use() {
+	public void Use(GameObject user) {
 		ActivateAlarms();
 	}
 

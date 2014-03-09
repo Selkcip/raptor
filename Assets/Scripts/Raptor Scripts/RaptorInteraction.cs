@@ -2,9 +2,15 @@
 using System.Collections;
 using Holoville.HOTween;
 
-public class RaptorInteraction : MonoBehaviour {
+public class Notoriety {
+	public static float kill = 10;
+	public static float hack = 5;
+	public static float steal = 1;
+}
 
+public class RaptorInteraction : MonoBehaviour {
 	public Texture2D crosshair;
+	public Texture2D noiseIndicator;
 	public float maxHealth = 10;	//the number of times you can get hit
 	public float attack = 20f;
 
@@ -22,6 +28,8 @@ public class RaptorInteraction : MonoBehaviour {
 
 	[HideInInspector]
 	public float health;
+
+	private float noiseLevel;
 
 	//animation stuff
 	protected Animator arms;
@@ -52,6 +60,7 @@ public class RaptorInteraction : MonoBehaviour {
 	//Collection data
 	private float mapAmountAcquired = 0;
 	private int money = 0;
+	public static float notoriety;
 
 	// Use this for initialization
 	void Start() {
@@ -101,7 +110,7 @@ public class RaptorInteraction : MonoBehaviour {
 			//ShipGrid grid = gridObject.GetComponent<ShipGrid>();
 			ShipGridCell cell = ShipGrid.GetPosI(transform.position);
 
-			float noiseLevel = walkNoiseLevel;
+			noiseLevel = walkNoiseLevel;
 			float noiseFalloff = walkNoiseFalloff;
 
 			if(fpc.grounded) {
@@ -277,6 +286,12 @@ public class RaptorInteraction : MonoBehaviour {
 		float x = (Screen.width / 2) - (crosshair.width / 6);
 		float y = (Screen.height / 2) - (crosshair.height / 6);
 		GUI.DrawTexture(new Rect(x, y, crosshair.width / 3, crosshair.height / 3), crosshair);
+
+		float soundScale = noiseLevel/runNoiseLevel;
+		soundScale += soundScale > 0 ? 1 : 0;
+		x = (Screen.width / 2) - (noiseIndicator.width / 6) * soundScale;
+		y = (Screen.height / 2) - (noiseIndicator.height / 6) * soundScale;
+		GUI.DrawTexture(new Rect(x, y, noiseIndicator.width / 3 * soundScale, noiseIndicator.height / 3 * soundScale), noiseIndicator);
 	}
 
 	bool InAttackRange() {
