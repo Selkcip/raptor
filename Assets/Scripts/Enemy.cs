@@ -716,9 +716,11 @@ public class Enemy : MonoBehaviour {
 					bodyRemaining -= 0.1f * Time.deltaTime;
 					player.SendMessage("Eat", 1, SendMessageOptions.DontRequireReceiver);
 					if(bodyRemaining > 0.25) {
+						player.eatTarget = this;
 						transform.localScale = new Vector3(bodyRemaining, bodyRemaining, bodyRemaining);
 					}
 					else {
+						player.eatTarget = null;
 						Destroy(gameObject);
 					}
 				}

@@ -14,6 +14,8 @@ public class RaptorInteraction : MonoBehaviour {
 	public float maxHealth = 10;	//the number of times you can get hit
 	public float attack = 20f;
 
+	public Enemy eatTarget;
+
 	//sound stuff
 	public float walkNoiseLevel = 1;
 	public float walkNoiseFalloff = 0.25f;
@@ -88,6 +90,8 @@ public class RaptorInteraction : MonoBehaviour {
 			//Die
 			fpc.enabled = false;
 			rigidbody.isKinematic = true;
+			toggleRotator(false);
+			arms.SetBool("isDead", true);
 		}
 	}
 
@@ -177,6 +181,24 @@ public class RaptorInteraction : MonoBehaviour {
 			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2)) {
 				hit.transform.root.gameObject.SendMessage("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 			}
+
+			if (eatTarget != null){
+				eatTarget.transform.root.SendMessage("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+			}
+			else {
+				toggleRotator(true);
+				rigidbody.freezeRotation = false;
+				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+				arms.SetBool("isEating", false);
+			}
+		}
+		//animation stuff
+		else if(Input.GetKeyUp(KeyCode.E)) {
+			eatTarget = null;
+			toggleRotator(true);
+			rigidbody.freezeRotation = false;
+			rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+			arms.SetBool("isEating", false);
 		}
 
 		if(Input.GetKeyUp(KeyCode.F)) {
@@ -314,16 +336,27 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	public void Eat(float amount) {
-		bloodSpurt.Play();
+		if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, 2)) {
+			bloodSpurt.Play();
+		}
+
+		toggleRotator(false);
+		rigidbody.freezeRotation = true;
+		arms.SetBool("isEating", true);
+
 		if(health < maxHealth) {
 			health += 0.02f;
 			hud.health = health / maxHealth;
 		}
-		//print(health + " : " + hud.health);
 	}
 
 	public void Hurt(float damage) {
 		health -= 1;
 		hud.Deplete("health", 1.0f/maxHealth);
+	}
+
+	void toggleRotator(bool on){
+		GetComponent<SimpleMouseRotator>().enabled = on;
+		Camera.main.GetComponent<SimpleMouseRotator>().enabled = on;
 	}
 }

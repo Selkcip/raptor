@@ -34,7 +34,7 @@ public class SimpleMouseRotator : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void LateUpdate () {
 		
 		// we make initial calculations from the original local rotation
 		transform.localRotation = originalRotation;
