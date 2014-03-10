@@ -119,6 +119,8 @@ public class ShipGrid : MonoBehaviour {
 	List<Vector3> nDirs = new List<Vector3>();
 	List<List<List<ShipGridCell>>> cells = new List<List<List<ShipGridCell>>>();
 
+	public static List<string> fluids = new List<string>();
+
 	/*public float width { get { return size * divX; } }
 	public float height { get { return size * divY; } }
 	public float depth { get { return size * divZ; } }*/
@@ -359,6 +361,10 @@ public class ShipGrid : MonoBehaviour {
 	public void AddFluid(float x, float y, float z, string type, float amount, float flowRate, float cutoff) {
 		ShipGridCell cur = GetPos(x, y, z);
 		cur.AddFluid(type, amount, flowRate);
+
+		if(!fluids.Contains(type)) {
+			fluids.Add(type);
+		}
 		/*List<ShipGridCell> current = new List<ShipGridCell>();
 		current.Add(cur);*/
 		//ShipGridCell.AddFluid(type, amount, flowRate, cutoff, current, new List<ShipGridCell>());

@@ -180,7 +180,7 @@ public class RaptorInteraction : MonoBehaviour {
 		}
 
 		if(Input.GetKeyUp(KeyCode.F)) {
-			MeshRenderer heatRenderer = GameObject.Find("HeatVisPlane").GetComponent<MeshRenderer>();
+			MeshRenderer heatRenderer = GameObject.Find("FluidVisPlane").GetComponent<MeshRenderer>();
 			if(heatRenderer != null) {
 				heatRenderer.enabled = !heatRenderer.enabled;
 

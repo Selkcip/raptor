@@ -111,8 +111,9 @@ public class Enemy : MonoBehaviour {
 						lookDir.Normalize();
 
 						float lookDis = 5;
+						float lookDisY = 2;
 						lookPos.x = transform.position.x + Random.Range(-lookDis, lookDis);
-						lookPos.y = transform.position.y + Random.Range(-lookDis, lookDis);
+						lookPos.y = transform.position.y + Random.Range(-lookDisY, lookDisY);
 						lookPos.z = transform.position.z + Random.Range(-lookDis, lookDis);
 
 						lookTimer = 0;

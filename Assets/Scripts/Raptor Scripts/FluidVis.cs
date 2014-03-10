@@ -13,6 +13,8 @@ public class FluidVis : MonoBehaviour {
 	public float viewDis = 20;
 	public int updateStepSize = 10;
 
+	private int currentFluid = 0;
+
 	ParticleSystem.Particle[] points;
 
 	Mesh mesh;
@@ -53,6 +55,17 @@ public class FluidVis : MonoBehaviour {
 	int startIndex = 0;
 	// Update is called once per frame
 	void Update() {
+		float scroll = Input.GetAxis("Mouse ScrollWheel");
+		if(scroll > 0){
+			currentFluid++;
+		}else if(scroll < 0){
+			currentFluid--;
+		}
+		currentFluid += ShipGrid.fluids.Count;
+		currentFluid %= Mathf.Max(1, ShipGrid.fluids.Count);
+
+		fluidType = ShipGrid.fluids[currentFluid];
+
 		for(int i = startIndex; i < vertices.Length; i += updateStepSize) {
 			Vector3 pos = transform.TransformPoint(vertices[i]);
 			RaycastHit hit;
