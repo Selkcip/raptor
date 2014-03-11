@@ -200,6 +200,7 @@ public class Enemy : MonoBehaviour {
 
 		bool initUse = true;
 		float useTimer = 0;
+		Vector3 useTargetPos = Vector3.zero;
 		State use = new State(
 			delegate() {
 				return usingObject && useTarget != null;
@@ -214,15 +215,21 @@ public class Enemy : MonoBehaviour {
 
 				enemy.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1.0f);
 
-				Vector3 useTargetPos = useTarget.position;
-				if(usingObject && (leftHandPos != useTargetPos || leftHandWeight < 1)) {
-					leftHandPos = useTargetPos;// Vector3.Lerp(leftHandPos, useTargetPos, useTimer / useTime);
-					//leftHandWeight = Mathf.Min(1, leftHandWeight + Time.deltaTime);
-					leftHandWeight = Mathf.Min(1, useTimer / useTime);
+				if(useTarget != null) {
+					useTargetPos = useTarget.position;
+					if(usingObject && (leftHandPos != useTargetPos || leftHandWeight < 1)) {
+						leftHandPos = useTargetPos;// Vector3.Lerp(leftHandPos, useTargetPos, useTimer / useTime);
+						//leftHandWeight = Mathf.Min(1, leftHandWeight + Time.deltaTime);
+						leftHandWeight = Mathf.Min(1, useTimer / useTime);
+					}
+					else {
+						usingObject = false;
+						useTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+						useTarget = null;
+					}
 				}
 				else {
 					usingObject = false;
-					useTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 					useTarget = null;
 				}
 
@@ -250,7 +257,7 @@ public class Enemy : MonoBehaviour {
 					rigidbody.isKinematic = true;
 					RagDoll(transform, true);
 					GetComponent<CapsuleCollider>().enabled = false;
-					GetComponent<Animator>().enabled = false;
+					enemy.enabled = false;
 
 					if(weapon != null) {
 						weapon.Drop();
@@ -270,18 +277,27 @@ public class Enemy : MonoBehaviour {
 				return knockedOut && sleepTime <= 0;
 			},
 			delegate() {
+				print("wake up");
 				stateName = "Wake Up";
 				speed = 0;
 
 				knockedOut = false;
 
-				rigidbody.isKinematic = false;
-				RagDoll(transform, false);
-				GetComponent<Animator>().enabled = true;
-				GetComponent<CapsuleCollider>().enabled = true;
-				character.enabled = true;
-				return true;
-			}
+				if(!enemy.enabled) {
+					rigidbody.isKinematic = false;
+					enemy.enabled = true;
+					RagDoll(transform, false);
+					collider.enabled = true;
+					character.enabled = true;
+				}
+				else {
+					enemy.SetBool("GetUpFromBelly", false);
+					enemy.SetBool("GetUpFromBack", false);
+					return true;
+				}
+				return false;
+			},
+			10
 		);
 
 		float patrolTimer = 0;
@@ -515,7 +531,7 @@ public class Enemy : MonoBehaviour {
 
 		sleep.Add(wakeUp);
 
-		wakeUp.Add(stand);
+		//wakeUp.Add(stand);
 
 		inspect.Add(use);
 		inspect.Add(sleep);
@@ -635,11 +651,9 @@ public class Enemy : MonoBehaviour {
 		}
 
 		if(health > 0 && !knockedOut) {
+			rigidbody.isKinematic = false;
 			targetDir.Normalize();
-			//character.Move(targetDir * speed, false, false, transform.position + transform.forward * 10);
-			//character.Move(targetDir * speed, crouch, false, transform.position + targetDir * 10);
 			character.Move(targetDir * speed, crouch, false, targetPos);
-			//character.Move(targetDir * speed, false, false, Camera.main.transform.position);
 		}
 
 		Animation();
@@ -719,7 +733,8 @@ public class Enemy : MonoBehaviour {
 
 			ShipGridFluid cellLight;
 			cell.fluids.TryGetValue("light", out cellLight);
-			lightLevel = cellLight != null ? cellLight.level : 0;
+			float newLight = cellLight != null ? cellLight.level : 0;
+			lightLevel += (newLight - lightLevel) * 0.1f;
 
 			//Look for objects to inspect and bodies
 			List<ShipGridItem> contents = new List<ShipGridItem>();
@@ -818,5 +833,7 @@ public class Enemy : MonoBehaviour {
 			RagDoll(child, on);
 		}
 		ragDoll = on;
+		RagdollHelper helper = GetComponent<RagdollHelper>();
+		helper.ragdolled = on;
 	}
 }
