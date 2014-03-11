@@ -4,6 +4,12 @@ using System.Collections;
 public class PlayerShipController : MonoBehaviour {
 
     public float forwardForce, reverseForce, sideForce;
+
+    public bool isCloaked;
+
+    public Transform bullet;
+    public float bulletSpeed;
+
 	// Use this for initialization
 	void Start() {
 	
@@ -19,7 +25,6 @@ public class PlayerShipController : MonoBehaviour {
         if (mouse.x > Vector2.up.x)
             targetAngle = -targetAngle;
         transform.eulerAngles = new Vector3(0, 0, targetAngle);
-        //transform.Rotate(Vector3.forward, Vector2.Angle(new Vector2(transform.up.x, transform.up.y), new Vector2(mouse.x, mouse.y))); 
 
         // add force from movement keys
         Vector2 force = new Vector2(0, 0);
@@ -35,8 +40,32 @@ public class PlayerShipController : MonoBehaviour {
         if (Input.GetKey(KeyCode.D)) { 
             force.x += sideForce;
         }
+        if (Input.GetKeyDown(KeyCode.Q)) { // cloak
+            isCloaked = !isCloaked;
+            if (isCloaked)
+                renderer.material.color = Color.blue;
+            else
+                renderer.material.color = Color.white;
+        }
+        if (Input.GetKey(KeyCode.Space)) {
+            // shoot
+        }
 
         force = Quaternion.Euler(transform.eulerAngles) * force;
         rigidbody2D.AddForce(force);
 	}
+
+    void OnCollisionEnter2D(Collision2D col) {
+        // detect if player is hit with a shot
+        // detect player collides with a ship and is cloaked
+        if (col.gameObject.tag == "enemy" && isCloaked) {
+            col.gameObject.renderer.material.color = Color.red;
+            // check collision is in back of ship and front of player
+			foreach (ContactPoint2D contact in col.contacts) {
+				if (col.collider.transform.InverseTransformPoint(contact.point).y < 0)
+					col.gameObject.renderer.material.color = Color.blue;
+			}
+                // load level
+        }            
+    }
 }
