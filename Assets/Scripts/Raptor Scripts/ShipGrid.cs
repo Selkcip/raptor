@@ -33,6 +33,10 @@ public class ShipGridCell {
 		contents.Add(item);
 	}
 
+	public void RemoveItem(ShipGridItem item) {
+		contents.Remove(item);
+	}
+
 	public void AddFluid(string type, float amount, float flowRate) {
 		ShipGridFluid fluid;
 		fluids.TryGetValue(type, out fluid);

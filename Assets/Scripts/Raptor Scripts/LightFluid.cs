@@ -10,6 +10,8 @@ public class LightFluid : MonoBehaviour {
 	}
 
 	void Update() {
-		ShipGrid.AddFluidI(transform.position, "light", light.intensity * intensityScale * Time.deltaTime, falloff, 0.01f);
+		if(light.enabled) {
+			ShipGrid.AddFluidI(transform.position, "light", light.intensity * intensityScale * Time.deltaTime, falloff, 0.01f);
+		}
 	}
 }

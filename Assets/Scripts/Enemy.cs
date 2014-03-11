@@ -22,6 +22,8 @@ public class Enemy : MonoBehaviour {
 	public float curiousNoiseLevel = 1f;
 	public float alarmedNoiseLevel = 5f;
 	public Weapon weapon;
+	public Transform weaponAnchor;
+	public bool carryingObject = false;
 	public int money = 0;
 	public float heat = 10f;
 	public float heatFalloff = 0.25f;
@@ -55,6 +57,9 @@ public class Enemy : MonoBehaviour {
 	public bool enemySeen = false;
 	public float noiseLevel = 0;
 	public Vector3 noiseDir = new Vector3();
+	public float lightLevel = 0;
+	public float maxLightLevel = 100;
+	public float minLightLevel = 10;
 
 	public float boredomLevel = 0;
 	public ShipGridItem mostInteresting;
@@ -129,7 +134,7 @@ public class Enemy : MonoBehaviour {
 		//Vector3 itemPos = new Vector3();
 		State inspect = new State(
 			delegate() {
-				return mostInteresting != null && boredomLevel >= mostInteresting.interestLevel;
+				return mostInteresting != null && boredomLevel >= mostInteresting.interestLevel && (!mostInteresting.carryable || (mostInteresting.carryable && !carryingObject));
 			},
 			delegate() {
 				stateName = "Inspect";
@@ -218,6 +223,7 @@ public class Enemy : MonoBehaviour {
 				else {
 					usingObject = false;
 					useTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+					useTarget = null;
 				}
 
 				useTimer += Time.deltaTime;
@@ -249,6 +255,7 @@ public class Enemy : MonoBehaviour {
 					if(weapon != null) {
 						weapon.Drop();
 						weapon = null;
+						carryingObject = false;
 					}
 				}
 
@@ -318,7 +325,7 @@ public class Enemy : MonoBehaviour {
 
 				if(weapon != null) {
 					weapon.transform.LookAt(enemyPos);
-					return weapon.Use();
+					return weapon.Use(gameObject);
 				}
 
 				return !(enemyVisible && weapon.ammo > 0);
@@ -346,7 +353,7 @@ public class Enemy : MonoBehaviour {
 				if(enemyDis <= targetChangeTolerance) {
 					targetDir = enemyDiff;
 					if(weapon != null) {
-						weapon.Use();
+						weapon.Use(gameObject);
 					}
 					enemySeen = false;
 				}
@@ -481,6 +488,19 @@ public class Enemy : MonoBehaviour {
 			}
 		);
 
+		State toggleFlashlight = new State(
+			delegate() {
+				return weapon != null && weapon.flashLight != null && (lightLevel <= minLightLevel || lightLevel >= maxLightLevel);
+			},
+			delegate() {
+				stateName = "Toggle Flashlight";
+
+				weapon.flashLight.enabled = lightLevel <= minLightLevel ? true : false;
+
+				return noiseLevel < alarmedNoiseLevel;
+			}
+		);
+
 		states.Add(stand);
 
 		stand.Add(sleep);
@@ -491,12 +511,17 @@ public class Enemy : MonoBehaviour {
 		stand.Add(chase);
 		stand.Add(flee);
 		stand.Add(followNoise);
+		stand.Add(toggleFlashlight);
 
 		sleep.Add(wakeUp);
 
 		wakeUp.Add(stand);
 
 		inspect.Add(use);
+		inspect.Add(sleep);
+		inspect.Add(toggleFlashlight);
+
+		use.Add(sleep);
 
 		patrol.Add(sleep);
 		patrol.Add(hurt);
@@ -505,18 +530,22 @@ public class Enemy : MonoBehaviour {
 		patrol.Add(chase);
 		patrol.Add(flee);
 		patrol.Add(followNoise);
+		patrol.Add(toggleFlashlight);
 
 		shoot.Add(sleep);
 		shoot.Add(chase);
 		shoot.Add(flee);
 		shoot.Add(soundAlarm);
+		shoot.Add(toggleFlashlight);
 
 		chase.Add(sleep);
 		chase.Add(shoot);
 		chase.Add(flee);
 		chase.Add(soundAlarm);
+		chase.Add(toggleFlashlight);
 		 
 		soundAlarm.Add(use);
+		soundAlarm.Add(toggleFlashlight);
 
 		followNoise.Add(sleep);
 		followNoise.Add(hurt);
@@ -524,12 +553,14 @@ public class Enemy : MonoBehaviour {
 		followNoise.Add(chaseNoise);
 		followNoise.Add(chase);
 		followNoise.Add(flee);
+		followNoise.Add(toggleFlashlight);
 
 		chaseNoise.Add(sleep);
 		chaseNoise.Add(hurt);
 		chaseNoise.Add(inspect);
 		chaseNoise.Add(chase);
 		chaseNoise.Add(flee);
+		chaseNoise.Add(toggleFlashlight);
 
 		RagDoll(transform, false);
 	}
@@ -564,10 +595,10 @@ public class Enemy : MonoBehaviour {
 	// Update is called once per frame
 	void Update() {
 		curFov = Mathf.Max(fov, curFov - 1.0f * Time.deltaTime);
-		curViewDis = Mathf.Max(viewDis, curViewDis - 1.0f * Time.deltaTime);
+		curViewDis = Mathf.Max(0.0001f, viewDis * lightLevel/maxLightLevel);//Mathf.Max(viewDis, curViewDis - 1.0f * Time.deltaTime);
 		if(Alarm.activated) {
 			curFov = alertFov;
-			curViewDis = viewDis*2;
+			//curViewDis = viewDis*2;
 		}
 
 		boredomLevel += Time.deltaTime;
@@ -599,6 +630,7 @@ public class Enemy : MonoBehaviour {
 			if(weapon != null) {
 				weapon.Drop();
 				weapon = null;
+				carryingObject = false;
 			}
 		}
 
@@ -634,7 +666,8 @@ public class Enemy : MonoBehaviour {
 
 	void LookForEnemy() {
 		enemyVisible = false;
-		if(GameObject.Find("Player") != null) {
+		RaptorInteraction player = GameObject.Find("Player").GetComponent<RaptorInteraction>();
+		if(player != null && player.health > 0) {
 			Transform enemyHead = Camera.main.transform;
 			if(enemyHead != null) {
 				enemyDiff = enemyHead.position - (transform.position + new Vector3(0, 1, 0));
@@ -684,6 +717,10 @@ public class Enemy : MonoBehaviour {
 				}
 			}
 
+			ShipGridFluid cellLight;
+			cell.fluids.TryGetValue("light", out cellLight);
+			lightLevel = cellLight != null ? cellLight.level : 0;
+
 			//Look for objects to inspect and bodies
 			List<ShipGridItem> contents = new List<ShipGridItem>();
 			contents.AddRange(cell.contents);
@@ -731,7 +768,7 @@ public class Enemy : MonoBehaviour {
 		if(!enemyVisible && sleepTime <= 0) {
 			sleepTime = time;
 		}
-		else {
+		else if(enemyVisible && sleepTime <= 0){
 			health = 0;
 		}
 	}
