@@ -226,6 +226,13 @@ public class RaptorInteraction : MonoBehaviour {
 		if(!isSlashing) {
 			isSlashing = true;
 			//animation stuff
+			if(isCrouching) {
+				if(Physics.Raycast(Camera.main.transform.position, transform.up, 1f)) {
+					isSlashing = false;
+					return;
+				}
+			}
+
 			int arm = Random.Range(0, 3);
 			if(arm == 0) {
 				arms.SetBool("leftArmSlash", true);
