@@ -14,6 +14,8 @@ public class RaptorInteraction : MonoBehaviour {
 	public float maxHealth = 10;	//the number of times you can get hit
 	public float attack = 20f;
 
+	public Enemy eatTarget;
+
 	//sound stuff
 	public float walkNoiseLevel = 1;
 	public float walkNoiseFalloff = 0.25f;
@@ -35,6 +37,7 @@ public class RaptorInteraction : MonoBehaviour {
 	protected Animator arms;
 	private AnimatorStateInfo currentState;
 	static int idleState = Animator.StringToHash("Base Layer.Idle");
+	static int crouchIdleState = Animator.StringToHash("Base Layer.crouching_Idle");
 
 	private bool prevGrounded = true;
 
@@ -87,7 +90,9 @@ public class RaptorInteraction : MonoBehaviour {
 		else {
 			//Die
 			fpc.enabled = false;
-			rigidbody.isKinematic = true;
+			rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+			toggleRotator(false);
+			arms.SetBool("isDead", true);
 		}
 	}
 
@@ -152,7 +157,7 @@ public class RaptorInteraction : MonoBehaviour {
 	void Animation() {
 		currentState = arms.GetCurrentAnimatorStateInfo(0);
 
-		if(currentState.nameHash == idleState) {
+		if(currentState.nameHash == idleState || currentState.nameHash == crouchIdleState) {
 			arms.SetBool("leftArmSlash", false);
 			arms.SetBool("rightArmSlash", false);
 			arms.SetBool("bothSlash", false);
@@ -177,6 +182,26 @@ public class RaptorInteraction : MonoBehaviour {
 			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2)) {
 				hit.transform.root.gameObject.SendMessage("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 			}
+
+			if (eatTarget != null){
+				eatTarget.transform.root.SendMessage("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+			}
+			else {
+				toggleRotator(true);
+				rigidbody.freezeRotation = false;
+				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+				arms.SetBool("isEating", false);
+				//Crouch(isCrouching);
+			}
+		}
+		//animation stuff
+		else if(Input.GetKeyUp(KeyCode.E)) {
+			eatTarget = null;
+			toggleRotator(true);
+			rigidbody.freezeRotation = false;
+			rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+			arms.SetBool("isEating", false);
+			//Crouch(isCrouching);
 		}
 
 		if(Input.GetKeyUp(KeyCode.F)) {
@@ -201,6 +226,13 @@ public class RaptorInteraction : MonoBehaviour {
 		if(!isSlashing) {
 			isSlashing = true;
 			//animation stuff
+			if(isCrouching) {
+				if(Physics.Raycast(Camera.main.transform.position, transform.up, 1f)) {
+					isSlashing = false;
+					return;
+				}
+			}
+
 			int arm = Random.Range(0, 3);
 			if(arm == 0) {
 				arms.SetBool("leftArmSlash", true);
@@ -236,19 +268,23 @@ public class RaptorInteraction : MonoBehaviour {
 	void Crouch(bool crouching) {
 		Transform cam = Camera.main.transform;
 		if(crouching) {
-			HOTween.To(cam, 0.3f, new TweenParms().Prop("localPosition", new Vector3(0f, -1f, 0f), false));
+			//HOTween.To(cam, 0.3f, new TweenParms().Prop("localPosition", new Vector3(0f, -1f, 0f), false));
 			//GetComponent<CapsuleCollider>().height = 1f;
 			fpc.walkSpeed = 1.75f;
 			fpc.strafeSpeed = 1.25f;
 			fpc.runSpeed = 1.75f;
 		}
 		else if(!crouching) {
-			HOTween.To(cam, 0.3f, new TweenParms().Prop("localPosition", new Vector3(0f, -0.325f, 0f), false));
+			if(Physics.Raycast(Camera.main.transform.position, transform.up, 1f)) {
+				return;
+			}
+			//HOTween.To(cam, 0.3f, new TweenParms().Prop("localPosition", new Vector3(0f, -0.325f, 0f), false));
 			//GetComponent<CapsuleCollider>().height = 1.5f;
 			fpc.walkSpeed = 4f;
 			fpc.strafeSpeed = 3;
 			fpc.runSpeed = 8f;
 		}
+		arms.SetBool("isCrouching", crouching);
 	}
 
 	void Pounce() {
@@ -314,16 +350,32 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	public void Eat(float amount) {
-		bloodSpurt.Play();
+		if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, 0.75f)) {
+			bloodSpurt.Play();
+		}
+
+		toggleRotator(false);
+		rigidbody.freezeRotation = true;
+		arms.SetBool("isEating", true);
+
+		/*if(!isCrouching) {
+			isCrouching = true;
+			Crouch(isCrouching);
+		}*/
+
 		if(health < maxHealth) {
 			health += 0.02f;
 			hud.health = health / maxHealth;
 		}
-		//print(health + " : " + hud.health);
 	}
 
 	public void Hurt(float damage) {
 		health -= 1;
 		hud.Deplete("health", 1.0f/maxHealth);
+	}
+
+	void toggleRotator(bool on){
+		GetComponent<SimpleMouseRotator>().enabled = on;
+		Camera.main.GetComponent<SimpleMouseRotator>().enabled = on;
 	}
 }
