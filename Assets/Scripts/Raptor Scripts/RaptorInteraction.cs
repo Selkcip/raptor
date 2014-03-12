@@ -358,10 +358,10 @@ public class RaptorInteraction : MonoBehaviour {
 		rigidbody.freezeRotation = true;
 		arms.SetBool("isEating", true);
 
-		if(!isCrouching) {
+		/*if(!isCrouching) {
 			isCrouching = true;
 			Crouch(isCrouching);
-		}
+		}*/
 
 		if(health < maxHealth) {
 			health += 0.02f;
