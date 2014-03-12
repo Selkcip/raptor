@@ -148,7 +148,7 @@ GameObject:
   - 23: {fileID: 2300006}
   - 114: {fileID: 11400012}
   m_Layer: 0
-  m_Name: HeatVisPlane
+  m_Name: FluidVisPlane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -173,7 +173,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 24.2981033, y: .645017624, z: -32}
+  m_LocalPosition: {x: -1.63182116, y: 1.13648701, z: -4.60889578}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400000}
@@ -234,7 +234,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100012}
   m_LocalRotation: {x: -3.71061544e-15, y: -6.3325011e-08, z: -3.46021429e-16, w: 1}
-  m_LocalPosition: {x: -6.35914503e-08, y: 0, z: .502103806}
+  m_LocalPosition: {x: -0, y: 0, z: .502103806}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400006}
@@ -245,7 +245,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100014}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: .0500000007}
+  m_LocalPosition: {x: -0, y: 0, z: .0500001907}
   m_LocalScale: {x: .0599999987, y: .0299999993, z: 1}
   m_Children: []
   m_Father: {fileID: 400006}
@@ -447,7 +447,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   crosshair: {fileID: 2800000, guid: 6126717f66eee427a971dfa205f7a21d, type: 3}
-  noiseIndicator: {fileID: 2800000, guid: 65a307bdc44ed4968b6325588449d934, type: 3}
+  noiseIndicator: {fileID: 2800000, guid: 3c052bc48c620a646a1df18bca5e388c, type: 3}
   maxHealth: 14
   attack: 20
   eatTarget: {fileID: 0}
@@ -576,7 +576,7 @@ MonoBehaviour:
   resolution: 10
   fieldSize: 1
   particleSize: 2
-  fluidType: heat
+  fluidType: light
   fluidScale: .25
   maxHeat: 25
   viewDis: 20
@@ -1451,7 +1451,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     y:
-      scalar: -.75999999
+      scalar: -1.45000005
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1867,7 +1867,7 @@ ParticleSystemRenderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: ff60a6c0e828d7e4892ea79a0777e81b, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -1884,7 +1884,7 @@ ParticleSystemRenderer:
   m_SortingFudge: 0
   m_NormalDirection: 1
   m_SortMode: 0
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}

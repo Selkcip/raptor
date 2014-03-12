@@ -282,7 +282,6 @@ public class Enemy : MonoBehaviour {
 				return knockedOut && sleepTime <= 0;
 			},
 			delegate() {
-				print("wake up");
 				stateName = "Wake Up";
 				speed = 0;
 
