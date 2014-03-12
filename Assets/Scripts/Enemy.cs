@@ -215,6 +215,8 @@ public class Enemy : MonoBehaviour {
 
 				enemy.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1.0f);
 
+				useTimer += Time.deltaTime;
+
 				if(useTarget != null) {
 					useTargetPos = useTarget.position;
 					if(usingObject && (leftHandPos != useTargetPos || leftHandWeight < 1)) {
@@ -233,9 +235,12 @@ public class Enemy : MonoBehaviour {
 					useTarget = null;
 				}
 
-				useTimer += Time.deltaTime;
+				if(!usingObject) {
+					useTimer = 0;
+					return true;
+				}
 
-				return !usingObject;
+				return false;
 			}
 		);
 
@@ -653,7 +658,9 @@ public class Enemy : MonoBehaviour {
 		if(health > 0 && !knockedOut) {
 			rigidbody.isKinematic = false;
 			targetDir.Normalize();
-			character.Move(targetDir * speed, crouch, false, targetPos);
+			float lookY = transform.position.y+Mathf.Max(-1, Mathf.Min(2, targetPos.y));
+			Vector3 lookPos = new Vector3(targetPos.x, lookY, targetPos.z);
+			character.Move(targetDir * speed, crouch, false, lookPos);
 		}
 
 		Animation();
