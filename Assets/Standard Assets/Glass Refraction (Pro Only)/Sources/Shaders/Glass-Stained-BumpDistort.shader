@@ -5,6 +5,7 @@
 Shader "FX/Glass/Stained BumpDistort" {
 Properties {
 	_BumpAmt  ("Distortion", range (0,128)) = 10
+	_ColorTint ("Tint", Color) = (1,1,1,1)
 	_MainTex ("Tint Color (RGB)", 2D) = "white" {}
 	_BumpMap ("Normalmap", 2D) = "bump" {}
 }
@@ -31,6 +32,7 @@ Category {
 			Tags { "LightMode" = "Always" }
 			
 CGPROGRAM
+#pragma profiles arbfp1
 #pragma vertex vert
 #pragma fragment frag
 #pragma fragmentoption ARB_precision_hint_fastest
@@ -46,13 +48,15 @@ struct v2f {
 	float4 uvgrab : TEXCOORD0;
 	float2 uvbump : TEXCOORD1;
 	float2 uvmain : TEXCOORD2;
+	float3 normal : TEXCOORD3;
 };
 
 float _BumpAmt;
+float4 _ColorTint;
 float4 _BumpMap_ST;
 float4 _MainTex_ST;
 
-v2f vert (appdata_t v)
+v2f vert (appdata_base v)
 {
 	v2f o;
 	o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
@@ -65,6 +69,7 @@ v2f vert (appdata_t v)
 	o.uvgrab.zw = o.vertex.zw;
 	o.uvbump = TRANSFORM_TEX( v.texcoord, _BumpMap );
 	o.uvmain = TRANSFORM_TEX( v.texcoord, _MainTex );
+	o.normal = mul( (float3x3)UNITY_MATRIX_MVP, v.normal );
 	return o;
 }
 
@@ -76,13 +81,14 @@ sampler2D _MainTex;
 half4 frag( v2f i ) : COLOR
 {
 	// calculate perturbed coordinates
-	half2 bump = UnpackNormal(tex2D( _BumpMap, i.uvbump )).rg; // we could optimize this by just reading the x & y without reconstructing the Z
+	//i.normal = (i.normal+1.0)*0.5;
+	half2 bump = i.normal.xy+UnpackNormal(tex2D( _BumpMap, i.uvbump )).rg; // we could optimize this by just reading the x & y without reconstructing the Z
 	float2 offset = bump * _BumpAmt * _GrabTexture_TexelSize.xy;
 	i.uvgrab.xy = offset * i.uvgrab.z + i.uvgrab.xy;
 	
 	half4 col = tex2Dproj( _GrabTexture, UNITY_PROJ_COORD(i.uvgrab));
 	half4 tint = tex2D( _MainTex, i.uvmain );
-	return col * tint;
+	return col * tint * _ColorTint;
 }
 ENDCG
 		}
