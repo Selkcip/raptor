@@ -430,7 +430,7 @@ public class Enemy : MonoBehaviour {
 
 		State soundAlarm = new State(
 			delegate() {
-				return !enemySeen && !Alarm.activated;
+				return !enemySeen && Alarm.alarms.Count > 0 && !Alarm.activated;
 			},
 			delegate() {
 				stateName = "Sound Alarm";
