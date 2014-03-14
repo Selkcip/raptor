@@ -61,8 +61,8 @@ public class RaptorInteraction : MonoBehaviour {
 	private float meleeRange = 1.0f;
 
 	//Collection data
-	private float mapAmountAcquired = 0;
-	private int money = 0;
+	public static float mapAmountAcquired = 0;
+	public static int money = 0;
 	public static float notoriety;
 
 	// Use this for initialization
