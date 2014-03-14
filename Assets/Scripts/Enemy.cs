@@ -394,8 +394,11 @@ public class Enemy : MonoBehaviour {
 			delegate() {
 				stateName = "Hurt";
 
-				curFov = alertFov;
-				curViewDis = viewDis * 2;
+				curFov = 360;// alertFov;
+				//curViewDis = viewDis * 2;
+				noticeTimer = noticeTime;
+				//enemyVisible = true;
+				//enemySeen = true;
 
 				oldHealth = health;
 
@@ -510,14 +513,14 @@ public class Enemy : MonoBehaviour {
 
 		State toggleFlashlight = new State(
 			delegate() {
-				return weapon != null && weapon.flashLight != null && (lightLevel <= minLightLevel || lightLevel >= maxLightLevel);
+				return weapon != null && weapon.flashLight != null && (lightLevel <= minLightLevel && !weapon.flashLight.enabled || lightLevel >= maxLightLevel && weapon.flashLight.enabled);
 			},
 			delegate() {
 				stateName = "Toggle Flashlight";
 
 				weapon.flashLight.enabled = lightLevel <= minLightLevel ? true : false;
 
-				return noiseLevel < alarmedNoiseLevel;
+				return true;
 			}
 		);
 

@@ -27,6 +27,9 @@ public class Weapon : ShipGridItem {
 		if(dropped) {
 			Drop();
 		}
+		else {
+			PickUp();
+		}
 	}
 
 	public bool Reload() {
@@ -41,7 +44,7 @@ public class Weapon : ShipGridItem {
 	public bool Use(GameObject user) {
 		if(user.tag == "enemy" && dropped) {
 			Enemy enemy = user.GetComponent<Enemy>();
-			if(enemy.weaponAnchor != null) {
+			if(enemy.weaponAnchor != null && enemy.weapon == null) {
 				PickUp(enemy);
 			}
 		}
@@ -70,17 +73,21 @@ public class Weapon : ShipGridItem {
 		base.Update();
 	}
 
-	public void PickUp(Enemy enemy) {
+	public void PickUp(Enemy enemy = null) {
 		dropped = false;
 		rigidbody.isKinematic = true;
 		collider.enabled = false;
 		interestLevel = 10000000;
-		enemy.weapon = this;
-		enemy.carryingObject = true;
-		transform.parent = enemy.weaponAnchor;
+		if(enemy != null) {
+			enemy.weapon = this;
+			enemy.carryingObject = true;
+			transform.parent = enemy.weaponAnchor;
+		}
 		transform.localPosition = Vector3.zero;
 		transform.localEulerAngles = Vector3.zero;
-		cell.RemoveItem(this);
+		if(cell != null) {
+			cell.RemoveItem(this);
+		}
 	}
 
 	// Update is called once per frame
