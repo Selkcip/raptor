@@ -42,7 +42,7 @@ public class Alarm : MonoBehaviour {
 			ShipGrid grid = gridObject.GetComponent<ShipGrid>();
 			ShipGridCell cell = grid.GetPos(transform.position);
 
-			grid.AddFluid(transform.position, "noise", -50, 0.75f, 0.01f);
+			grid.AddFluid(transform.position, "noise", -100, 0.01f, 0.01f);
 		}
 
 		Invoke("SoundAlarm", 1);
