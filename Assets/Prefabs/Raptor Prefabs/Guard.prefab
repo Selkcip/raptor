@@ -2151,7 +2151,7 @@ MonoBehaviour:
   carryingObject: 0
   money: 0
   heat: 100
-  heatFalloff: .100000001
+  heatFalloff: .5
   sleepTime: 0
   stateName: 
   knockedOut: 0
