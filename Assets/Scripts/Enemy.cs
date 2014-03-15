@@ -225,6 +225,7 @@ public class Enemy : MonoBehaviour {
 						leftHandWeight = Mathf.Min(1, useTimer / useTime);
 					}
 					else {
+						SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/whatdoesthisbuttondo"), SoundManager.SoundType.Dialogue, gameObject);
 						usingObject = false;
 						useTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 						useTarget = null;
@@ -246,7 +247,12 @@ public class Enemy : MonoBehaviour {
 
 		State sleep = new State(
 			delegate() {
-				return sleepTime > 0;
+				if(sleepTime > 0) {
+					SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/dying"), SoundManager.SoundType.Dialogue, gameObject);
+					return true;
+				}
+				return false;
+				//return sleepTime > 0;
 			},
 			delegate() {
 				stateName = "Sleep";
@@ -279,7 +285,12 @@ public class Enemy : MonoBehaviour {
 
 		State wakeUp = new State(
 			delegate() {
-				return knockedOut && sleepTime <= 0;
+				if(knockedOut && sleepTime <= 0) {
+					SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/iguessipassedout"), SoundManager.SoundType.Dialogue, gameObject);
+					return true;
+				}
+				return false;
+				//return knockedOut && sleepTime <= 0;
 			},
 			delegate() {
 				stateName = "Wake Up";
@@ -366,6 +377,7 @@ public class Enemy : MonoBehaviour {
 				targetPos = enemyPos;
 
 				if(!enemySeen) {
+					//SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/wherediditgo"), SoundManager.SoundType.Dialogue, gameObject);
 					return true;
 				}
 
@@ -393,6 +405,8 @@ public class Enemy : MonoBehaviour {
 			},
 			delegate() {
 				stateName = "Hurt";
+
+				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/hurt"), SoundManager.SoundType.Dialogue, gameObject);
 
 				curFov = 360;// alertFov;
 				//curViewDis = viewDis * 2;
@@ -635,7 +649,8 @@ public class Enemy : MonoBehaviour {
 			states.Update();
 			ShipGrid.AddFluidI(transform.position, "heat", heat*Time.deltaTime, heatFalloff, 0.01f);
 		}
-		else {
+		else if(!knockedOut) {
+			SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/dying"), SoundManager.SoundType.Dialogue, gameObject);
 			knockedOut = true;
 			character.enabled = false;
 			rigidbody.isKinematic = true;
@@ -688,7 +703,7 @@ public class Enemy : MonoBehaviour {
 	}
 
 	void LookForEnemy() {
-		enemyVisible = false;
+		//enemyVisible = false;
 		RaptorInteraction player = GameObject.Find("Player").GetComponent<RaptorInteraction>();
 		if(player != null && player.health > 0) {
 			Transform enemyHead = Camera.main.transform;
@@ -706,7 +721,7 @@ public class Enemy : MonoBehaviour {
 						if(hit.collider.tag == "Player" || (hit.collider.transform.parent != null && hit.collider.transform.parent.tag == "Player")) {
 							noticeTimer += (1.0f-hit.distance/curViewDis)*Time.deltaTime;
 							if(noticeTimer >= noticeTime) {
-								enemyVisible = true;
+								//enemyVisible = true;
 								enemySeen = true;
 								enemyPos = enemyHead.position;
 								//enemyDir = enemyHead.forward;
@@ -714,6 +729,18 @@ public class Enemy : MonoBehaviour {
 						}
 					}
 				}
+			}
+		}
+		if(enemySeen) {
+			if(!enemyVisible) {
+				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/sweetjesusisthataraptor"), SoundManager.SoundType.Dialogue, gameObject);
+				enemyVisible = true;
+			}
+		}
+		else {
+			if(enemyVisible) {
+				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/wherediditgo"), SoundManager.SoundType.Dialogue, gameObject);
+				enemyVisible = false;
 			}
 		}
 	}
