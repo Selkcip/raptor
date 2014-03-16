@@ -9,7 +9,8 @@ Material:
   m_Name: PrisonTubeLiquid
   m_Shader: {fileID: 4800000, guid: 963484209d11fd7f110076aa44295342, type: 3}
   m_ShaderKeywords:
-  - GLOW11_GLOW_MAINCOLOR
+  - GLOW11_GLOW_GLOWCOLOR
+  - GLOW11_MULTIPLY_MAINTEX_ALPHA
   m_CustomRenderQueue: -1
   m_SavedProperties:
     serializedVersion: 2
@@ -30,13 +31,6 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _GlowTex
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
           name: _Thickness
         second:
           m_Texture: {fileID: 0}
@@ -45,6 +39,13 @@ Material:
       data:
         first:
           name: _Mask
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _GlowTex
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
@@ -58,10 +59,6 @@ Material:
         first:
           name: _BumpAmt
         second: 52.5714302
-      data:
-        first:
-          name: _GlowStrength
-        second: 1
       data:
         first:
           name: _Scale
@@ -78,6 +75,10 @@ Material:
         first:
           name: _Focus
         second: -100
+      data:
+        first:
+          name: _GlowStrength
+        second: .680000007
     m_Colors:
       data:
         first:
@@ -89,10 +90,6 @@ Material:
         second: {r: .5, g: .5, b: .5, a: 1}
       data:
         first:
-          name: _GlowColor
-        second: {r: 1, g: 1, b: 1, a: 1}
-      data:
-        first:
           name: _SubColor
         second: {r: 1, g: 1, b: 1, a: 1}
       data:
@@ -101,5 +98,9 @@ Material:
         second: {r: 0, g: 0, b: 0, a: 0}
       data:
         first:
+          name: _GlowColor
+        second: {r: 1, g: .656934321, b: 0, a: 1}
+      data:
+        first:
           name: _ColorTint
-        second: {r: 1, g: .546539187, b: 0, a: 1}
+        second: {r: .996078432, g: .654901981, b: 0, a: 1}

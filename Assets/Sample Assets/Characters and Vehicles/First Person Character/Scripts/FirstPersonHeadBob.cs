@@ -150,7 +150,7 @@ public class FirstPersonHeadBob : MonoBehaviour, IEventListener {
                 }
                 else {
 
-                    if(headBobCycle > nextStepTime) {
+					if(headBobCycle > nextStepTime && footstepSounds.Length > 0) {
                         // time for next footstep sound:
 
                         nextStepTime = headBobCycle + .5f;
