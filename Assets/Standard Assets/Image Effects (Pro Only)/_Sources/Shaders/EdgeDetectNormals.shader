@@ -2,6 +2,7 @@
 Shader "Hidden/EdgeDetect" { 
 	Properties {
 		_MainTex ("Base (RGB)", 2D) = "" {}
+		_FluidTex ("Fluid (RGB)", 2D) = "" {}
 	}
 
 	CGINCLUDE
@@ -19,6 +20,7 @@ Shader "Hidden/EdgeDetect" {
 	};
 
 	sampler2D _MainTex;
+	sampler2D _FluidTex;
 	uniform float4 _MainTex_TexelSize;
 
 	sampler2D _CameraDepthNormalsTexture;
@@ -234,7 +236,9 @@ Shader "Hidden/EdgeDetect" {
 		float Sobel = sqrt(SobelX * SobelX + SobelY * SobelY);
 
 		Sobel = 1.0-pow(saturate(Sobel), _Exponent);
-		return Sobel * lerp(tex2D(_MainTex, i.uv[0].xy), _BgColor, _BgFade);
+		//return Sobel * lerp(tex2D(_FluidTex, i.uv[0].xy), _BgColor, _BgFade);
+		return (1.0-Sobel) * _BgColor + tex2D(_FluidTex, i.uv[0].xy);
+		//return tex2D(_FluidTex, i.uv[0].xy);// * lerp(tex2D(_MainTex, i.uv[0].xy), _BgColor, _BgFade);
 	}
 
 	half4 fragRobert(v2f i) : COLOR {				

@@ -23,6 +23,7 @@ class EdgeDetectEffectNormals extends PostEffectsBase {
 	public var sampleDist : float = 1.0f;
 	public var edgesOnly : float = 0.0f;
 	public var edgesOnlyBgColor : Color = Color.white;
+	public static var fluidTex : Texture2D;
 
 	public var edgeDetectShader : Shader;
 	private var edgeDetectMaterial : Material = null;
@@ -57,7 +58,7 @@ class EdgeDetectEffectNormals extends PostEffectsBase {
 		SetCameraFlag();
 	}
 	
-	@ImageEffectOpaque
+	//@ImageEffectOpaque
 	function OnRenderImage (source : RenderTexture, destination : RenderTexture) {	
 		if (CheckResources () == false) {
 			Graphics.Blit (source, destination);
@@ -71,8 +72,15 @@ class EdgeDetectEffectNormals extends PostEffectsBase {
 		edgeDetectMaterial.SetVector ("_BgColor", edgesOnlyBgColor);	
 		edgeDetectMaterial.SetFloat ("_Exponent", edgeExp);
 		edgeDetectMaterial.SetFloat ("_Threshold", lumThreshhold);
+		if(fluidTex != null){
+			edgeDetectMaterial.SetTexture ("_FluidTex", fluidTex);
+		}
 		
-		Graphics.Blit (source, destination, edgeDetectMaterial, mode);
+		//if(fluidTex != null){
+			//Graphics.Blit (fluidTex, destination, edgeDetectMaterial, mode);
+		//}else{
+			Graphics.Blit (source, destination, edgeDetectMaterial, mode);
+		//}
 	}
 }
 
