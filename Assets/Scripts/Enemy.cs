@@ -54,10 +54,12 @@ public class Enemy : MonoBehaviour {
 	Vector3 enemyDir;
 	float noticeTimer = 0;
 	public bool enemyVisible = false;
+	bool mentionEnemyVisible = false;
 	public bool enemySeen = false;
 	public float noiseLevel = 0;
 	public Vector3 noiseDir = new Vector3();
 	public float lightLevel = 0;
+	public float oldLightLevel = 0;
 	public float maxLightLevel = 100;
 	public float minLightLevel = 10;
 
@@ -86,6 +88,8 @@ public class Enemy : MonoBehaviour {
 
 		curFov = fov;
 		curViewDis = viewDis;
+
+		oldLightLevel = lightLevel;
 
 		states = new StateMachine();
 
@@ -225,7 +229,9 @@ public class Enemy : MonoBehaviour {
 						leftHandWeight = Mathf.Min(1, useTimer / useTime);
 					}
 					else {
-						SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/whatdoesthisbuttondo"), SoundManager.SoundType.Dialogue, gameObject);
+						if(useTarget.tag != "enemy") {
+							SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/whatdoesthisbuttondo"), SoundManager.SoundType.Dialogue, gameObject);
+						}
 						usingObject = false;
 						useTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 						useTarget = null;
@@ -270,6 +276,8 @@ public class Enemy : MonoBehaviour {
 					GetComponent<CapsuleCollider>().enabled = false;
 					enemy.enabled = false;
 
+					gameObject.GetComponent<ShipGridItem>().interestLevel = 0.001f;
+
 					if(weapon != null) {
 						weapon.Drop();
 						weapon = null;
@@ -304,6 +312,8 @@ public class Enemy : MonoBehaviour {
 					RagDoll(transform, false);
 					collider.enabled = true;
 					character.enabled = true;
+
+					gameObject.GetComponent<ShipGridItem>().interestLevel = Mathf.Infinity;
 				}
 				else {
 					enemy.SetBool("GetUpFromBelly", false);
@@ -447,7 +457,12 @@ public class Enemy : MonoBehaviour {
 
 		State soundAlarm = new State(
 			delegate() {
-				return !enemySeen && Alarm.alarms.Count > 0 && !Alarm.activated;
+				if(!enemySeen && Alarm.alarms.Count > 0 && !Alarm.activated) {
+					SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/soundthealarm"), SoundManager.SoundType.Dialogue, gameObject);
+					return true;
+				}
+				return false;
+				//return !enemySeen && Alarm.alarms.Count > 0 && !Alarm.activated;
 			},
 			delegate() {
 				stateName = "Sound Alarm";
@@ -532,7 +547,9 @@ public class Enemy : MonoBehaviour {
 			delegate() {
 				stateName = "Toggle Flashlight";
 
-				weapon.flashLight.enabled = lightLevel <= minLightLevel ? true : false;
+				if(weapon != null && weapon.flashLight != null) {
+					weapon.flashLight.enabled = lightLevel <= minLightLevel ? true : false;
+				}
 
 				return true;
 			}
@@ -703,7 +720,7 @@ public class Enemy : MonoBehaviour {
 	}
 
 	void LookForEnemy() {
-		//enemyVisible = false;
+		enemyVisible = false;
 		RaptorInteraction player = GameObject.Find("Player").GetComponent<RaptorInteraction>();
 		if(player != null && player.health > 0) {
 			Transform enemyHead = Camera.main.transform;
@@ -721,7 +738,7 @@ public class Enemy : MonoBehaviour {
 						if(hit.collider.tag == "Player" || (hit.collider.transform.parent != null && hit.collider.transform.parent.tag == "Player")) {
 							noticeTimer += (1.0f-hit.distance/curViewDis)*Time.deltaTime;
 							if(noticeTimer >= noticeTime) {
-								//enemyVisible = true;
+								enemyVisible = true;
 								enemySeen = true;
 								enemyPos = enemyHead.position;
 								//enemyDir = enemyHead.forward;
@@ -732,15 +749,19 @@ public class Enemy : MonoBehaviour {
 			}
 		}
 		if(enemySeen) {
-			if(!enemyVisible) {
-				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/sweetjesusisthataraptor"), SoundManager.SoundType.Dialogue, gameObject);
-				enemyVisible = true;
+			if(!mentionEnemyVisible) {
+				List<string> lines = new List<string>();
+				lines.Add("sweetjesusisthataraptor");
+				lines.Add("whatwasthat");
+				lines.Add("didyouseethat");
+				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/"+lines[Random.Range(0, lines.Count-1)]), SoundManager.SoundType.Dialogue, gameObject);
+				mentionEnemyVisible = true;
 			}
 		}
 		else {
-			if(enemyVisible) {
+			if(mentionEnemyVisible) {
 				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/wherediditgo"), SoundManager.SoundType.Dialogue, gameObject);
-				enemyVisible = false;
+				mentionEnemyVisible = false;
 			}
 		}
 	}
@@ -771,6 +792,13 @@ public class Enemy : MonoBehaviour {
 			cell.fluids.TryGetValue("light", out cellLight);
 			float newLight = cellLight != null ? cellLight.level : 0;
 			lightLevel += (newLight - lightLevel) * 0.1f;
+			if(oldLightLevel >= minLightLevel && lightLevel < minLightLevel) {
+				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/icantseeanything"), SoundManager.SoundType.Dialogue, gameObject);
+				oldLightLevel = lightLevel;
+			}
+			else if(lightLevel >= maxLightLevel) {
+				oldLightLevel = lightLevel;
+			}
 
 			//Look for objects to inspect and bodies
 			List<ShipGridItem> contents = new List<ShipGridItem>();
@@ -813,6 +841,12 @@ public class Enemy : MonoBehaviour {
 						Destroy(gameObject);
 					}
 				}
+			}
+		}
+		else {
+			if(knockedOut) {
+				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/heymanareyouok"), SoundManager.SoundType.Dialogue, user);
+				sleepTime = 0;
 			}
 		}
 	}
@@ -873,5 +907,6 @@ public class Enemy : MonoBehaviour {
 		ragDoll = on;
 		RagdollHelper helper = GetComponent<RagdollHelper>();
 		helper.ragdolled = on;
+		rigidbody.isKinematic = on;
 	}
 }

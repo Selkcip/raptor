@@ -8,12 +8,16 @@ Properties {
 	_ColorTint ("Tint", Color) = (1,1,1,1)
 	_MainTex ("Tint Color (RGB)", 2D) = "white" {}
 	_BumpMap ("Normalmap", 2D) = "bump" {}
+	 _GlowTex ("Glow", 2D) = "" {}
+    _GlowColor ("Glow Color", Color)  = (1,1,1,1)
+    _GlowStrength ("Glow Strength", Float) = 1.0
 }
 
 Category {
 
 	// We must be transparent, so other objects are drawn before this one.
-	Tags { "Queue"="Transparent" "RenderType"="Opaque" }
+	//Tags { "Queue"="Transparent" }
+	Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderEffect"="Glow11Transparent" "RenderType"="Glow11Transparent" }
 
 
 	SubShader {
@@ -105,5 +109,7 @@ ENDCG
 		}
 	}
 }
+
+CustomEditor "GlowMatInspector"
 
 }
