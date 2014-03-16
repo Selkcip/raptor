@@ -8397,6 +8397,10 @@ MonoBehaviour:
   - {x: -1.5, y: 0, z: .5}
   - {x: -2, y: 0, z: -.5}
   - {x: 1.5, y: 0, z: -.5}
+  - {x: 2, y: 0, z: .5}
+  - {x: -1.5, y: 0, z: .5}
+  - {x: -2, y: 0, z: -.5}
+  - {x: 1.5, y: 0, z: -.5}
   angleError: 8
   areaError: 15
   hardAngle: 88
