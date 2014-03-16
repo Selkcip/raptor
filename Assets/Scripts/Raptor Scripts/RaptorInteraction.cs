@@ -49,6 +49,10 @@ public class RaptorInteraction : MonoBehaviour {
 
 	private bool isCrouching = false;
 
+	//sound stuff
+	bool eatSoundPlaying = false;
+	bool dieSoundPlaying = false;
+
 	private FirstPersonCharacter fpc;
 	private RaptorHUD hud;
 
@@ -93,6 +97,10 @@ public class RaptorInteraction : MonoBehaviour {
 			rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
 			toggleRotator(false);
 			arms.SetBool("isDead", true);
+			if(!dieSoundPlaying) {
+				dieSoundPlaying = true;
+				SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/dying2"), SoundManager.SoundType.Sfx);
+			}
 		}
 	}
 
@@ -162,6 +170,12 @@ public class RaptorInteraction : MonoBehaviour {
 			arms.SetBool("rightArmSlash", false);
 			arms.SetBool("bothSlash", false);
 		}
+
+		//Eating sound stuff
+		if(arms.GetBool("isEating") && !eatSoundPlaying) {
+			eatSoundPlaying = true;
+			SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/eating1"), SoundManager.SoundType.Sfx);
+		}
 	}
 
 	void Controls() {
@@ -191,7 +205,7 @@ public class RaptorInteraction : MonoBehaviour {
 				rigidbody.freezeRotation = false;
 				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 				arms.SetBool("isEating", false);
-				//Crouch(isCrouching);
+				eatSoundPlaying = false;
 			}
 		}
 		//animation stuff
@@ -201,7 +215,7 @@ public class RaptorInteraction : MonoBehaviour {
 			rigidbody.freezeRotation = false;
 			rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 			arms.SetBool("isEating", false);
-			//Crouch(isCrouching);
+			eatSoundPlaying = false;
 		}
 
 		if(Input.GetKeyUp(KeyCode.F)) {
@@ -226,12 +240,15 @@ public class RaptorInteraction : MonoBehaviour {
 			int arm = Random.Range(0, 3);
 			if(arm == 0) {
 				arms.SetBool("leftArmSlash", true);
+				SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/slash1"), SoundManager.SoundType.Sfx);
 			}
 			else if(arm == 1) {
 				arms.SetBool("rightArmSlash", true);
+				SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/slash1"), SoundManager.SoundType.Sfx);
 			}
 			else {
 				arms.SetBool("bothSlash", true);
+				SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/slash2"), SoundManager.SoundType.Sfx);
 			}
 			//hit detection
 			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, meleeRange)) {
@@ -251,7 +268,12 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	IEnumerator SlashCoolDown() {
-		yield return new WaitForSeconds(0.4f);
+		if(isCrouching) {
+			yield return new WaitForSeconds(0.75f);
+		}
+		else {
+			yield return new WaitForSeconds(0.4f);
+		}
 		isSlashing = false;
 	}
 
@@ -363,6 +385,7 @@ public class RaptorInteraction : MonoBehaviour {
 	public void Hurt(float damage) {
 		health -= 1;
 		hud.Deplete("health", 1.0f/maxHealth);
+		SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
 	}
 
 	void toggleRotator(bool on){
