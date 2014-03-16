@@ -276,6 +276,7 @@ public class RaptorInteraction : MonoBehaviour {
 		}
 		else if(!crouching) {
 			if(Physics.Raycast(Camera.main.transform.position, transform.up, 1f)) {
+				isCrouching = true;
 				return;
 			}
 			//HOTween.To(cam, 0.3f, new TweenParms().Prop("localPosition", new Vector3(0f, -0.325f, 0f), false));
