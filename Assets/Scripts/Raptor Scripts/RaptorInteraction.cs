@@ -335,15 +335,18 @@ public class RaptorInteraction : MonoBehaviour {
 		else {
 			GUI.color = Color.white;
 		}
-		float x = (Screen.width / 2) - (crosshair.width / 6);
-		float y = (Screen.height / 2) - (crosshair.height / 6);
-		GUI.DrawTexture(new Rect(x, y, crosshair.width / 3, crosshair.height / 3), crosshair);
+		if(!ShipDoor.escaping) {
+			float x = (Screen.width / 2) - (crosshair.width / 6);
+			float y = (Screen.height / 2) - (crosshair.height / 6);
+			GUI.DrawTexture(new Rect(x, y, crosshair.width / 3, crosshair.height / 3), crosshair);
 
-		float soundScale = noiseLevel/runNoiseLevel;
-		soundScale += soundScale > 0 ? 1 : 0;
-		x = (Screen.width / 2) - (noiseIndicator.width / 6) * soundScale;
-		y = (Screen.height / 2) - (noiseIndicator.height / 6) * soundScale;
-		GUI.DrawTexture(new Rect(x, y, noiseIndicator.width / 3 * soundScale, noiseIndicator.height / 3 * soundScale), noiseIndicator);
+			float soundScale = noiseLevel / runNoiseLevel;
+			soundScale += soundScale > 0 ? 1 : 0;
+			x = (Screen.width / 2) - (noiseIndicator.width / 6) * soundScale;
+			y = (Screen.height / 2) - (noiseIndicator.height / 6) * soundScale;
+
+			GUI.DrawTexture(new Rect(x, y, noiseIndicator.width / 3 * soundScale, noiseIndicator.height / 3 * soundScale), noiseIndicator);
+		}
 	}
 
 	bool InAttackRange() {

@@ -11,18 +11,21 @@ public class ShipDoor : MonoBehaviour {
 	private Transform ship;
 
 	[SerializeField]
+	private BlackHole vacuum;
+
+	[SerializeField]
 	private Camera shipCam;
+
+	public static bool escaping = false;
 
 	// Use this for initialization
 	void Start () {
-
+		CloseDoor();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetKeyDown(KeyCode.L)) {
-			OpenDoor();
-		}
+
 	}
 
 	void OpenDoor() {
@@ -30,8 +33,19 @@ public class ShipDoor : MonoBehaviour {
 		HOTween.To(lowDoor, 10f, new TweenParms().Prop("localPosition", new Vector3(0f, -4f, 0f), true));
 	}
 
+	void CloseDoor() {
+		HOTween.To(upDoor, 0.1f, new TweenParms().Prop("localPosition", new Vector3(0f, -4f, 0f), true));
+		HOTween.To(lowDoor, 0.1f, new TweenParms().Prop("localPosition", new Vector3(0f, 4f, 0f), true));
+	}
+
 	void OnTriggerEnter(Collider other) {
 		OpenDoor();
+		escaping = true;
+		vacuum.active = true;
+		Camera.main.tag = null;
+		shipCam.camera.enabled = true;
+		shipCam.tag = "MainCamera";
+	
 		if(other.transform.name == "Player") {
 			GameObject hud = GameObject.Find("HUD");
 
@@ -39,11 +53,9 @@ public class ShipDoor : MonoBehaviour {
 				child.gameObject.SetActive(false);
 			}
 
-			foreach(Transform child in other.transform) {
-				child.gameObject.SetActive(false);
-			}
+			other.transform.position = new Vector3(69f, 420f, 1337f);
 
-			shipCam.tag = "MainCamera";
+			//shipCam.camera.enabled = true;
 
 			StartCoroutine("ShipTween");
 		}
