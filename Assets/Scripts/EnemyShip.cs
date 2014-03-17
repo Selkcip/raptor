@@ -21,12 +21,12 @@ public class EnemyShip : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update() {
-        Vector3 difference = player.transform.position - transform.position;
-        float distance = difference.sqrMagnitude;
+        Vector3 targetDirection = player.transform.position - transform.position;
+        float distance = targetDirection.magnitude;
 		if (!player.GetComponent<PlayerShipController>().isCloaked && distance <= detectionRange)
 		{
 			// aim and fire at player
-			Vector3 targetDirection = player.transform.position - transform.position;
+			targetDirection += (Vector3)(player.rigidbody2D.velocity - rigidbody2D.velocity) * targetDirection.magnitude / bulletSpeed;
 			float diffAngle = Vector2.Angle(transform.up, targetDirection); // angle between target direction and current
 			// determine if left or right
 			float targetAngle = Vector2.Angle(Vector2.up, targetDirection); // preliminary target angle
