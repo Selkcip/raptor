@@ -194,11 +194,11 @@ public class RaptorInteraction : MonoBehaviour {
 		if(Input.GetKey(KeyCode.E)) {
 			RaycastHit hit;
 			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2)) {
-				hit.transform.root.gameObject.SendMessage("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+				hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 			}
 
 			if (eatTarget != null){
-				eatTarget.transform.root.SendMessage("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+				eatTarget.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 			}
 			else {
 				toggleRotator(true);
@@ -255,10 +255,12 @@ public class RaptorInteraction : MonoBehaviour {
 				if(hit.transform.tag == "enemy") {
 					//do damage
 					if(isPouncing) {
-						hit.transform.root.GetComponent<Enemy>().Hurt(1000);
+						//hit.transform.root.GetComponent<Enemy>().Hurt(1000);
+						hit.transform.SendMessageUpwards("Hurt", 1000, SendMessageOptions.DontRequireReceiver);
 					}
 					else {
-						hit.transform.root.GetComponent<Enemy>().Hurt(attack);
+						//hit.transform.root.GetComponent<Enemy>().Hurt(attack);
+						hit.transform.SendMessageUpwards("Hurt", attack, SendMessageOptions.DontRequireReceiver);					
 					}
 					bloodSpurt.Play();
 				}
@@ -306,7 +308,7 @@ public class RaptorInteraction : MonoBehaviour {
 			isPouncing = true;
 			fpc.enabled = false;
 			fpc.grounded = false;
-			rigidbody.drag = 1;
+			rigidbody.drag = 0;
 			rigidbody.AddForce(transform.forward * 15f, ForceMode.Impulse);
 			rigidbody.AddForce(transform.up * 5.5f, ForceMode.Impulse);
 		}
@@ -319,7 +321,8 @@ public class RaptorInteraction : MonoBehaviour {
 			fpc.enabled = true;
 			//Chain pouncing
 			if(other.gameObject.tag == "enemy") {
-				other.transform.root.GetComponent<Enemy>().KnockOut(knockOutTime);
+				//other.transform.root.GetComponent<Enemy>().KnockOut(knockOutTime);
+				other.transform.SendMessageUpwards("KnockOut", knockOutTime, SendMessageOptions.DontRequireReceiver);
 				chainPounce = true;
 			}
 		}
