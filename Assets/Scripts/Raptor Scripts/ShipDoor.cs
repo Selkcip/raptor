@@ -33,13 +33,16 @@ public class ShipDoor : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		OpenDoor();
 		if(other.transform.name == "Player") {
-			GameObject.Find("HUD").SetActive(false);
-			other.enabled = false;
-			other.GetComponent<FirstPersonCharacter>().enabled = false;
-			other.GetComponent<SimpleMouseRotator>().enabled = false;
-			other.rigidbody.isKinematic = true;
-			//Camera.main.transform.GetComponent<SimpleMouseRotator>().enabled = false;
-			Camera.main.enabled = false;
+			GameObject hud = GameObject.Find("HUD");
+
+			foreach(Transform child in hud.transform) {
+				child.gameObject.SetActive(false);
+			}
+
+			foreach(Transform child in other.transform) {
+				child.gameObject.SetActive(false);
+			}
+
 			shipCam.tag = "MainCamera";
 
 			StartCoroutine("ShipTween");
