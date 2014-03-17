@@ -69,6 +69,8 @@ public class Enemy : MonoBehaviour {
 	public Transform useTarget;
 	public Vector3 leftHandPos;
 	public float leftHandWeight = 0;
+	public Vector3 rightHandPos;
+	public float rightHandWeight = 0;
 
 	private float bodyRemaining = 1;
 
@@ -691,7 +693,9 @@ public class Enemy : MonoBehaviour {
 
 		if(health > 0 && !knockedOut) {
 			rigidbody.isKinematic = false;
-			targetDir.Normalize();
+			if(targetDir.magnitude > 1) {
+				targetDir.Normalize();
+			}
 			float lookY = transform.position.y+Mathf.Max(-1, Mathf.Min(2, targetPos.y));
 			Vector3 lookPos = new Vector3(targetPos.x, lookY, targetPos.z);
 			character.Move(targetDir * speed, crouch, false, lookPos);
@@ -875,13 +879,35 @@ public class Enemy : MonoBehaviour {
 
 	void OnAnimatorIK() {
 		if(!usingObject) {
-			leftHandWeight = Mathf.Max(0, leftHandWeight-Time.deltaTime);
+			//leftHandWeight = Mathf.Max(0, leftHandWeight-Time.deltaTime);
+			if(weapon != null) {
+				Transform leftHandTarget = weapon.transform.FindChild("Left Hand");
+				leftHandPos = Vector3.Lerp(leftHandPos, leftHandTarget.position, 0.5f);
+				leftHandWeight = 1.0f;
+			}
+			else {
+				leftHandWeight = Mathf.Max(0, leftHandWeight - Time.deltaTime);
+			}
 			//enemy.SetIKPositionWeight(AvatarIKGoal.LeftHand, leftHandWeight - Time.deltaTime);
 		}
 		enemy.SetIKPositionWeight(AvatarIKGoal.LeftHand, leftHandWeight);
 		//enemy.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1.0f);
 		enemy.SetIKPosition(AvatarIKGoal.LeftHand, leftHandPos);
 		//enemy.SetIKRotation(AvatarIKGoal.LeftHand, leftHandObj.rotation);
+
+		if(weapon != null) {
+			Transform rightHandTarget = weapon.transform.FindChild("Right Hand");
+			rightHandPos = rightHandTarget.position;
+			rightHandWeight = 1.0f;
+		}
+		else {
+			rightHandWeight = Mathf.Max(0, rightHandWeight - Time.deltaTime);
+		}
+
+		enemy.SetIKPositionWeight(AvatarIKGoal.RightHand, rightHandWeight);
+		//enemy.SetIKRotationWeight(AvatarIKGoal.RightHand, 1.0f);
+		enemy.SetIKPosition(AvatarIKGoal.RightHand, rightHandPos);
+		//enemy.SetIKRotation(AvatarIKGoal.RightHand, leftHandObj.rotation);
 	}
 
 	void RagDoll(Transform obj, bool on) {

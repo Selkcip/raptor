@@ -101,7 +101,7 @@ public class ShipGridCell {
 			ShipGridFluid fluid = item.Value;
 			float nCount = Mathf.Max(1, neighbors.Count);
 			float change = fluid.level;
-			fluid.level *= fluid.flowRate;
+			fluid.level *= 1.0f-fluid.flowRate;
 			change -= fluid.level;
 			change *= 0.99f;
 			foreach(ShipGridCell neigh in neighbors) {
@@ -116,6 +116,7 @@ public class ShipGrid : MonoBehaviour {
 	public int updateStepSize = 10;
 	public Vector3 divs;
 	public bool debugLines = false;
+	public string debugFluid = "heat";
 	Vector3 size = new Vector3(10, 10, 10);
 	/*int divX;
 	int divY;
@@ -387,18 +388,23 @@ public class ShipGrid : MonoBehaviour {
 						if(debugLines) {
 							Vector3 curPos = IndexToPos(i, j, k);
 
-							float level = 1.0f;
-							foreach(KeyValuePair<string, ShipGridFluid> item in cur.fluids) {
-								ShipGridFluid fluid = item.Value;
-								Debug.DrawLine(curPos + transform.forward * 0.1f, curPos + transform.forward * 0.1f + transform.up * fluid.level, Color.red, 0, true);
+							float level = 0.0f;
+							//foreach(KeyValuePair<string, ShipGridFluid> item in cur.fluids) {
+							ShipGridFluid fluid;
+							cur.fluids.TryGetValue(debugFluid, out fluid);// item.Value;
+							if(fluid != null) {
 								level = fluid.level;
+								//Debug.DrawLine(curPos + transform.forward * 0.1f, curPos + transform.forward * 0.1f + transform.up * fluid.level, Color.red, 0, true);
 							}
-
-							//Debug.DrawLine(curPos, curPos+transform.up);
-							foreach(ShipGridCell neigh in cur.neighbors) {
-								//print(neigh.n);
-								Vector3 nPos = IndexToPos(neigh.x, neigh.y, neigh.z);
-								Debug.DrawLine(curPos, curPos + (nPos - curPos).normalized * 0.5f * level, Color.white, 0, true);
+							//}
+							if(level > 0) {
+								Debug.DrawLine(curPos + transform.forward * 0.1f, curPos + transform.forward * 0.1f + transform.up * level, Color.red, 0, true);
+								//Debug.DrawLine(curPos, curPos+transform.up);
+								foreach(ShipGridCell neigh in cur.neighbors) {
+									//print(neigh.n);
+									Vector3 nPos = IndexToPos(neigh.x, neigh.y, neigh.z);
+									Debug.DrawLine(curPos, curPos + (nPos - curPos).normalized * 0.5f * level, Color.white, 0, true);
+								}
 							}
 						}
 					}
