@@ -19,7 +19,6 @@ public class PlayerShipController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
-		renderer.material = renderer.materials[1];
 		health = maxHealth;
 		cloakCharge = 1;
 		cloakTrans = 0;
@@ -29,7 +28,7 @@ public class PlayerShipController : MonoBehaviour {
 	void Update() {
 		if (!isDead) {
 			print(cloakTrans);
-			renderer.material.Lerp(renderer.materials[0], renderer.materials[1], cloakTrans);
+			renderer.material.SetFloat("_CloakAmt", cloakTrans * 128);
 			// rotate ship to point at current mouse position on screen
 			float distance = transform.position.z - Camera.main.transform.position.z;
 			Vector3 mouse = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance));
