@@ -307,8 +307,10 @@ public class RaptorInteraction : MonoBehaviour {
 			fpc.enabled = false;
 			fpc.grounded = false;
 			rigidbody.drag = 1;
-			rigidbody.AddForce(transform.forward * 15f, ForceMode.Impulse);
-			rigidbody.AddForce(transform.up * 5.5f, ForceMode.Impulse);
+			//rigidbody.AddForce(transform.forward * 15f, ForceMode.Impulse);
+			//rigidbody.AddForce(transform.up * 5.5f, ForceMode.Impulse);
+			rigidbody.AddForce(Camera.main.transform.forward * 15f, ForceMode.Impulse);
+			rigidbody.AddForce(Camera.main.transform.up * 5.5f, ForceMode.Impulse);
 		}
 	}
 
