@@ -99,10 +99,10 @@ MonoBehaviour:
   baseForce: 10
   maxRotateAngle: 35
   detectionRange: 40
-  fireAngle: 2.5
+  fireAngle: 5
   bullet: {fileID: 100000, guid: e70b81815de3a2340873cd1bcd9e02e4, type: 2}
-  bulletSpeed: 30
-  reloadTime: .5
+  bulletSpeed: 5
+  reloadTime: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

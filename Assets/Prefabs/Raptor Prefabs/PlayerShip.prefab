@@ -44,7 +44,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: e6dd5cc2d5de0a54987a99707a029992, type: 2}
+  - {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -104,7 +104,6 @@ MonoBehaviour:
   isDead: 0
   cloakTime: 5
   cloakRechargeTime: 10
-  cloakLerpTime: 2
   maxHealth: 5
   bullet: {fileID: 0}
   bulletSpeed: 0
@@ -121,7 +120,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   despawnRadius: 80
   spawnRadius: 60
-  maxShips: 40
+  maxShips: 30
   enemyShip: {fileID: 100000, guid: 4c444abae610f574ca1002d38bf4f218, type: 2}
 --- !u!1001 &100100000
 Prefab:
