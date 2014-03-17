@@ -308,7 +308,7 @@ public class RaptorInteraction : MonoBehaviour {
 			isPouncing = true;
 			fpc.enabled = false;
 			fpc.grounded = false;
-			rigidbody.drag = 0;
+			rigidbody.drag = 1;
 			rigidbody.AddForce(transform.forward * 15f, ForceMode.Impulse);
 			rigidbody.AddForce(transform.up * 5.5f, ForceMode.Impulse);
 		}
