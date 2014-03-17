@@ -371,7 +371,11 @@ public class Enemy : MonoBehaviour {
 					return weapon.Use(gameObject);
 				}
 
-				return !(enemyVisible && weapon.ammo > 0);
+				if(!(enemyVisible && weapon.ammo > 0)) {
+					weapon.transform.localRotation = Quaternion.identity;
+					return true;
+				}
+				return false;
 			},
 			5
 		);
