@@ -2134,7 +2134,7 @@ MonoBehaviour:
   walkSpeed: .5
   runSpeed: 1
   avoidDis: 2
-  collisionDeflectForce: 5
+  collisionDeflectForce: .254999995
   viewDis: 10
   fov: 90
   noticeTime: 2
@@ -2163,6 +2163,7 @@ MonoBehaviour:
   noiseLevel: 0
   noiseDir: {x: 0, y: 0, z: 0}
   lightLevel: 0
+  oldLightLevel: 0
   maxLightLevel: 40
   minLightLevel: 10
   boredomLevel: 0

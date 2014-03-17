@@ -691,7 +691,9 @@ public class Enemy : MonoBehaviour {
 
 		if(health > 0 && !knockedOut) {
 			rigidbody.isKinematic = false;
-			targetDir.Normalize();
+			if(targetDir.magnitude > 1) {
+				targetDir.Normalize();
+			}
 			float lookY = transform.position.y+Mathf.Max(-1, Mathf.Min(2, targetPos.y));
 			Vector3 lookPos = new Vector3(targetPos.x, lookY, targetPos.z);
 			character.Move(targetDir * speed, crouch, false, lookPos);

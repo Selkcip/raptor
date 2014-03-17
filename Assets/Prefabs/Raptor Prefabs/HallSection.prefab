@@ -2873,7 +2873,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   intensityScale: 1000
-  falloff: 9.99999975e-06
+  falloff: .99000001
 --- !u!114 &11400012
 MonoBehaviour:
   m_ObjectHideFlags: 1

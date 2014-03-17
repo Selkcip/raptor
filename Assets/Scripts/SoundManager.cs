@@ -39,9 +39,10 @@ public class SoundManager : MonoBehaviour {
         GameObject newObj = new GameObject("SoundPlayer");
         newObj.transform.position = Camera.main.transform.position;
         newObj.transform.parent = Camera.main.transform;
-        AudioSource newSource = newObj.AddComponent<AudioSource>() as AudioSource;
+        AudioSource newSource = newObj.AddComponent<AudioSource>();
         newSource.audio.clip = clip;
 		newSource.audio.volume = Volume(newSource, type) * volumeMult;
+		newSource.audio.dopplerLevel = 0;
 		newSource.loop = loop;
         newSource.audio.Play();
         StartCoroutine("DeleteSource", newObj);
