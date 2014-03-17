@@ -6,8 +6,10 @@ public class PlayerShipController : MonoBehaviour {
     public float forwardForce, reverseForce, sideForce;
 
     public bool isCloaked, isDead;
-	public float cloakTime, cloakRechargeTime; // time full cloak lasts, time full recharge takes
-	float cloakCharge; // betw/ 0(empty) and 1(full)
+	public float cloakTime, cloakRechargeTime, cloakLerpTime; // time full cloak lasts, time full recharge takes, time of cloak transition
+	float cloakCharge, cloakTrans; // betw/ 0(empty) and 1(full)
+
+	//public Material cloaked, uncloaked;
 
 	public float maxHealth;
 	float health;
@@ -17,13 +19,17 @@ public class PlayerShipController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
+		renderer.material = renderer.materials[1];
 		health = maxHealth;
 		cloakCharge = 1;
+		cloakTrans = 0;
 	}
 	
 	// Update is called once per frame
 	void Update() {
 		if (!isDead) {
+			print(cloakTrans);
+			renderer.material.Lerp(renderer.materials[0], renderer.materials[1], cloakTrans);
 			// rotate ship to point at current mouse position on screen
 			float distance = transform.position.z - Camera.main.transform.position.z;
 			Vector3 mouse = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance));
@@ -35,40 +41,29 @@ public class PlayerShipController : MonoBehaviour {
 
 			// add force from movement keys
 			Vector2 force = new Vector2(0, 0);
-			if (Input.GetKey(KeyCode.W))
-			{
+			if (Input.GetKey(KeyCode.W)) {
 				force.y += forwardForce;
 			}
-			if (Input.GetKey(KeyCode.S))
-			{
+			if (Input.GetKey(KeyCode.S)) {
 				force.y -= reverseForce;
 			}
-			if (Input.GetKey(KeyCode.A))
-			{
+			if (Input.GetKey(KeyCode.A)) {
 				force.x -= sideForce;
 			}
-			if (Input.GetKey(KeyCode.D))
-			{
+			if (Input.GetKey(KeyCode.D)) {
 				force.x += sideForce;
 			}
-			if (Input.GetKeyDown(KeyCode.Q))
-			{ // cloak
-				if (isCloaked)
-				{
-					renderer.material.color = Color.white;
+			if (Input.GetKeyDown(KeyCode.Q)) { // cloak
+				if (isCloaked) {
 					isCloaked = false;
 				}
-				else if (cloakCharge >= 1)
-				{
+				else if (cloakCharge >= 1) {
 					isCloaked = true;
-					renderer.material.color = Color.blue;
 				}
 			}
-			if (Input.GetKey(KeyCode.Space))
-			{
+			if (Input.GetKey(KeyCode.Space)) {
 				// shoot
 			}
-
 
 			force = Quaternion.Euler(transform.eulerAngles) * force;
 			rigidbody2D.AddForce(force);
@@ -76,13 +71,21 @@ public class PlayerShipController : MonoBehaviour {
 			if (cloakCharge < 0 && isCloaked)
 			{
 				isCloaked = false;
-				renderer.material.color = Color.white;
 			}
 
-			if (isCloaked)
+			if (cloakTrans > 1)
+				cloakTrans = 1;
+			else if (cloakTrans < 0)
+				cloakTrans = 0;
+
+			if (isCloaked) {
 				cloakCharge -= 1 / cloakTime * Time.deltaTime;
-			else
+				cloakTrans += 1 / cloakLerpTime * Time.deltaTime;
+			}
+			else {
 				cloakCharge += 1 / cloakRechargeTime * Time.deltaTime;
+				cloakTrans -= 1 / cloakLerpTime * Time.deltaTime;
+			}
 
 			if (cloakCharge > 1)
 				cloakCharge = 1;
@@ -107,8 +110,8 @@ public class PlayerShipController : MonoBehaviour {
 			foreach (ContactPoint2D contact in col.contacts) {
 				if (col.collider.transform.InverseTransformPoint(contact.point).y < 0)
 					col.gameObject.renderer.material.color = Color.blue;
+					// load level
 			}
-                // load level
         }
     }
 }
