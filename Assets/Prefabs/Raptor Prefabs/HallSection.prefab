@@ -257,8 +257,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: .707106829, z: 0, w: .707106829}
+  m_LocalPosition: {x: -26, y: 0, z: -21}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400020}
@@ -495,6 +495,7 @@ Renderer:
   m_Materials:
   - {fileID: 2100000, guid: 55296d1b6ee54e14e8eb4648d4b448ee, type: 2}
   - {fileID: 2100000, guid: 9bd21552765306f47a89861525a46e7f, type: 2}
+  - {fileID: 2100000, guid: fe7042651e75c2247b7979855d62962d, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -2791,7 +2792,7 @@ MonoBehaviour:
     _smoothingGroup: 0
     _uv:
       projectionAxis: 3
-      useWorldSpace: 0
+      useWorldSpace: 1
       flipU: 0
       flipV: 0
       swapUV: 0
@@ -2799,9 +2800,9 @@ MonoBehaviour:
       scale: {x: 1, y: 1}
       offset: {x: 0, y: 0}
       rotation: 0
-      justify: 5
+      justify: 0
       projectionValue: {x: 0, y: 0, z: 0}
-    _mat: {fileID: 2100000, guid: 55296d1b6ee54e14e8eb4648d4b448ee, type: 2}
+    _mat: {fileID: 2100000, guid: fe7042651e75c2247b7979855d62962d, type: 2}
     _colors:
     - serializedVersion: 2
       rgba: 4294967295
@@ -2856,7 +2857,15 @@ MonoBehaviour:
   hardAngle: 88
   packMargin: 20
   selected_triangles: 
-  selected_edges: []
+  selected_edges:
+  - x: 20
+    y: 21
+  - x: 22
+    y: 20
+  - x: 21
+    y: 23
+  - x: 23
+    y: 22
   selected_faces: []
   previousTransform: {x: 0, y: 0, z: 0}
   isSelectable: 1
