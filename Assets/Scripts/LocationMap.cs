@@ -24,6 +24,9 @@ public class LocationMap : MonoBehaviour {
 	public List<Location> locationList = new List<Location>();
 	public List<Location> shortestPath = new List<Location>();
 
+	public float curScale = 1;
+	public bool open = false;
+	public float openSpeed = 0.1f;
 
 	public Location end;
 	private bool goodPoint = false;
@@ -45,7 +48,8 @@ public class LocationMap : MonoBehaviour {
 
 	public void Awake() {
 		s_instance = this;
-		//GenerateMap();
+		GenerateMap();
+		//transform.localScale = new Vector3(0, 0, 0);
 	}
 
 	public void GenerateMap() {
@@ -311,20 +315,36 @@ public class LocationMap : MonoBehaviour {
 		}
 	}
 
-	void OnTriggerEnter(Collider other) {
+	/*void OnTriggerEnter(Collider other) {
 		if(other.tag == "Player") {
-			rotate = false;
+			//rotate = false;
+			open = true;
 		}
 	}
 
 	void OnTriggerExit(Collider other) {
 		if(other.tag == "Player") {
-			rotate = true;
+			//rotate = true;
+			open = false;
 		}
-	}
+	}*/
 
 	public void Update() {
 		//DebugLines();
+
+		if(open) {
+			curScale = Mathf.Min(1, curScale + Time.deltaTime/openSpeed);
+		}
+		else {
+			curScale = Mathf.Max(0, curScale - Time.deltaTime / openSpeed);
+		}
+		transform.localScale = new Vector3(curScale, curScale, curScale);
+		if(light != null) {
+			light.intensity = 1-curScale;
+		}
+		if(curScale <= 0) {
+			//gameObject.SetActive(false);
+		}
 
 		if(rotate) {
 			transform.Rotate(rotateSpeed);
@@ -341,36 +361,5 @@ public class LocationMap : MonoBehaviour {
 				}
 			}
 		}*/
-
-		RaycastHit raycastHit;
-		Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2));
-		int mask = 1 << LayerMask.NameToLayer("StarMap");
-		if(Physics.Raycast(ray, out raycastHit, 15.0f, mask)) {
-			LocationMarker marker = raycastHit.collider.gameObject.GetComponent<LocationMarker>();
-			if(marker != null) {
-				currentTarget = marker;
-				if(reticle != null) {
-					reticle.location = marker.location;
-					reticle.Show();
-					if(Input.GetMouseButtonUp(0)) {
-						LocationManager.instance.Move(LocationManager.instance.currentLocation.neighbors.IndexOf(marker.location));
-					}
-				}
-			}
-		}
-
-		if(reticle != null && currentTarget != null) {
-			reticle.transform.position = currentTarget.transform.position;
-		}
-
-		if(playerMarker != null) {
-			playerMarker.parent = LocationManager.instance.currentLocation.marker.transform;
-			playerMarker.localPosition = new Vector3(0,0,0);
-		}
-
-		if(destMarker != null) {
-			destMarker.parent = end.marker.transform;
-			destMarker.localPosition = new Vector3(0, 0, 0);
-		}
 	}
 }

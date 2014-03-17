@@ -8,7 +8,7 @@ public class LocationMarker : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
-		gameObject.layer = LayerMask.NameToLayer("StarMap");
+		//gameObject.layer = LayerMask.NameToLayer("StarMap");
 
 		for(int i = 0; i < Random.Range(0, 5); i++) {
 			GameObject prop = (GameObject)GameObject.Instantiate(propObject);

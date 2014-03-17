@@ -32,7 +32,7 @@ public class FluidVis : MonoBehaviour {
 			fluidTex.filterMode = FilterMode.Point;
 		}
 		pixels = fluidTex.GetPixels();
-		print(pixels.Length);
+		//print(pixels.Length);
 	}
 
 	int startIndex = 0;

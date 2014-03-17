@@ -7,10 +7,10 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: SupernovaSun
-  m_Shader: {fileID: 10, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: dabc98ae45c744f25bee62850e082c60, type: 3}
   m_ShaderKeywords:
   - GLOW11_GLOW_GLOWCOLOR
-  - GLOW11_MULTIPLY_MAINTEX_ALPHA
+  - GLOW11_MULTIPLY_GLOWCOLOR
   m_CustomRenderQueue: -1
   m_SavedProperties:
     serializedVersion: 2
@@ -40,20 +40,20 @@ Material:
       data:
         first:
           name: _GlowStrength
-        second: .930000007
-      data:
-        first:
-          name: _EmissionLM
-        second: 0
+        second: 113.099998
       data:
         first:
           name: _Shininess
         second: .0724504068
+      data:
+        first:
+          name: _EmissionLM
+        second: 0
     m_Colors:
       data:
         first:
           name: _Color
-        second: {r: .647058845, g: .602434099, b: 0, a: 1}
+        second: {r: 1, g: .88723886, b: 0, a: 1}
       data:
         first:
           name: _GlowColor

@@ -25,19 +25,19 @@ Material:
         first:
           name: _BumpMap
         second:
-          m_Texture: {fileID: 2800000, guid: 0aaf41622dfa0f243af9375680cf190a, type: 3}
-          m_Scale: {x: 1, y: 1}
+          m_Texture: {fileID: 2800000, guid: 5ce102aeaf3003847a07f3a8d4ab70bd, type: 3}
+          m_Scale: {x: .125, y: .125}
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _Illum
+          name: _GlowTex
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _GlowTex
+          name: _Illum
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
@@ -56,16 +56,16 @@ Material:
         second: .5
       data:
         first:
-          name: _Shininess
-        second: 1
-      data:
-        first:
           name: _BumpAmt
-        second: 106
+        second: 128
       data:
         first:
           name: _GlowStrength
         second: -2.01999998
+      data:
+        first:
+          name: _Shininess
+        second: 1
       data:
         first:
           name: _EmissionLM
@@ -85,7 +85,7 @@ Material:
         second: {r: .375, g: 0, b: 0, a: 1}
       data:
         first:
-          name: _SpecColor
+          name: _ColorTint
         second: {r: 1, g: 0, b: 0, a: 1}
       data:
         first:
@@ -93,12 +93,12 @@ Material:
         second: {r: 1, g: 0, b: 0, a: 1}
       data:
         first:
-          name: _Specular
-        second: {r: 0, g: 0, b: 0, a: 0}
+          name: _SpecColor
+        second: {r: 1, g: 0, b: 0, a: 1}
       data:
         first:
-          name: _ColorTint
-        second: {r: 1, g: 0, b: 0, a: 1}
+          name: _Specular
+        second: {r: 0, g: 0, b: 0, a: 0}
       data:
         first:
           name: _TintColor
