@@ -5,58 +5,101 @@ public class PlayerShipController : MonoBehaviour {
 
     public float forwardForce, reverseForce, sideForce;
 
-    public bool isCloaked;
+    public bool isCloaked, isDead;
+	public float cloakTime, cloakRechargeTime; // time full cloak lasts, time full recharge takes
+	float cloakCharge; // betw/ 0(empty) and 1(full)
 
+	public float maxHealth;
+	float health;
+	
     public Transform bullet;
     public float bulletSpeed;
 
 	// Use this for initialization
 	void Start() {
-	
+		health = maxHealth;
+		cloakCharge = 1;
 	}
 	
 	// Update is called once per frame
 	void Update() {
-        // rotate ship to point at current mouse position on screen
-        float distance = transform.position.z - Camera.main.transform.position.z;
-        Vector3 mouse = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance));
-        mouse -= transform.position;
-        float targetAngle = Vector2.Angle(Vector2.up, new Vector2(mouse.x, mouse.y));
-        if (mouse.x > Vector2.up.x)
-            targetAngle = -targetAngle;
-        transform.eulerAngles = new Vector3(0, 0, targetAngle);
+		if (!isDead) {
+			// rotate ship to point at current mouse position on screen
+			float distance = transform.position.z - Camera.main.transform.position.z;
+			Vector3 mouse = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance));
+			mouse -= transform.position;
+			float targetAngle = Vector2.Angle(Vector2.up, mouse);
+			if (mouse.x > 0)
+				targetAngle = 360 - targetAngle;
+			transform.eulerAngles = new Vector3(0, 0, targetAngle);
 
-        // add force from movement keys
-        Vector2 force = new Vector2(0, 0);
-        if (Input.GetKey(KeyCode.W)) { 
-            force.y += forwardForce;
-        }
-        if (Input.GetKey(KeyCode.S)) { 
-            force.y -= reverseForce;
-        }
-        if (Input.GetKey(KeyCode.A)) { 
-            force.x -= sideForce;
-        }
-        if (Input.GetKey(KeyCode.D)) { 
-            force.x += sideForce;
-        }
-        if (Input.GetKeyDown(KeyCode.Q)) { // cloak
-            isCloaked = !isCloaked;
-            if (isCloaked)
-                renderer.material.color = Color.blue;
-            else
-                renderer.material.color = Color.white;
-        }
-        if (Input.GetKey(KeyCode.Space)) {
-            // shoot
-        }
+			// add force from movement keys
+			Vector2 force = new Vector2(0, 0);
+			if (Input.GetKey(KeyCode.W))
+			{
+				force.y += forwardForce;
+			}
+			if (Input.GetKey(KeyCode.S))
+			{
+				force.y -= reverseForce;
+			}
+			if (Input.GetKey(KeyCode.A))
+			{
+				force.x -= sideForce;
+			}
+			if (Input.GetKey(KeyCode.D))
+			{
+				force.x += sideForce;
+			}
+			if (Input.GetKeyDown(KeyCode.Q))
+			{ // cloak
+				if (isCloaked)
+				{
+					renderer.material.color = Color.white;
+					isCloaked = false;
+				}
+				else if (cloakCharge >= 1)
+				{
+					isCloaked = true;
+					renderer.material.color = Color.blue;
+				}
+			}
+			if (Input.GetKey(KeyCode.Space))
+			{
+				// shoot
+			}
 
-        force = Quaternion.Euler(transform.eulerAngles) * force;
-        rigidbody2D.AddForce(force);
+
+			force = Quaternion.Euler(transform.eulerAngles) * force;
+			rigidbody2D.AddForce(force);
+
+			if (cloakCharge < 0 && isCloaked)
+			{
+				isCloaked = false;
+				renderer.material.color = Color.white;
+			}
+
+			if (isCloaked)
+				cloakCharge -= 1 / cloakTime * Time.deltaTime;
+			else
+				cloakCharge += 1 / cloakRechargeTime * Time.deltaTime;
+
+			if (cloakCharge > 1)
+				cloakCharge = 1;
+		}
+		else {
+			renderer.material.color = Color.red;
+		}
 	}
 
     void OnCollisionEnter2D(Collision2D col) {
         // detect if player is hit with a shot
+		if (col.gameObject.tag == "bullet") {
+			Destroy(col.gameObject);
+			health -= 1;
+			if (health <= 0)
+				isDead = true;
+		}
         // detect player collides with a ship and is cloaked
         if (col.gameObject.tag == "enemy" && isCloaked) {
             col.gameObject.renderer.material.color = Color.red;
@@ -66,6 +109,6 @@ public class PlayerShipController : MonoBehaviour {
 					col.gameObject.renderer.material.color = Color.blue;
 			}
                 // load level
-        }            
+        }
     }
 }
