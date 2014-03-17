@@ -2153,7 +2153,7 @@ MonoBehaviour:
   carryingObject: 0
   money: 0
   heat: 100
-  heatFalloff: .5
+  heatFalloff: .25
   sleepTime: 0
   stateName: 
   knockedOut: 0
@@ -2173,6 +2173,8 @@ MonoBehaviour:
   useTarget: {fileID: 0}
   leftHandPos: {x: 0, y: 0, z: 0}
   leftHandWeight: 0
+  rightHandPos: {x: 0, y: 0, z: 0}
+  rightHandWeight: 0
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2239,12 +2241,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 100110}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a97c4ec85c032a44a9b4b40a26a041b, type: 3}
+  m_Script: {fileID: 11500000, guid: 0036e73124f4e3141a238927ef87af9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interestLevel: 1e+06
-  carryable: 0
-  useTarget: {fileID: 0}
+  force: -10
+  falloff: .5
+  active: 0
 --- !u!135 &13500000
 SphereCollider:
   m_ObjectHideFlags: 1
