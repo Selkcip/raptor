@@ -15,6 +15,12 @@ public class LevelSelector : MonoBehaviour {
 	void Start() {
 		ships = new ArrayList();
 	}
+
+	public void Load()
+	{
+		print("Loading");
+		Application.LoadLevel("cargoship");
+	}
 	
 	// Update is called once per frame
 	void Update() {
@@ -32,7 +38,7 @@ public class LevelSelector : MonoBehaviour {
 		while (ships.Count < maxShips) {
 			Vector2 position = Random.insideUnitCircle.normalized * spawnRadius;
 			float rotation = Random.value * 360;
-			GameObject ship = (GameObject)Instantiate(enemyShip, transform.TransformPoint(position), Quaternion.Euler(new Vector3(0, 0, rotation)));
+			GameObject ship = (GameObject)Instantiate(enemyShip, transform.position + (Vector3)position, Quaternion.Euler(new Vector3(0, 0, rotation)));
 			ships.Add(ship);
 		}
 	}

@@ -17,8 +17,11 @@ public class PlayerShipController : MonoBehaviour {
     public Transform bullet;
     public float bulletSpeed;
 
+	public LevelSelector levelSelector;
+
 	// Use this for initialization
 	void Start() {
+		levelSelector = this.GetComponent<LevelSelector>();
 		health = maxHealth;
 		cloakCharge = 1;
 		cloakTrans = 0;
@@ -27,7 +30,7 @@ public class PlayerShipController : MonoBehaviour {
 	// Update is called once per frame
 	void Update() {
 		if (!isDead) {
-			print(cloakTrans);
+			//print(cloakTrans);
 			renderer.material.SetFloat("_CloakAmt", cloakTrans * 128);
 			// rotate ship to point at current mouse position on screen
 			float distance = transform.position.z - Camera.main.transform.position.z;
@@ -56,7 +59,8 @@ public class PlayerShipController : MonoBehaviour {
 				if (isCloaked) {
 					isCloaked = false;
 				}
-				else if (cloakCharge >= 1) {
+				else //if (cloakCharge >= 1) 
+				{
 					isCloaked = true;
 				}
 			}
@@ -67,10 +71,10 @@ public class PlayerShipController : MonoBehaviour {
 			force = Quaternion.Euler(transform.eulerAngles) * force;
 			rigidbody2D.AddForce(force);
 
-			if (cloakCharge < 0 && isCloaked)
+			/*if (cloakCharge < 0 && isCloaked)
 			{
 				isCloaked = false;
-			}
+			}*/
 
 			if (cloakTrans > 1)
 				cloakTrans = 1;
@@ -90,7 +94,7 @@ public class PlayerShipController : MonoBehaviour {
 				cloakCharge = 1;
 		}
 		else {
-			renderer.material.color = Color.red;
+			//renderer.material.color = Color.red;
 		}
 	}
 
@@ -104,12 +108,17 @@ public class PlayerShipController : MonoBehaviour {
 		}
         // detect player collides with a ship and is cloaked
         if (col.gameObject.tag == "enemy" && isCloaked) {
-            col.gameObject.renderer.material.color = Color.red;
+            //col.gameObject.renderer.material.color = Color.red;
             // check collision is in back of ship and front of player
-			foreach (ContactPoint2D contact in col.contacts) {
+			foreach (ContactPoint2D contact in col.contacts)
+			{
 				if (col.collider.transform.InverseTransformPoint(contact.point).y < 0)
-					col.gameObject.renderer.material.color = Color.blue;
+				{
+					//col.gameObject.renderer.material.color = Color.blue;
 					// load level
+					//AsyncOperation async = Application.LoadLevelAsync("cargoship");
+					levelSelector.Load();
+				}
 			}
         }
     }
