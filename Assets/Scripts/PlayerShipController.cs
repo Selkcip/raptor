@@ -56,7 +56,8 @@ public class PlayerShipController : MonoBehaviour {
 				if (isCloaked) {
 					isCloaked = false;
 				}
-				else if (cloakCharge >= 1) {
+				else //if (cloakCharge >= 1) 
+				{
 					isCloaked = true;
 				}
 			}
@@ -67,10 +68,10 @@ public class PlayerShipController : MonoBehaviour {
 			force = Quaternion.Euler(transform.eulerAngles) * force;
 			rigidbody2D.AddForce(force);
 
-			if (cloakCharge < 0 && isCloaked)
+			/*if (cloakCharge < 0 && isCloaked)
 			{
 				isCloaked = false;
-			}
+			}*/
 
 			if (cloakTrans > 1)
 				cloakTrans = 1;
