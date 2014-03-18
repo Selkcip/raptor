@@ -15,6 +15,12 @@ public class LevelSelector : MonoBehaviour {
 	void Start() {
 		ships = new ArrayList();
 	}
+
+	public void Load()
+	{
+		print("Loading");
+		Application.LoadLevel("cargoship");
+	}
 	
 	// Update is called once per frame
 	void Update() {

@@ -47,7 +47,7 @@ public class EnemyShip : MonoBehaviour {
 				transform.eulerAngles -= new Vector3(0, 0, Mathf.Min(diffAngle, maxRotateAngle * Time.deltaTime)); // rotate right
 			if (diffAngle < fireAngle)
 					Shoot();
-			gameObject.renderer.material.color = Color.green;
+			//gameObject.renderer.material.color = Color.green;
 		}
 		else
 		{ // float around if player is not detected
