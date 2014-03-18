@@ -36,6 +36,7 @@ public class PlayerShipController : MonoBehaviour {
 			float distance = transform.position.z - Camera.main.transform.position.z;
 			Vector3 mouse = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance));
 			mouse -= transform.position;
+			mouse = -mouse;
 			float targetAngle = Vector2.Angle(Vector2.up, mouse);
 			if (mouse.x > 0)
 				targetAngle = 360 - targetAngle;
@@ -67,7 +68,7 @@ public class PlayerShipController : MonoBehaviour {
 			if (Input.GetKey(KeyCode.Space)) {
 				// shoot
 			}
-
+			force = -force;
 			force = Quaternion.Euler(transform.eulerAngles) * force;
 			rigidbody2D.AddForce(force);
 
