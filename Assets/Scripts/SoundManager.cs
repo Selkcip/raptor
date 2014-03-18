@@ -41,12 +41,11 @@ public class SoundManager : MonoBehaviour {
         newObj.transform.parent = Camera.main.transform;
         AudioSource newSource = newObj.AddComponent<AudioSource>();
         newSource.clip = clip;
-		//newSource.volume = Volume(newSource, type) * volumeMult;
+		newSource.volume = Volume(newSource, type) * volumeMult;
 		//print(newSource.audio.volume);
 		newSource.dopplerLevel = 0;
 		newSource.loop = loop;
         newSource.Play();
-		newSource.volume = Volume(newSource, type) * volumeMult;
         StartCoroutine("DeleteSource", newObj);
     }
    

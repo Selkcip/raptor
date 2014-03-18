@@ -10,25 +10,27 @@ public class Pressureable : MonoBehaviour {
 	}
 
 	public void Update() {
-		Vector3 force = new Vector3();
-		ShipGridFluid pressure;
-		float pLevel = 0;
-		ShipGridCell cell = ShipGrid.GetPosI(transform.position);
-		cell.fluids.TryGetValue("pressure", out pressure);
-		if(pressure != null) {
-			pLevel = pressure.level;
-		}
-		Vector3 diff = new Vector3();
-		foreach(ShipGridCell neigh in cell.neighbors){
-			neigh.fluids.TryGetValue("pressure", out pressure);
+		if(rigidbody != null) {
+			Vector3 force = new Vector3();
+			ShipGridFluid pressure;
+			float pLevel = 0;
+			ShipGridCell cell = ShipGrid.GetPosI(transform.position);
+			cell.fluids.TryGetValue("pressure", out pressure);
 			if(pressure != null) {
-				diff.x = neigh.x - cell.x;
-				diff.y = neigh.y - cell.y;
-				diff.z = neigh.z - cell.z;
-				force += diff * (pLevel - pressure.level);
+				pLevel = pressure.level;
 			}
-		}
+			Vector3 diff = new Vector3();
+			foreach(ShipGridCell neigh in cell.neighbors) {
+				neigh.fluids.TryGetValue("pressure", out pressure);
+				if(pressure != null) {
+					diff.x = neigh.x - cell.x;
+					diff.y = neigh.y - cell.y;
+					diff.z = neigh.z - cell.z;
+					force += diff * (pLevel - pressure.level);
+				}
+			}
 
-		rigidbody.AddForce(force);
+			rigidbody.AddForce(force * 0.25f);
+		}
 	}
 }
