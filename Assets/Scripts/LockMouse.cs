@@ -12,6 +12,11 @@ public class LockMouse : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		if(Input.GetKey(KeyCode.P)) {
+			Application.LoadLevel(Application.loadedLevel);
+		}
+
 		if(lockMouse) {
 			Screen.lockCursor = true;
 		}

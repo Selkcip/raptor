@@ -71,6 +71,7 @@ public class RaptorInteraction : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
+		ShipDoor.escaping = false;
 		fpc = gameObject.GetComponent<FirstPersonCharacter>();
 		hud = gameObject.GetComponent<RaptorHUD>();
 		arms = gameObject.GetComponentInChildren<Animator>();
@@ -189,10 +190,6 @@ public class RaptorInteraction : MonoBehaviour {
 		if(Input.GetKeyDown(KeyCode.LeftControl)) {
 			isCrouching = !isCrouching;
 			Crouch(isCrouching);
-		}
-
-		if(Input.GetKey(KeyCode.P)) {
-			Application.LoadLevel(Application.loadedLevel);
 		}
 
 		if(Input.GetKey(KeyCode.E)) {
