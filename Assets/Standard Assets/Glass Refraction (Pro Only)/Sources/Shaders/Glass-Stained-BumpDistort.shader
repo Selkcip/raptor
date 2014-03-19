@@ -4,6 +4,8 @@
 
 Shader "FX/Glass/Stained BumpDistort" {
 Properties {
+	_SpecColor ("Specular Color", Color) = (0.5, 0.5, 0.5, 1)
+	_Shininess ("Shininess", Range (0.03, 1)) = 0.078125
 	_BumpAmt  ("Distortion", range (0,128)) = 10
 	_ColorTint ("Tint", Color) = (1,1,1,1)
 	_MainTex ("Tint Color (RGB)", 2D) = "white" {}
@@ -35,67 +37,92 @@ Category {
 			Name "BASE"
 			Tags { "LightMode" = "Always" }
 			
-CGPROGRAM
-#pragma profiles arbfp1
-#pragma vertex vert
-#pragma fragment frag
-#pragma fragmentoption ARB_precision_hint_fastest
-#include "UnityCG.cginc"
+			CGPROGRAM
+			#pragma profiles arbfp1
+			#pragma vertex vert
+			#pragma fragment frag
+			#pragma fragmentoption ARB_precision_hint_fastest
+			#include "UnityCG.cginc"
 
-struct appdata_t {
-	float4 vertex : POSITION;
-	float2 texcoord: TEXCOORD0;
-};
+			struct appdata_t {
+				float4 vertex : POSITION;
+				float2 texcoord: TEXCOORD0;
+			};
 
-struct v2f {
-	float4 vertex : POSITION;
-	float4 uvgrab : TEXCOORD0;
-	float2 uvbump : TEXCOORD1;
-	float2 uvmain : TEXCOORD2;
-	float3 normal : TEXCOORD3;
-};
+			struct v2f {
+				float4 vertex : POSITION;
+				float4 uvgrab : TEXCOORD0;
+				float2 uvbump : TEXCOORD1;
+				float2 uvmain : TEXCOORD2;
+				float3 normal : TEXCOORD3;
+			};
 
-float _BumpAmt;
-float4 _ColorTint;
-float4 _BumpMap_ST;
-float4 _MainTex_ST;
+			float _BumpAmt;
+			float4 _ColorTint;
+			float4 _BumpMap_ST;
+			float4 _MainTex_ST;
 
-v2f vert (appdata_base v)
-{
-	v2f o;
-	o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
-	#if UNITY_UV_STARTS_AT_TOP
-	float scale = -1.0;
-	#else
-	float scale = 1.0;
-	#endif
-	o.uvgrab.xy = (float2(o.vertex.x, o.vertex.y*scale) + o.vertex.w) * 0.5;
-	o.uvgrab.zw = o.vertex.zw;
-	o.uvbump = TRANSFORM_TEX( v.texcoord, _BumpMap );
-	o.uvmain = TRANSFORM_TEX( v.texcoord, _MainTex );
-	o.normal = mul( (float3x3)UNITY_MATRIX_MVP, v.normal );
-	return o;
-}
+			v2f vert (appdata_base v)
+			{
+				v2f o;
+				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+				#if UNITY_UV_STARTS_AT_TOP
+				float scale = -1.0;
+				#else
+				float scale = 1.0;
+				#endif
+				o.uvgrab.xy = (float2(o.vertex.x, o.vertex.y*scale) + o.vertex.w) * 0.5;
+				o.uvgrab.zw = o.vertex.zw;
+				o.uvbump = TRANSFORM_TEX( v.texcoord, _BumpMap );
+				o.uvmain = TRANSFORM_TEX( v.texcoord, _MainTex );
+				o.normal = mul( (float3x3)UNITY_MATRIX_MVP, v.normal );
+				return o;
+			}
 
-sampler2D _GrabTexture;
-float4 _GrabTexture_TexelSize;
-sampler2D _BumpMap;
-sampler2D _MainTex;
+			sampler2D _GrabTexture;
+			float4 _GrabTexture_TexelSize;
+			sampler2D _BumpMap;
+			sampler2D _MainTex;
 
-half4 frag( v2f i ) : COLOR
-{
-	// calculate perturbed coordinates
-	//i.normal = (i.normal+1.0)*0.5;
-	half2 bump = i.normal.xy+UnpackNormal(tex2D( _BumpMap, i.uvbump )).rg; // we could optimize this by just reading the x & y without reconstructing the Z
-	float2 offset = bump * _BumpAmt * _GrabTexture_TexelSize.xy;
-	i.uvgrab.xy = offset * i.uvgrab.z + i.uvgrab.xy;
+			half4 frag( v2f i ) : COLOR
+			{
+				// calculate perturbed coordinates
+				//i.normal = (i.normal+1.0)*0.5;
+				half2 bump = i.normal.xy+UnpackNormal(tex2D( _BumpMap, i.uvbump )).rg; // we could optimize this by just reading the x & y without reconstructing the Z
+				float2 offset = bump * _BumpAmt * _GrabTexture_TexelSize.xy;
+				i.uvgrab.xy = offset * i.uvgrab.z + i.uvgrab.xy;
 	
-	half4 col = tex2Dproj( _GrabTexture, UNITY_PROJ_COORD(i.uvgrab));
-	half4 tint = tex2D( _MainTex, i.uvmain );
-	return col * tint * _ColorTint;
-}
-ENDCG
+				half4 col = tex2Dproj( _GrabTexture, UNITY_PROJ_COORD(i.uvgrab));
+				half4 tint = tex2D( _MainTex, i.uvmain );
+				return col * tint * _ColorTint;
+			}
+			ENDCG
 		}
+
+		Blend One One
+
+		CGPROGRAM
+		#pragma surface surf BlinnPhong
+
+		sampler2D _MainTex;
+		sampler2D _BumpMap;
+		fixed4 _Color;
+		half _Shininess;
+
+		struct Input {
+			float2 uv_MainTex;
+			float2 uv_BumpMap;
+		};
+
+		void surf (Input IN, inout SurfaceOutput o) {
+			fixed4 tex = tex2D(_MainTex, IN.uv_MainTex);
+			o.Albedo = 0;//tex.rgb * _Color.rgb;
+			o.Gloss = tex.a;
+			o.Alpha = tex.a * _Color.a;
+			o.Specular = _Shininess;
+			o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+		}
+		ENDCG
 	}
 
 	// ------------------------------------------------------------------

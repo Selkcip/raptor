@@ -17,7 +17,7 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 2800000, guid: 31f5a8611c4ed1245b18456206e798dc, type: 3}
+          m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -37,12 +37,20 @@ Material:
     m_Floats:
       data:
         first:
-          name: _GlowStrength
-        second: 0
+          name: _Cutoff
+        second: .5
+      data:
+        first:
+          name: _Shininess
+        second: 1
       data:
         first:
           name: _BumpAmt
-        second: 102.85714
+        second: 128
+      data:
+        first:
+          name: _GlowStrength
+        second: 0
       data:
         first:
           name: _CloakAmt
@@ -51,6 +59,10 @@ Material:
       data:
         first:
           name: _Color
+        second: {r: 1, g: 1, b: 1, a: 1}
+      data:
+        first:
+          name: _SpecColor
         second: {r: 1, g: 1, b: 1, a: 1}
       data:
         first:
