@@ -45,12 +45,12 @@ Material:
         second: 1
       data:
         first:
-          name: _BumpAmt
-        second: 128
-      data:
-        first:
           name: _GlowStrength
         second: 0
+      data:
+        first:
+          name: _BumpAmt
+        second: 128
       data:
         first:
           name: _CloakAmt
