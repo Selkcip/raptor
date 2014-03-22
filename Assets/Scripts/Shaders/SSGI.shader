@@ -256,6 +256,7 @@ SubShader {
 			float2 o = _TexelOffsetScale.xy;
     
 			float4 ref = tex2D(_REF, i.uv);// * (NUM_BLUR_SAMPLES + 1);
+			ref.a = 0;
 			float4 color = tex2D(_MainTex, i.uv);
 			
 			return color+ref*Intensity;
