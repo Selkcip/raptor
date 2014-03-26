@@ -130,8 +130,8 @@ SubShader {
 				}
 			}
 
-			nNorm = mul( (float3x3)CamToWorld, normal );
-			color = tex2D(_MainTex, newPos.xy)*max(0.0, dot(-ref, nNorm))*scale;
+			normal = mul( (float3x3)CamToWorld, normal );
+			color = tex2D(_MainTex, newPos.xy)*max(0.0, dot(-ref, normal))*scale*max(0.0, 1.0-pow(dot(ref, nNorm),2));
 			color.a = 1.0;
 
 			//return float4(depth);
@@ -257,6 +257,7 @@ SubShader {
 			float4 ref = tex2D(_REF, i.uv);// * (NUM_BLUR_SAMPLES + 1);
 			float4 color = tex2D(_MainTex, i.uv);
 			
+			return ref;
 			return color+ref;
 		}
 		ENDCG
