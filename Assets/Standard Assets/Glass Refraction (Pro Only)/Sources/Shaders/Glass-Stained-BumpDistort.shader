@@ -88,7 +88,7 @@ Category {
 			{
 				// calculate perturbed coordinates
 				//i.normal = (i.normal+1.0)*0.5;
-				half2 bump = i.normal.xy+UnpackNormal(tex2D( _BumpMap, i.uvbump )).rg; // we could optimize this by just reading the x & y without reconstructing the Z
+				half2 bump = i.normal.xy*UnpackNormal(tex2D( _BumpMap, i.uvbump )).rg; // we could optimize this by just reading the x & y without reconstructing the Z
 				float2 offset = bump * _BumpAmt * _GrabTexture_TexelSize.xy;
 				i.uvgrab.xy = offset * i.uvgrab.z + i.uvgrab.xy;
 	
