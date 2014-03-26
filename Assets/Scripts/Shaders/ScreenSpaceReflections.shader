@@ -70,7 +70,7 @@ SubShader {
 			//depth = UNITY_SAMPLE_DEPTH(tex2D (_CameraDepthTexture, i.uv));
 			depth = UNITY_SAMPLE_DEPTH(tex2Dlod(_CameraDepthTexture, float4(i.uv, 0, 0)));
 
-			float3 nNorm = mul( (float3x3)CamToWorld, normal );
+			float3 nNorm = normal;//mul( (float3x3)CamToWorld, normal );
 
 			//sampleD *= _ProjectionParams.z;
 			//float zd = saturate(sD-sampleD);
@@ -81,7 +81,8 @@ SubShader {
 			posMap.xyz /= posMap.w;
 
 			//float4 cPos = mul( CamToWorld, float4(0,0,0,1) );
-			float3 dir = normalize(_WorldSpaceCameraPos-posMap.xyz);
+			float3 dir = normalize(-posMap.xyz);
+			//dir = mul( (float3x3)Proj, dir );
 
 			//posMap.xyz = cPos.xyz;
 
@@ -130,13 +131,14 @@ SubShader {
 				}
 			}
 
-			normal = mul( (float3x3)CamToWorld, normal );
-			color = tex2D(_MainTex, newPos.xy)*max(0.0, dot(-ref, normal))*scale*max(0.0, 1.0-pow(dot(ref, nNorm),2));
+			//normal = mul( (float3x3)CamToWorld, normal );
+			color = tex2D(_MainTex, newPos.xy)*max(0.0, dot(-ref, normal))*scale*max(0.0, 1.0-pow(dot(ref, nNorm),1));
 			color.a = 1.0;
 
 			//return float4(depth);
 			//return float4((ref.xyz+1.0)*0.5, 1.0);
 			//return float4((nNorm.xyz+1.0)*0.5, 1.0);
+			//return float4((posMap.xyz+1.0)*0.5, 1.0);
 			//return float4(posMap.xyz, 1.0);
 			return color*main.a;
 			//return color;//*main.a;
