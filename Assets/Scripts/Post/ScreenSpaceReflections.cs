@@ -18,8 +18,8 @@ public class ScreenSpaceReflections : ImageEffectBase {
 
 		Vector4 normal = new Vector4(1, 1, 1, 0);
 		//normal = camera.worldToCameraMatrix.MultiplyVector(normal);
-		mat.SetMatrix("UnProj", (camera.projectionMatrix).inverse);
-		mat.SetMatrix("Proj", (camera.projectionMatrix));
+		mat.SetMatrix("UnProj", (camera.projectionMatrix*camera.worldToCameraMatrix).inverse);
+		mat.SetMatrix("Proj", (camera.projectionMatrix * camera.worldToCameraMatrix));
 		mat.SetMatrix("CamToWorld", (camera.cameraToWorldMatrix));
 		mat.SetFloat("RefDis", reflectDistance);
 		Graphics.Blit(source, rtRef, mat, 0);

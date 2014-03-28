@@ -55,6 +55,7 @@ SubShader {
 		uniform float4x4 WorldUnProj;
 		uniform float4x4 CamToWorld;
 		uniform float RefDis;
+		uniform float RaySpread;
 
 		fixed4 frag (v2f_ssr i) : COLOR
 		{
@@ -85,21 +86,22 @@ SubShader {
 
 			//posMap.xyz = cPos.xyz;
 
-			float3 ref = normalize(reflect(-dir, nNorm))*1.0;
+			float3 ref = normalize(reflect(-dir, nNorm));
 			float3 tanA = cross(nNorm, ref)*(-1+rand(i.uv)*2.0);
 			float3 tanB = cross(nNorm, tanA)*(-1+rand(i.uv)*2.0);
 			//ref = normalize(ref+float3(1.0)*(-0.5+rand(i.uv))*1.0);//(1.0-main.a));
-			ref = normalize(ref+tanA+tanB);
+			ref = normalize(ref+(tanA+tanB)*RaySpread);
 
 			float3 pos = posMap.xyz;
 			float stepSize =  1.0;
 			float4 newPos = float4(0.0);
 			float scale = 0.0;
-			float sign = 1.0;
 			float4 color = float4(0.0);
-			float range = 15.0;
+			float depthDiff;
+			float diff;
+			float3 refCopy = ref*stepSize;
 			for(float i = 0.0; i < 10.0; ++i){
-				pos += ref*stepSize;
+				pos += refCopy;
 				newPos = float4(pos, 1.0);
 				newPos = mul(Proj, newPos);
 				newPos.xyz /= newPos.w;
@@ -107,31 +109,32 @@ SubShader {
 
 				original = tex2Dlod(_CameraDepthNormalsTexture, float4(newPos.xy, 0, 0));
 				DecodeDepthNormal(original, depth, normal);
-				//depth *= _ProjectionParams.z;
-				//nNorm = mul( (float3x3)CamToWorld, normal );
 
 				depth = UNITY_SAMPLE_DEPTH(tex2Dlod(_CameraDepthTexture, float4(newPos.xy, 0, 0)));
 
-				posMap.xyz = float4(newPos.xy, depth, 1.0);
-				posMap.xyz = (posMap.xyz*2.0)-1.0;
-				posMap = mul(UnProj, posMap);
-				posMap.xyz /= posMap.w;
-
-				float depthDiff = newPos.z-depth;
-				float diff = length(pos-posMap.xyz);
-				if(depthDiff > 0.0){// && diff < RefDis){
-					//sign *= -1.0;
-					pos -= ref*stepSize;
-					stepSize *= 0.25;
-					//pos += ref*stepSize;
-					scale = min(1.0, max(0.0, RefDis-diff));
-					//color = tex2Dlod(_MainTex, float4((newPos.xy+1.0)*0.5, 0,0));
-					//break;
+				depthDiff = newPos.z-depth;
+				if(depthDiff > 0.0){
+					pos -= refCopy;
+					refCopy *= 0.25;
 				}
 			}
 
-			nNorm = mul( (float3x3)CamToWorld, normal );
-			color = tex2D(_MainTex, newPos.xy);//*max(0.0, dot(-ref, nNorm))*scale;
+			posMap.xyz = float4(newPos.xy, depth, 1.0);
+			posMap.xyz = (posMap.xyz*2.0)-1.0;
+			posMap = mul(UnProj, posMap);
+			posMap.xyz /= posMap.w;
+			diff = length(pos-posMap.xyz);
+			scale = min(1.0, max(0.0, RefDis-diff));
+
+			normal = mul( (float3x3)CamToWorld, normal );
+			float2 offset = (newPos.xy*2)-1.0;
+			float offScale = min(1, max(0, 1-pow(abs(offset.y),10))*max(0, 1-pow(abs(offset.x),10)));
+
+			color = tex2D(_MainTex, newPos.xy);
+			//color *= max(0.0, dot(-ref, normal));
+			//color *= scale;
+			//color *= max(0.0, 1.0-pow(dot(ref, nNorm),2));
+			color *= offScale;
 			color.a = 1.0;
 
 			//return float4(depth);
@@ -236,6 +239,7 @@ SubShader {
 
 		float4 _MainTex_ST;
 		uniform float Intensity;
+		uniform float ColorIntensity;
 
 		v2f vert (appdata_img v)
 		{
@@ -259,7 +263,7 @@ SubShader {
 			ref.a = 0;
 			float4 color = tex2D(_MainTex, i.uv);
 			
-			return color+ref*Intensity;
+			return color*ColorIntensity+ref*Intensity;
 		}
 		ENDCG
 	}

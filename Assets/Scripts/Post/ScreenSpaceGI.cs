@@ -5,8 +5,10 @@
 public class ScreenSpaceGI : ImageEffectBase {
 	public float intensity = 1;
 	public float reflectDistance;
+	public float raySpread = 1;
 	public int m_Downsampling = 2;
 	public float m_Blur = 2;
+	public float colorIntensity = 1;
 	public Material mat;
 
 	// Called by camera to apply image effect
@@ -18,11 +20,13 @@ public class ScreenSpaceGI : ImageEffectBase {
 		RenderTexture rtRef = RenderTexture.GetTemporary(source.width / m_Downsampling, source.height / m_Downsampling, 0);
 
 		Vector4 normal = new Vector4(1, 1, 1, 0);
+		raySpread = Mathf.Max(1, raySpread);
 		//normal = camera.worldToCameraMatrix.MultiplyVector(normal);
 		mat.SetMatrix("UnProj", (camera.projectionMatrix * camera.worldToCameraMatrix).inverse);
 		mat.SetMatrix("Proj", (camera.projectionMatrix * camera.worldToCameraMatrix));
 		mat.SetMatrix("CamToWorld", (camera.cameraToWorldMatrix));
 		mat.SetFloat("RefDis", reflectDistance);
+		mat.SetFloat("RaySpread", raySpread);
 		Graphics.Blit(source, rtRef, mat, 0);
 
 		m_Blur = Mathf.Max(0, m_Blur);
@@ -46,8 +50,10 @@ public class ScreenSpaceGI : ImageEffectBase {
 		rtRef = rtBlurY; // AO is the blurred one now
 
 		intensity = Mathf.Max(0, Mathf.Min(1, intensity));
+		colorIntensity = Mathf.Max(0, Mathf.Min(1, colorIntensity));
 		mat.SetTexture("_REF", rtRef);
 		mat.SetFloat("Intensity", intensity);
+		mat.SetFloat("ColorIntensity", colorIntensity);
 		Graphics.Blit(source, destination, mat, 2);
 		RenderTexture.ReleaseTemporary(rtRef);
 	}

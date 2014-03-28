@@ -65,12 +65,10 @@ SubShader {
 			float3 normal = float3(0.0);
 			DecodeDepthNormal(original, depth, normal);
 
-			depth *= _ProjectionParams.z;
-
 			//depth = UNITY_SAMPLE_DEPTH(tex2D (_CameraDepthTexture, i.uv));
 			depth = UNITY_SAMPLE_DEPTH(tex2Dlod(_CameraDepthTexture, float4(i.uv, 0, 0)));
 
-			float3 nNorm = normal;//mul( (float3x3)CamToWorld, normal );
+			float3 nNorm = mul( (float3x3)CamToWorld, normal );
 
 			//sampleD *= _ProjectionParams.z;
 			//float zd = saturate(sD-sampleD);
@@ -81,64 +79,69 @@ SubShader {
 			posMap.xyz /= posMap.w;
 
 			//float4 cPos = mul( CamToWorld, float4(0,0,0,1) );
-			float3 dir = normalize(-posMap.xyz);
-			//dir = mul( (float3x3)Proj, dir );
+			float3 dir = normalize(_WorldSpaceCameraPos-posMap.xyz);
 
 			//posMap.xyz = cPos.xyz;
 
-			float3 ref = normalize(reflect(-dir, nNorm))*1.0;
+			float3 ref = normalize(reflect(-dir, nNorm));
 			float3 tanA = cross(nNorm, ref)*(-1+rand(i.uv)*2.0);
 			float3 tanB = cross(nNorm, tanA)*(-1+rand(i.uv)*2.0);
-			//ref = normalize(ref+float3(1.0)*(-0.5+rand(i.uv))*1.0);//(1.0-main.a));
+			//ref = normalize(ref+float3(1.0)*(-0.5+rand(i.uv)));//(1.0-main.a));
 			ref = normalize(ref+(tanA+tanB)*(1.0-main.a));
 
 			float3 pos = posMap.xyz;
 			float stepSize =  1.0;
 			float4 newPos = float4(0.0);
 			float scale = 0.0;
-			float sign = 1.0;
 			float4 color = float4(0.0);
-			float range = 15.0;
+			float depthDiff;
+			float diff;
+			float3 refCopy = ref*stepSize;
+			float4 samplePos = float4(0);
 			for(float i = 0.0; i < 15.0; ++i){
-				pos += ref*stepSize;
+				pos += refCopy;
 				newPos = float4(pos, 1.0);
 				newPos = mul(Proj, newPos);
 				newPos.xyz /= newPos.w;
 				newPos = (newPos+1.0)*0.5;
 
-				original = tex2Dlod(_CameraDepthNormalsTexture, float4(newPos.xy, 0, 0));
+				samplePos.xy = newPos.xy;
+
+				original = tex2Dlod(_CameraDepthNormalsTexture, samplePos);
 				DecodeDepthNormal(original, depth, normal);
-				//depth *= _ProjectionParams.z;
-				//nNorm = mul( (float3x3)CamToWorld, normal );
 
-				depth = UNITY_SAMPLE_DEPTH(tex2Dlod(_CameraDepthTexture, float4(newPos.xy, 0, 0)));
+				//depth = DecodeFloatRG(original.zw);
 
-				posMap.xyz = float4(newPos.xy, depth, 1.0);
-				posMap.xyz = (posMap.xyz*2.0)-1.0;
-				posMap = mul(UnProj, posMap);
-				posMap.xyz /= posMap.w;
+				depth = UNITY_SAMPLE_DEPTH(tex2Dlod(_CameraDepthTexture, samplePos));
 
-				float depthDiff = newPos.z-depth;
-				float diff = length(pos-posMap.xyz);
-				if(depthDiff > 0.0){// && diff < RefDis){
-					//sign *= -1.0;
-					pos -= ref*stepSize;
-					stepSize *= 0.25;
-					//pos += ref*stepSize;
-					scale = min(1.0, max(0.0, RefDis-diff));
-					//color = tex2Dlod(_MainTex, float4((newPos.xy+1.0)*0.5, 0,0));
-					//break;
+				depthDiff = newPos.z-depth;
+				if(depthDiff > 0.0){
+					pos -= refCopy;
+					refCopy *= 0.25;
 				}
 			}
 
-			//normal = mul( (float3x3)CamToWorld, normal );
-			color = tex2D(_MainTex, newPos.xy)*max(0.0, dot(-ref, normal))*scale*max(0.0, 1.0-pow(dot(ref, nNorm),1));
+			posMap.xyz = float4(newPos.xy, depth, 1.0);
+			posMap.xyz = (posMap.xyz*2.0)-1.0;
+			posMap = mul(UnProj, posMap);
+			posMap.xyz /= posMap.w;
+			diff = length(pos-posMap.xyz);
+			scale = min(1.0, max(0.0, RefDis-diff));
+
+			normal = mul( (float3x3)CamToWorld, normal );
+			float2 offset = (newPos.xy*2)-1.0;
+			float offScale = min(1, max(0, 1-pow(abs(offset.y),10))*max(0, 1-pow(abs(offset.x),10)));
+
+			color = tex2D(_MainTex, newPos.xy);
+			color *= max(0.0, dot(-ref, normal));
+			color *= scale;
+			color *= max(0.0, 1.0-pow(dot(ref, nNorm),2));
+			color *= offScale;
 			color.a = 1.0;
 
-			//return float4(depth);
+			//return float4(offScale);
 			//return float4((ref.xyz+1.0)*0.5, 1.0);
 			//return float4((nNorm.xyz+1.0)*0.5, 1.0);
-			//return float4((posMap.xyz+1.0)*0.5, 1.0);
 			//return float4(posMap.xyz, 1.0);
 			return color*main.a;
 			//return color;//*main.a;
@@ -259,7 +262,7 @@ SubShader {
 			float4 ref = tex2D(_REF, i.uv);// * (NUM_BLUR_SAMPLES + 1);
 			float4 color = tex2D(_MainTex, i.uv);
 			
-			return ref;
+			//return ref;
 			return color+ref;
 		}
 		ENDCG
