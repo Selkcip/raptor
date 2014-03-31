@@ -1,0 +1,6 @@
+[submodule "Lux"]
+	path = Lux
+	url = https://github.com/larsbertram69/Lux.git
+[submodule "Assets/Lux"]
+	path = Assets/Lux
+	url = https://github.com/larsbertram69/Lux.git
