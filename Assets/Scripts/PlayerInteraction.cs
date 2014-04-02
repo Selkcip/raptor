@@ -55,7 +55,7 @@ public class PlayerInteraction : MonoBehaviour {
 						}
 					}
 					else if(hitObject.tag == "equip") {
-						if(!hitObject.GetComponent<CarryableObject>() != null) {
+						if(hitObject.GetComponent<CarryableObject>() != null) {
 							if(!hitObject.GetComponent<CarryableObject>().isLocked) {
 								EquipObject();
 							}

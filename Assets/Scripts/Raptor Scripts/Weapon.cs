@@ -91,7 +91,7 @@ public class Weapon : ShipGridItem {
 	}
 
 	// Update is called once per frame
-	void Update() {
+	public override void Update() {
 		fireCoolDown = Mathf.Max(0, fireCoolDown - Time.deltaTime);
 	}
 }

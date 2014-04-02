@@ -27,7 +27,7 @@ public class Location {
 	public GameObject marker;
 
 	public Location(Vector3 randomPoint) {
-		point = randomPoint != null ? randomPoint : Vector3.zero;
+		point = randomPoint;// != null ? randomPoint : Vector3.zero;
 		neighbors = new List<Location>();
 		encounterType = EncounterType.normal;
 		locationType = (LocationType)UnityEngine.Random.Range(0, Enum.GetNames(typeof(LocationType)).Length);

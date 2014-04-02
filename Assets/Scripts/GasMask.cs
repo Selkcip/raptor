@@ -7,7 +7,7 @@ public class GasMask : EquipableObject {
 	public bool isEquipped = false;
 	public float timer = 60;
 
-	void Start () {
+	public override void Start () {
 	
 	}
 	

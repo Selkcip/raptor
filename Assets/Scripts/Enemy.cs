@@ -361,7 +361,7 @@ public class Enemy : MonoBehaviour {
 				stateName = "Shoot";
 				speed = 0.0001f;
 
-				float enemyDis = (enemyPos - transform.position).magnitude;
+				//float enemyDis = (enemyPos - transform.position).magnitude;
 				targetDir = (enemyPos - transform.position).normalized;
 
 				targetPos = enemyPos;
@@ -630,7 +630,7 @@ public class Enemy : MonoBehaviour {
 	}
 
 	void OnCollisionStay(Collision col) {
-		if(col.other.tag == "Player") {
+		if(col.transform.tag == "Player") {
 			curFov = alertFov;
 			curViewDis = viewDis * 2;
 		}
