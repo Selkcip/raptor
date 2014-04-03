@@ -22,11 +22,6 @@ public class ShipDoor : MonoBehaviour {
 	void Start () {
 		CloseDoor();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-
-	}
 
 	void OpenDoor() {
 		HOTween.To(upDoor, 10f, new TweenParms().Prop("localPosition", new Vector3(0f, 4f, 0f), true));
