@@ -14,6 +14,12 @@ using System.Reflection;
 	}
 }*/
 public class PlanState : Dictionary<string, object> {
+	public int priority = 0;
+
+	public PlanState(int priority = 0) {
+		this.priority = priority;
+	}
+
 	public PlanState Extract(object planee) {
 		PlanState state = new PlanState();
 
@@ -102,7 +108,7 @@ public class PlanListItem {
 
 public class Planner {
 	List<PlanAction> actions;
-	public int maxPlanSteps = 1000;
+	public int maxPlanSteps = 100;
 
 	public Planner() {
 		actions = new List<PlanAction>();
@@ -117,7 +123,7 @@ public class Planner {
 		actions.Remove(action);
 	}
 
-	public PlanAction Plan(object planee, PlanState target) {
+	public List<PlanAction> Plan(object planee, PlanState target) {
 		List<PlanListItem> open = new List<PlanListItem>();
 		List<PlanListItem> closed = new List<PlanListItem>();
 
@@ -150,14 +156,18 @@ public class Planner {
 
 			if(c > maxPlanSteps) {
 				Debug.Log("AI thought too long, bailing out.");
+				break;
 			}
 		}
 
-		while(first.parent != null && first.parent.action != null) {
+		List<PlanAction> plan = new List<PlanAction>();
+
+		while(first.action != null){// && first.parent.action != null) {
+			plan.Insert(0, first.action);
 			first = first.parent;
 		}
 
-		return first.action;
+		return plan;// first.action;
 	}
 
 	/*public static PlanState GetState(object planee, PlanState target) {
