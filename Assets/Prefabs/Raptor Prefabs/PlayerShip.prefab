@@ -13,9 +13,9 @@ GameObject:
   - 114: {fileID: 11400000}
   - 50: {fileID: 5000000}
   - 95: {fileID: 9500000}
-  - 60: {fileID: 6000000}
   - 114: {fileID: 11400002}
-  m_Layer: 0
+  - 61: {fileID: 6100000}
+  m_Layer: 9
   m_Name: PlayerShip
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -29,8 +29,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .25, y: .25, z: .25}
+  m_LocalPosition: {x: .0663676411, y: .113773048, z: 0}
+  m_LocalScale: {x: 1, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
 --- !u!23 &2300000
@@ -60,7 +60,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_Mesh: {fileID: 4300000, guid: f7d5cd0e0f030db4587ae5e0fd7210a1, type: 3}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!50 &5000000
 Rigidbody2D:
   m_ObjectHideFlags: 1
@@ -71,13 +71,13 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: .0500000007
   m_GravityScale: 0
-  m_FixedAngle: 0
+  m_FixedAngle: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
---- !u!60 &6000000
-PolygonCollider2D:
+--- !u!61 &6100000
+BoxCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -85,16 +85,8 @@ PolygonCollider2D:
   m_Enabled: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Poly:
-    m_Paths:
-    - - {x: -5.18797112, y: 2.24237895}
-      - {x: -2.01731873, y: 3.85072756}
-      - {x: 2.02240062, y: 3.89705801}
-      - {x: 5.17757416, y: 2.28283715}
-      - {x: 5.15196371, y: 1.17236733}
-      - {x: 1.97686315, y: -4.10643244}
-      - {x: -1.93473041, y: -4.06429911}
-      - {x: -5.15196323, y: 1.17236805}
+  m_Size: {x: 1, y: 1}
+  m_Center: {x: 0, y: 0}
 --- !u!95 &9500000
 Animator:
   serializedVersion: 2
@@ -123,14 +115,17 @@ MonoBehaviour:
   forwardForce: 2
   reverseForce: 2
   sideForce: 2
+  turnRate: 100
   isCloaked: 0
   isDead: 0
   cloakTime: 10
-  cloakRechargeTime: 10
+  cloakRechargeTime: 2
   cloakLerpTime: 2
   maxHealth: 10
-  bullet: {fileID: 0}
-  bulletSpeed: 0
+  bullet: {fileID: 100000, guid: d7b3c1bb7e6f89446a6979014e151826, type: 2}
+  bulletSpeed: 25
+  reloadTime: .5
+  levelSelector: {fileID: 0}
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1

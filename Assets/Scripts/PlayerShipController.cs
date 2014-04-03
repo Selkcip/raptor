@@ -4,18 +4,19 @@ using System.Collections;
 public class PlayerShipController : MonoBehaviour {
 
     public float forwardForce, reverseForce, sideForce;
+	public float turnRate; // deg/s
 
     public bool isCloaked, isDead;
 	public float cloakTime, cloakRechargeTime, cloakLerpTime; // time full cloak lasts, time full recharge takes, time of cloak transition
-	float cloakCharge, cloakTrans; // betw/ 0(empty) and 1(full)
+	float cloakCharge, cloakTrans = 0; // betw/ 0(empty) and 1(full)
 
 	//public Material cloaked, uncloaked;
 
 	public float maxHealth;
-	float health;
+	float reload, health;
 	
-    public Transform bullet;
-    public float bulletSpeed;
+    public GameObject bullet;
+    public float bulletSpeed, reloadTime;
 
 	public LevelSelector levelSelector;
 
@@ -25,39 +26,51 @@ public class PlayerShipController : MonoBehaviour {
 		health = maxHealth;
 		cloakCharge = 1;
 		cloakTrans = 0;
+		reload = 0;
 	}
 	
 	// Update is called once per frame
 	void Update() {
-		if (!isDead) {
-			//print(cloakTrans);
+		if (!isDead)
+		{
+			print(cloakTrans);
 			renderer.material.SetFloat("_CloakAmt", cloakTrans * 128);
 			// rotate ship to point at current mouse position on screen
-			float distance = transform.position.z - Camera.main.transform.position.z;
+			/*float distance = transform.position.z - Camera.main.transform.position.z;
 			Vector3 mouse = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance));
 			mouse -= transform.position;
 			mouse = -mouse;
 			float targetAngle = Vector2.Angle(Vector2.up, mouse);
 			if (mouse.x > 0)
 				targetAngle = 360 - targetAngle;
-			transform.eulerAngles = new Vector3(0, 0, targetAngle);
+			transform.eulerAngles = new Vector3(0, 0, targetAngle);*/
+
+
 
 			// add force from movement keys
 			Vector2 force = new Vector2(0, 0);
-			if (Input.GetKey(KeyCode.W)) {
+			if (Input.GetKey(KeyCode.W))
+			{
 				force.y += forwardForce;
 			}
-			if (Input.GetKey(KeyCode.S)) {
+			if (Input.GetKey(KeyCode.S))
+			{
 				force.y -= reverseForce;
 			}
-			if (Input.GetKey(KeyCode.A)) {
-				force.x -= sideForce;
+			if (Input.GetKey(KeyCode.A))
+			{
+				transform.eulerAngles += new Vector3(0, 0, turnRate * Time.deltaTime);
+				//force.x -= sideForce;
 			}
-			if (Input.GetKey(KeyCode.D)) {
-				force.x += sideForce;
+			if (Input.GetKey(KeyCode.D))
+			{
+				transform.eulerAngles += new Vector3(0, 0, -turnRate * Time.deltaTime);
+				//force.x += sideForce;
 			}
-			if (Input.GetKeyDown(KeyCode.Q)) { // cloak
-				if (isCloaked) {
+			if (Input.GetKeyDown(KeyCode.Q))
+			{ // cloak
+				if (isCloaked)
+				{
 					isCloaked = false;
 				}
 				else //if (cloakCharge >= 1) 
@@ -65,10 +78,11 @@ public class PlayerShipController : MonoBehaviour {
 					isCloaked = true;
 				}
 			}
-			if (Input.GetKey(KeyCode.Space)) {
-				// shoot
+			if (Input.GetKey(KeyCode.Space))
+			{
+				Shoot();
 			}
-			force = -force;
+
 			force = Quaternion.Euler(transform.eulerAngles) * force;
 			rigidbody2D.AddForce(force);
 
@@ -82,11 +96,13 @@ public class PlayerShipController : MonoBehaviour {
 			else if (cloakTrans < 0)
 				cloakTrans = 0;
 
-			if (isCloaked) {
+			if (isCloaked)
+			{
 				cloakCharge -= 1 / cloakTime * Time.deltaTime;
 				cloakTrans += 1 / cloakLerpTime * Time.deltaTime;
 			}
-			else {
+			else
+			{
 				cloakCharge += 1 / cloakRechargeTime * Time.deltaTime;
 				cloakTrans -= 1 / cloakLerpTime * Time.deltaTime;
 			}
@@ -94,8 +110,20 @@ public class PlayerShipController : MonoBehaviour {
 			if (cloakCharge > 1)
 				cloakCharge = 1;
 		}
-		else {
-			//renderer.material.color = Color.red;
+
+		if (reload > 0)
+		{
+			reload -= Time.deltaTime;
+		}
+	}
+
+	void Shoot()
+	{
+		if (reload <= 0)
+		{
+			GameObject shot = (GameObject)Instantiate(bullet, transform.position + transform.up, Quaternion.Euler(transform.eulerAngles));
+			shot.rigidbody2D.velocity = rigidbody2D.velocity + (Vector2)(transform.up * bulletSpeed);
+			reload = reloadTime;
 		}
 	}
 
@@ -104,8 +132,10 @@ public class PlayerShipController : MonoBehaviour {
 		if (col.gameObject.tag == "bullet") {
 			Destroy(col.gameObject);
 			health -= 1;
-			if (health <= 0)
+			if (health <= 0) {
 				isDead = true;
+				rigidbody2D.fixedAngle = false;
+			}
 		}
         // detect player collides with a ship and is cloaked
         if (col.gameObject.tag == "enemy" && isCloaked) {
