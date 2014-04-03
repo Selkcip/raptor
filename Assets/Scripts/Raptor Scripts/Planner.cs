@@ -46,7 +46,7 @@ public class PlanState : Dictionary<string, object> {
 				if(value != null) {
 					//Debug.Log(value);
 					if(!condition.Value.Equals(value)) {//condition.Value.GetType().Equals(value.GetType())
-						//Debug.Log(condition.Key + ": " + value);
+						//Debug.Log(condition.Key + ": " + condition.Value + "!=" + value);
 						diff++;
 					}
 				}
@@ -67,14 +67,24 @@ public class PlanState : Dictionary<string, object> {
 	}
 
 	public PlanState Transform(PlanState current) {
-		PlanState state = new PlanState();
-		state.Concat<KeyValuePair<string, object>>(current);
+		PlanState state = (PlanState)current.MemberwiseClone();
+		//state.Concat<KeyValuePair<string, object>>(current);
 
 		foreach(KeyValuePair<string, object> condition in this) {
-			state.Add(condition.Key, condition.Value);
+			state[condition.Key] = condition.Value;
 		}
 
 		return state;
+	}
+
+	public string ToString() {
+		string value = "";
+
+		foreach(KeyValuePair<string, object> condition in this){
+			value += "{ " + condition.Key + ": " + condition.Value + " } ";
+		}
+
+		return value;
 	}
 }
 
@@ -125,7 +135,7 @@ public class Planner {
 
 	public List<PlanAction> Plan(object planee, PlanState target) {
 		List<PlanListItem> open = new List<PlanListItem>();
-		List<PlanListItem> closed = new List<PlanListItem>();
+		List<PlanAction> closed = new List<PlanAction>();
 
 		PlanState current = target.Extract(planee);
 		PlanListItem first = new PlanListItem(current, null, target.Diff(current));
@@ -139,20 +149,31 @@ public class Planner {
 			first = open[0];
 			open.Remove(first);
 			current = first.state;
-
-			if(target.Diff(current) <= 0) {
-				break;
-			}
+			//Debug.Log("current length" + current.Count);
 
 			//Debug.Log("action count: " + actions.Count);
 			foreach(PlanAction action in actions) {
 				//if(action != first.action && (first.parent != null ? action != first.parent.action : true) && action.input.Diff(current) <= 0) {
-				if(action.input.Diff(current) <= 0) {
-					open.Add(new PlanListItem(action.output, action, first.cost+target.Diff(action.output), first));
+				//Debug.Log(action.input.Diff(current));
+				PlanState temp = current.Transform(action.input.Extract(planee));
+				//Debug.Log("current: "+current.ToString()+" input: " + action.input.ToString() + " state: " + temp.ToString());
+				if(action != first.action && action.input.Diff(temp) <= 0) {
+					if(!closed.Contains(action)) {
+						open.Add(new PlanListItem(action.output.Transform(temp), action, first.cost + target.Diff(action.output), first));
+					}
 				}
 			}
 
-			closed.Add(first);
+			if(target.Diff(current) <= 0) {
+				break;
+			}
+			else {
+				if(open.Count <= 0) {
+					first.action = null;
+				}
+			}
+
+			closed.Add(first.action);
 
 			if(c > maxPlanSteps) {
 				Debug.Log("AI thought too long, bailing out.");

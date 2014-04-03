@@ -14,7 +14,7 @@ public class RaptorInteraction : MonoBehaviour {
 	public float maxHealth = 10;	//the number of times you can get hit
 	public float attack = 20f;
 
-	public Enemy eatTarget;
+	public Transform eatTarget;
 
 	//sound stuff
 	public float walkNoiseLevel = 1;
@@ -199,7 +199,7 @@ public class RaptorInteraction : MonoBehaviour {
 			}
 
 			if (eatTarget != null){
-				eatTarget.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+				eatTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 			}
 			else {
 				toggleRotator(true);
