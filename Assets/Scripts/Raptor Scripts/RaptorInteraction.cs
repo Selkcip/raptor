@@ -11,8 +11,11 @@ public class Notoriety {
 public class RaptorInteraction : MonoBehaviour {
 	public Texture2D crosshair;
 	public Texture2D noiseIndicator;
-	public float maxHealth = 10;	//the number of times you can get hit
-	public float attack = 20f;
+
+	//Raptor Stats
+	public static float maxHealth = 10f;	//the number of times you can get hit
+	public static float attack = 20f;
+	public static float stealthTime = 180f; //time in seconds
 
 	public Transform eatTarget;
 
@@ -66,8 +69,8 @@ public class RaptorInteraction : MonoBehaviour {
 
 	//Collection data
 	public static float mapAmountAcquired = 0;
-	public static int money = 0;
-	public static float notoriety;
+	public static int money = 100000;
+	public static float notoriety = 900000f;//Notoriety should increase by 2000 for killing a guy;
 
 	// Use this for initialization
 	void Start() {
@@ -103,6 +106,8 @@ public class RaptorInteraction : MonoBehaviour {
 				SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/dying2"), SoundManager.SoundType.Sfx);
 			}
 		}
+
+		InAttackRange();
 	}
 
 	void HUD() {
@@ -309,7 +314,7 @@ public class RaptorInteraction : MonoBehaviour {
 			isPouncing = true;
 			fpc.enabled = false;
 			fpc.grounded = false;
-			rigidbody.drag = 1;
+			//rigidbody.drag = 1;
 			//rigidbody.AddForce(transform.forward * 15f, ForceMode.Impulse);
 			//rigidbody.AddForce(transform.up * 5.5f, ForceMode.Impulse);
 			rigidbody.AddForce(Camera.main.transform.forward * 15f, ForceMode.Impulse);
