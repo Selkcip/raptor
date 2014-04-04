@@ -14,7 +14,8 @@ public class RaptorInteraction : MonoBehaviour {
 
 	//Raptor Stats
 	public static float maxHealth = 10f;	//the number of times you can get hit
-	public static float attack = 20f;		
+	public static float attack = 20f;
+	public static float stealthTime = 180f; //time in seconds
 
 	public Enemy eatTarget;
 
@@ -68,8 +69,8 @@ public class RaptorInteraction : MonoBehaviour {
 
 	//Collection data
 	public static float mapAmountAcquired = 0;
-	public static int money = 1000;
-	public static float notoriety;
+	public static int money = 100000;
+	public static float notoriety = 900000f;//Notoriety should increase by 2000 for killing a guy;
 
 	// Use this for initialization
 	void Start() {

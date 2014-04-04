@@ -22,7 +22,7 @@ public class Upgrade {
 		addedToTotal = false;
 
 		listing = priceLabel.text;
-		priceLabel.text += price;
+		priceLabel.text += "$" + price;
 	}
 }
 
@@ -51,8 +51,9 @@ public class BuyMenu : MonoBehaviour {
 
 		buyButton = GameObject.Find("Button - Buy").GetComponent<UIButton>();
 
-		upgrades.Add(new Upgrade(200, "Health", "Health Buy"));
-		upgrades.Add(new Upgrade(200, "Attack", "Attack Buy"));
+		upgrades.Add(new Upgrade(2000, "Health", "Health Buy"));
+		upgrades.Add(new Upgrade(2000, "Attack", "Attack Buy"));
+		upgrades.Add(new Upgrade(2000, "Stealth", "Stealth Buy"));
 		upgrades.Add(new Upgrade(999999, "Space Cowboy", "Space Cowboy Buy"));
 	}
 	
@@ -98,8 +99,14 @@ public class BuyMenu : MonoBehaviour {
 
 				//Raise prices
 				upgrade.level++;
-				upgrade.price *= upgrade.level;
-				upgrade.priceLabel.text = upgrade.listing + upgrade.price; 
+				if(upgrade.level < 4) {
+					upgrade.price *= upgrade.level;
+					upgrade.priceLabel.text = upgrade.listing + "$" +  upgrade.price;
+				}
+				else {
+					upgrade.priceLabel.text = upgrade.listing + "Sold Out";
+					upgrade.checkbox.enabled = false;
+				}
 			}
 		}
 
