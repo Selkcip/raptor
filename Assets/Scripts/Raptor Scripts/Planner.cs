@@ -15,9 +15,11 @@ using System.Reflection;
 }*/
 public class PlanState : Dictionary<string, object> {
 	public int priority = 0;
+	public string name;
 
-	public PlanState(int priority = 0) {
+	public PlanState(int priority = 0, string name = "state") {
 		this.priority = priority;
+		this.name = name;
 	}
 
 	public PlanState Extract(object planee) {
@@ -159,12 +161,16 @@ public class Planner {
 				//Debug.Log("current: "+current.ToString()+" input: " + action.input.ToString() + " state: " + temp.ToString());
 				if(action != first.action && action.input.Diff(temp) <= 0) {
 					if(!closed.Contains(action)) {
-						open.Add(new PlanListItem(action.output.Transform(temp), action, first.cost + target.Diff(action.output), first));
+						temp = action.output.Transform(temp);
+						//Debug.Log(action.output.ToString());
+						//Debug.Log((first.action != null ? first.action.name : "null")+" > "+action.name+" "+temp.ToString());
+						open.Add(new PlanListItem(temp, action, first.cost + target.Diff(action.output), first));
 					}
 				}
 			}
 
 			if(target.Diff(current) <= 0) {
+				//Debug.Log(current.ToString());
 				break;
 			}
 			else {
@@ -184,6 +190,7 @@ public class Planner {
 		List<PlanAction> plan = new List<PlanAction>();
 
 		while(first.action != null){// && first.parent.action != null) {
+			//Debug.Log(first.action.name);
 			plan.Insert(0, first.action);
 			first = first.parent;
 		}

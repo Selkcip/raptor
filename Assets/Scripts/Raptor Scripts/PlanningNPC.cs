@@ -48,6 +48,8 @@ public class PlanningNPC : MonoBehaviour {
 	public bool enemySeen = false;
 	public bool alarmFound = false;
 	public bool alarmActivated = false;
+	public bool bored = false;
+	public bool canInspect = false;
 
 	//Vector3 targetDir;
 	//Vector3 targetPos;
@@ -107,8 +109,10 @@ public class PlanningNPC : MonoBehaviour {
 		//print("planning");
 		//Find a plan
 		foreach(PlanState state in goals) {
-			print(state.ToString());
+			//print(state.ToString());
 		}
+
+		//Plan();
 
 		//print(aPassOut.input.Diff(aPassOut.input.Extract(this)));
 
@@ -118,7 +122,7 @@ public class PlanningNPC : MonoBehaviour {
 	}
 
 	//Goals
-	PlanState gDie, gPassOut, gWakeUp, gStand, gMoveToTarget, gUseObject, gActivateAlarm, gFlee;
+	PlanState gDie, gPassOut, gWakeUp, gStand, gMoveToTarget, gUseObject, gActivateAlarm, gFlee, gInspect;
 	protected void InitGoals() {
 		/*gDie = new PlanState(200) {
 			{"knockedOut", true}
@@ -162,10 +166,15 @@ public class PlanningNPC : MonoBehaviour {
 		};
 		goals.Add(gFlee);
 
+		gInspect = new PlanState(1) {
+			{"bored", false}
+		};
+		goals.Add(gInspect);
+
 	}
 
 	//Actions
-	PlanAction aPassOut, aSleep, aWakeUp, aStand, aMoveToTarget, aWalk, aRun, aUseObject, aFindAlarm, aActivateAlarm, aFlee;
+	PlanAction aPassOut, aSleep, aWakeUp, aStand, aMoveToTarget, aWalk, aRun, aUseObject, aFindAlarm, aActivateAlarm, aFlee, aInspect, aFindInteresting;
 	protected void InitActions() {
 		aPassOut = new PlanAction(
 			new PlanState() {
@@ -379,7 +388,8 @@ public class PlanningNPC : MonoBehaviour {
 			},
 			new PlanState() {
 				{ "alarmFound", true },
-				{ "alarmActivated", true }
+				{ "hasTarget", true }
+				//{ "alarmActivated", true }
 			},
 			delegate() {
 				float minAlarmDis = Mathf.Infinity;
@@ -411,6 +421,7 @@ public class PlanningNPC : MonoBehaviour {
 			new PlanState() {
 				{ "alarmActivated", false },
 				{ "hasTarget", true },
+				{ "atTarget", true },
 				{ "alarmFound", true },
 				{ "knockedOut", false },
 				{ "sleeping", false }
@@ -441,11 +452,6 @@ public class PlanningNPC : MonoBehaviour {
 			},
 			delegate() {
 				targetPos = transform.position + (transform.position - player.transform.position) * 100;
-				print(targetPos);
-				/*if((target.position - targetPos).magnitude > targetChangeTolerance) {
-					targetPos = target.position;
-					agent.SetDestination(targetPos);
-				}*/
 				agent.SetDestination(targetPos);
 
 				// update the agents posiiton 
@@ -459,6 +465,76 @@ public class PlanningNPC : MonoBehaviour {
 			});
 		aFlee.name = "flee";
 		planner.Add(aFlee);
+
+		aFindInteresting = new PlanAction(
+			new PlanState() {
+				{ "canInspect", true },
+				{ "knockedOut", false },
+				{ "sleeping", false }
+			},
+			new PlanState() {
+				{ "atTarget", true }
+			},
+			delegate() {
+				target = mostInteresting.transform;
+
+				return false;
+			});
+		aFindInteresting.name = "find interesting";
+		planner.Add(aFindInteresting);
+
+		float lookTimer = 0;
+		Vector3 lookPos = Vector3.zero;
+		float inspectTimer = 0;
+		aInspect = new PlanAction(
+			new PlanState() {
+				{ "bored", true },
+				{ "canInspect", true },
+				{ "atTarget", true },
+				{ "knockedOut", false },
+				{ "sleeping", false }
+			},
+			new PlanState() {
+				{ "bored", false }
+			},
+			delegate() {
+				lookTimer += Time.deltaTime;
+				if(targetPos != lookPos) {
+					targetPos = Vector3.Lerp(targetPos, lookPos, lookTimer / lookTime);
+				}
+				else {
+					inspectTimer += Time.deltaTime;
+					if(lookTimer >= lookTime) {
+						float lookDis = 0.25f;
+						if(mostInteresting != null) {
+							lookPos.x = mostInteresting.transform.position.x + Random.Range(-lookDis, lookDis);
+							lookPos.y = mostInteresting.transform.position.y + Random.Range(-lookDis, lookDis);
+							lookPos.z = mostInteresting.transform.position.z + Random.Range(-lookDis, lookDis);
+
+							if(mostInteresting.useTarget != null) {
+								useTarget = mostInteresting.useTarget;
+								usingObject = true;
+								bored = false;
+							}
+						}
+
+						//mostInteresting.SendMessage("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+
+
+						lookTimer = 0;
+					}
+				}
+
+				if(inspectTimer >= inspectTime) {
+					inspectTimer = 0;
+					mostInteresting = null;
+					boredomLevel = 0;
+				}
+
+				return false;
+			});
+		aInspect.name = "inspect";
+		planner.Add(aInspect);
 	}
 
 	// Update is called once per frame
@@ -470,6 +546,8 @@ public class PlanningNPC : MonoBehaviour {
 		atTarget = hasTarget ? (target.position - transform.position).magnitude < targetChangeTolerance : false;
 		hasUseTarget = useTarget != null;
 		alarmActivated = Alarm.activated;
+		bored = boredomLevel > 0;
+		canInspect = mostInteresting != null && mostInteresting.interestLevel <= boredomLevel;
 
 		curFov = Mathf.Max(fov, curFov - 1.0f * Time.deltaTime);
 		curViewDis = Mathf.Max(0.0001f, viewDis * lightLevel / maxLightLevel);//Mathf.Max(viewDis, curViewDis - 1.0f * Time.deltaTime);
