@@ -393,7 +393,7 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	public void Hurt(float damage) {
-		health -= 1;
+		health -= damage;
 		hud.Deplete("health", 1.0f/maxHealth);
 		SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
 	}

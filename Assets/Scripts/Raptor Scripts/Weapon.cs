@@ -14,6 +14,7 @@ public class Weapon : ShipGridItem {
 	public Transform muzzle;
 	public Light flashLight;
 	public GameObject projectile;
+	public bool hasAmmo = false;
 
 	private float fireCoolDown = 0;
 	public int clip;
@@ -93,5 +94,6 @@ public class Weapon : ShipGridItem {
 	// Update is called once per frame
 	public override void Update() {
 		fireCoolDown = Mathf.Max(0, fireCoolDown - Time.deltaTime);
+		hasAmmo = ammo + clip > 0;
 	}
 }

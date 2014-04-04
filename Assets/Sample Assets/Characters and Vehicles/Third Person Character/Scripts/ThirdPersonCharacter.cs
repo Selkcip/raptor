@@ -186,7 +186,7 @@ public class ThirdPersonCharacter : MonoBehaviour {
 
 					onGround = true;
 					//Commented this out because why is this even here? Why would you ever want to not use gravity? Plus the dudes were flying off into space.
-					//rigidbody.useGravity = false;
+					rigidbody.useGravity = false;
 					break;
 				}
 			}

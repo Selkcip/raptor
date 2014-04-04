@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class Bullet : MonoBehaviour {
 
 	public float velocity = 5;
-	public float damage = 5;
+	public float damage = 1;
 	public float life = 30;
 
 	// Use this for initialization
