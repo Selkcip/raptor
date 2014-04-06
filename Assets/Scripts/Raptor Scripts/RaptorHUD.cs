@@ -82,8 +82,8 @@ public class RaptorHUD : MonoBehaviour {
 			//activate alarms
 			//turn off the ship shader
 
+			pTime = Mathf.Max(0, pTime-Time.deltaTime);
 			if(Mathf.Floor(pTime) > 0) {
-				pTime -= Time.deltaTime;
 				int minutes = Mathf.FloorToInt(pTime / 60f);
 				int seconds = Mathf.FloorToInt(pTime - minutes * 60f);
 				stealthTimer.text = "Police arrive in: " + string.Format("{0:0}:{1:00}", minutes, seconds);

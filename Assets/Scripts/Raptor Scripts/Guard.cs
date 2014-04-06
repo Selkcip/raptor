@@ -12,7 +12,8 @@ public class Guard : PlanningNPC {
 	public bool canPunch = false;
 	public bool canShoot = false;
 
-	float punchTime = 0;
+	protected float punchTime = 0;
+	protected Vector3 patrolPos;
 
 	// Use this for initialization
 	public override void Start () {
@@ -31,11 +32,11 @@ public class Guard : PlanningNPC {
 			new PlanState() {
 				{"playerDead", true}
 			},
-			100);
+			25);
 		goals.Add(gKillPlayer);
 	}
 
-	PlanAction aFindPlayer, aChasePlayer, aPunchPlayer, aCoolPunch, aShootPlayer;
+	PlanAction aFindPlayer, aChasePlayer, aPunchPlayer, aCoolPunch, aShootPlayer, aPatrol;
 	public override void InitActions() {
 		base.InitActions();
 
@@ -75,6 +76,7 @@ public class Guard : PlanningNPC {
 			},
 			new PlanState() {
 				//{ "atTarget", true },
+				{ "enemyVisible", true },
 				{ "nearEnemy", true }
 			},
 			delegate() {
@@ -141,6 +143,7 @@ public class Guard : PlanningNPC {
 				{ "enemySeen", true },
 				{ "enemyVisible", true },
 				{ "canShoot", true },
+				{ "standing", true },
 				{ "knockedOut", false },
 				{ "dead", false }
 			},
@@ -165,6 +168,42 @@ public class Guard : PlanningNPC {
 			});
 		aShootPlayer.name = "shoot player";
 		planner.Add(aShootPlayer);
+
+		float patrolTimer = 0;
+		aPatrol = new PlanAction(
+			new PlanState() {
+				{ "enemySeen", false },
+				{ "enemyVisible", false },
+				{ "running", false },
+				{ "knockedOut", false },
+				{ "dead", false }
+			},
+			new PlanState() {
+				{ "enemySeen", true }
+			},
+			delegate() {
+				patrolTimer += Time.deltaTime;
+
+				agent.SetDestination(patrolPos);
+
+				// update the agents posiiton 
+				agent.transform.position = transform.position;
+
+				NavMeshHit hit;
+				agent.Raycast(transform.position+transform.forward, out hit);
+
+				if(hit.hit || patrolTimer >= patrolTime || (patrolPos - transform.position).magnitude <= targetChangeTolerance) {
+					patrolPos = transform.position + transform.forward * 10;
+					patrolTimer = 0;
+				}
+
+				// use the values to move the character
+				Move(agent.desiredVelocity);
+
+				return false;
+			});
+		aPatrol.name = "patrol";
+		planner.Add(aPatrol);
 	}
 	
 	// Update is called once per frame

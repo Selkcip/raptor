@@ -172,7 +172,7 @@ public class PlanningNPC : MonoBehaviour {
 				{"usingObject", false}
 			},
 			2);
-		goals.Add(gUseObject);
+		//goals.Add(gUseObject);
 
 		gActivateAlarm = new PlanGoal(
 			"activate alarm",
@@ -183,9 +183,10 @@ public class PlanningNPC : MonoBehaviour {
 			},
 			new PlanState() {
 				{"alarmActivated", true},
+				{"usingObject", false},
 				{"running", true}
 			},
-			25);
+			100);
 		goals.Add(gActivateAlarm);
 
 		gFlee = new PlanGoal(
@@ -353,7 +354,7 @@ public class PlanningNPC : MonoBehaviour {
 			},
 			delegate() {
 				//character.Move(Vector3.zero, false, false, transform.position + transform.forward * 100);
-				Move(Vector3.zero, transform.position + transform.forward * 100);
+				Move(Vector3.zero);
 				return false;
 			});
 		aStand.name = "stand";
@@ -492,7 +493,8 @@ public class PlanningNPC : MonoBehaviour {
 				{ "sleeping", false }
 			},
 			new PlanState() {
-				{ "alarmActivated", true }
+				{ "alarmActivated", true },
+				{ "usingObject", true }
 			},
 			delegate() {
 				usingObject = true;
@@ -613,7 +615,7 @@ public class PlanningNPC : MonoBehaviour {
 				{ "curious", false }
 			},
 			delegate() {
-				Move(noiseDir, transform.position + transform.forward * 100);
+				Move(noiseDir);
 				curious = false;
 
 				return false;
@@ -632,7 +634,7 @@ public class PlanningNPC : MonoBehaviour {
 				{ "alarmed", false }
 			},
 			delegate() {
-				Move(noiseDir, transform.position + transform.forward * 100);
+				Move(noiseDir);
 				curious = false;
 
 				return false;
@@ -675,6 +677,10 @@ public class PlanningNPC : MonoBehaviour {
 
 	protected void Move(Vector3 moveDir, Vector3 lookPos) {
 		character.Move(moveDir.normalized * speed, false, false, lookPos);
+	}
+
+	protected void Move(Vector3 moveDir) {
+		Move(moveDir, transform.position + transform.forward * 100);
 	}
 
 	protected void LookForEnemy() {
