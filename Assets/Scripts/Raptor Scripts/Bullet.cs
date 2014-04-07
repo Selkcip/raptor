@@ -18,6 +18,13 @@ public class Bullet : MonoBehaviour {
 
 	void OnCollisionEnter(Collision col) {
 		col.transform.SendMessage("Hurt", damage, SendMessageOptions.DontRequireReceiver);
+
+		DecalSystem decals = DecalSystem.instance;
+		if(decals != null) {
+			decals.CreateDecal(col.contacts[0].point, transform.forward, col.collider, 0);
+			//Debug.DrawRay(transform.position - transform.forward * 2, transform.forward, Color.red, 5);
+		}
+
 		Destroy(gameObject);
 		//Destroy(this);
 	}

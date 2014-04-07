@@ -15,7 +15,7 @@ public class RaptorInteraction : MonoBehaviour {
 	//Raptor Stats
 	public static float maxHealth = 10f;	//the number of times you can get hit
 	public static float attack = 20f;
-	public static float stealthTime = 5f; //time in seconds
+	public static float stealthTime = 180f; //time in seconds
 
 	public Transform eatTarget;
 
