@@ -13,11 +13,13 @@ public class RaptorInteraction : MonoBehaviour {
 	public Texture2D noiseIndicator;
 
 	//Raptor Stats
-	public static float maxHealth = 10f;	//the number of times you can get hit
+	public static float maxHealth = 100f;
 	public static float attack = 20f;
 	public static float stealthTime = 180f; //time in seconds
 
 	public Transform eatTarget;
+
+	public static bool defusing = false;
 
 	//sound stuff
 	public float walkNoiseLevel = 1;
@@ -207,7 +209,7 @@ public class RaptorInteraction : MonoBehaviour {
 			if (eatTarget != null){
 				eatTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 			}
-			else {
+			else{
 				toggleRotator(true);
 				rigidbody.freezeRotation = false;
 				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
@@ -217,12 +219,16 @@ public class RaptorInteraction : MonoBehaviour {
 		}
 		//animation stuff
 		else if(Input.GetKeyUp(KeyCode.E)) {
+			//eating stuff
 			eatTarget = null;
 			toggleRotator(true);
 			rigidbody.freezeRotation = false;
 			rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 			arms.SetBool("isEating", false);
 			eatSoundPlaying = false;
+
+			//defusing mines
+			defusing = false;
 		}
 
 		if(Input.GetKeyUp(KeyCode.F)) {
@@ -400,7 +406,8 @@ public class RaptorInteraction : MonoBehaviour {
 
 	public void Hurt(float damage) {
 		health -= damage;
-		hud.Deplete("health", 1.0f/maxHealth);
+		hud.Deplete("health", damage/maxHealth);
+		//print(health);
 		SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
 	}
 

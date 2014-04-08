@@ -11,7 +11,7 @@ public class HealthUpgrade : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		if(other.tag == "Player") {
-			RaptorInteraction.maxHealth += 5;
+			RaptorInteraction.maxHealth += 50;
 			hud.health = 1f;
 			other.GetComponent<RaptorInteraction>().health = RaptorInteraction.maxHealth;
 

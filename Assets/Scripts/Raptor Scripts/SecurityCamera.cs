@@ -90,6 +90,12 @@ public class SecurityCamera : MonoBehaviour {
 								enemyPos = enemyHead.position;
 							}
 						}
+						else if(noticeTimer > 0) {
+							noticeTimer -= Time.deltaTime;
+							if(noticeTimer < 0) {
+								noticeTimer = 0;
+							}
+						}
 					}
 				}
 			}
