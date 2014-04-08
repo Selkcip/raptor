@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Money : MonoBehaviour {
+public class Money : ShipGridItem {
 	public int value = 1;
 
 	void Start() {

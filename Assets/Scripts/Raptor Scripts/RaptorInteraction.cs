@@ -73,6 +73,8 @@ public class RaptorInteraction : MonoBehaviour {
 	public static float notoriety = 900000f;//Notoriety should increase by 2000 for killing a guy;
 	public static float notorietyStep = 2000;
 
+	public Transform inventory;
+
 	// Use this for initialization
 	void Start() {
 		ShipDoor.escaping = false;
@@ -231,6 +233,13 @@ public class RaptorInteraction : MonoBehaviour {
 				edge.enabled = !edge.enabled;// heatRenderer.enabled;
 			}
 		}
+
+		if(Input.GetKeyUp(KeyCode.R)) {
+			Transform child = inventory.GetChild(0);
+			if(child != null) {
+				//child.gameObject
+			}
+		}
 	}
 
 	void Slash() {
@@ -374,6 +383,12 @@ public class RaptorInteraction : MonoBehaviour {
 
 	public void TakeMoney(int amount) {
 		money += amount;
+	}
+
+	public void Collect(Collectible obj) {
+		obj.transform.parent = inventory;
+		obj.transform.localPosition *= 0;
+		obj.enabled = false;
 	}
 
 	public void Eat(float amount) {
