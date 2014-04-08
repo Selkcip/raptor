@@ -313,13 +313,16 @@ public class RaptorInteraction : MonoBehaviour {
 		if(hud.stamina == 1.0f && !isPouncing && fpc.grounded) {
 			chainPounce = false;
 			isPouncing = true;
-			fpc.enabled = false;
+			//fpc.enabled = false;
 			fpc.grounded = false;
 			//rigidbody.drag = 1;
 			//rigidbody.AddForce(transform.forward * 15f, ForceMode.Impulse);
 			//rigidbody.AddForce(transform.up * 5.5f, ForceMode.Impulse);
-			rigidbody.AddForce(Camera.main.transform.forward * 15f, ForceMode.Impulse);
-			rigidbody.AddForce(Camera.main.transform.up * 5.5f, ForceMode.Impulse);
+			rigidbody.velocity *= 0;
+			//rigidbody.AddForce(Camera.main.transform.forward * 15f, ForceMode.Impulse);
+			rigidbody.velocity += Camera.main.transform.forward * 15f;
+			//rigidbody.AddForce(Camera.main.transform.up * 5.5f, ForceMode.Impulse);
+			rigidbody.velocity += Camera.main.transform.up * 5.5f;
 			SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/slash2"), SoundManager.SoundType.Sfx);
 		}
 	}
@@ -328,7 +331,7 @@ public class RaptorInteraction : MonoBehaviour {
 		if(isPouncing) {
 			isPouncing = false;
 			rigidbody.drag = 0;
-			fpc.enabled = true;
+			//fpc.enabled = true;
 			//Chain pouncing
 			if(other.gameObject.tag == "enemy") {
 				//other.transform.root.GetComponent<Enemy>().KnockOut(knockOutTime);
