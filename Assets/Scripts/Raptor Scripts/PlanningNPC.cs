@@ -709,6 +709,9 @@ public class PlanningNPC : MonoBehaviour {
 								//enemyDir = enemyHead.forward;
 							}
 						}
+						else {
+							noticeTimer -= Time.deltaTime;
+						}
 					}
 				}
 			}

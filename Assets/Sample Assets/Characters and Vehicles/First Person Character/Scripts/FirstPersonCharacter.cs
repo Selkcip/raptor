@@ -8,7 +8,6 @@ public class FirstPersonCharacter : MonoBehaviour
 #if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8)
     [SerializeField] private bool walkByDefault = true;									// controls how the walk/run modifier key behaves.
 	[SerializeField] public float walkSpeed = 3f;                                      // The speed at which we want the character to move
-	public float maxMoveSpeed = 10;
 #endif
     [SerializeField] private AdvancedSettings advanced = new AdvancedSettings();        // The container for the advanced settings ( done this way so that the advanced setting are exposed under a foldout
 
@@ -21,7 +20,7 @@ public class FirstPersonCharacter : MonoBehaviour
     }
 
     private CapsuleCollider capsule;                                                    // The capsule collider for the first person character
-    private const float jumpRayLength = 1.2f; //0.7f                                          // The length of the ray used for testing against the ground when jumping
+    public float jumpRayLength = 1.0f; //0.7f                                          // The length of the ray used for testing against the ground when jumping
 	public bool grounded { get; set; }
 	public bool moving = false;
 	public bool running = false;
@@ -95,7 +94,7 @@ public class FirstPersonCharacter : MonoBehaviour
 		Vector3 desiredMove = transform.forward * input.y * speed + transform.right * input.x * strafeSpeed;
 
 		// preserving current y velocity (for falling, gravity)
-		float yv = rigidbody.velocity.y;
+		float yv = grounded && rigidbody.velocity.y > 0 ? 0 : rigidbody.velocity.y;
 
 		// add jump power
 		if (grounded && jump) {
