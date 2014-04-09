@@ -6,7 +6,7 @@ public class BlackHole : MonoBehaviour {
 
 	public float force = -10;
 	public float falloff = 0.5f;
-	public bool active = false;
+	public new bool active = false;
 
 	// Use this for initialization
 	void Start() {

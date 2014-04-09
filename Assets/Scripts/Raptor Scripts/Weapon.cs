@@ -14,6 +14,8 @@ public class Weapon : ShipGridItem {
 	public Transform muzzle;
 	public Light flashLight;
 	public GameObject projectile;
+	public bool hasAmmo = false;
+	public float damage = 1;
 
 	private float fireCoolDown = 0;
 	public int clip;
@@ -44,7 +46,7 @@ public class Weapon : ShipGridItem {
 	public bool Use(GameObject user) {
 		if(user.tag == "enemy" && dropped) {
 			Enemy enemy = user.GetComponent<Enemy>();
-			if(enemy.weaponAnchor != null && enemy.weapon == null) {
+			if(enemy != null && enemy.weaponAnchor != null && enemy.weapon == null) {
 				PickUp(enemy);
 			}
 		}
@@ -54,7 +56,8 @@ public class Weapon : ShipGridItem {
 					fireCoolDown = fireRate;
 					if(muzzle != null && projectile != null) {
 						clip--;
-						Instantiate(projectile, muzzle.position, muzzle.rotation);
+						GameObject bullet = (GameObject)Instantiate(projectile, muzzle.position, muzzle.rotation);
+						bullet.GetComponent<Bullet>().damage = damage;
 					}
 				}
 				return true;
@@ -91,7 +94,8 @@ public class Weapon : ShipGridItem {
 	}
 
 	// Update is called once per frame
-	void Update() {
+	public override void Update() {
 		fireCoolDown = Mathf.Max(0, fireCoolDown - Time.deltaTime);
+		hasAmmo = ammo + clip > 0;
 	}
 }

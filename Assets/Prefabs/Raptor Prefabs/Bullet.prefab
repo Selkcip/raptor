@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocity: 25
-  damage: 10
+  damage: 1
   life: 30
 --- !u!1001 &100100000
 Prefab:

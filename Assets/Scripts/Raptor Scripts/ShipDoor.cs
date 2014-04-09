@@ -22,11 +22,6 @@ public class ShipDoor : MonoBehaviour {
 	void Start () {
 		CloseDoor();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-
-	}
 
 	void OpenDoor() {
 		HOTween.To(upDoor, 10f, new TweenParms().Prop("localPosition", new Vector3(0f, 4f, 0f), true));
@@ -39,14 +34,22 @@ public class ShipDoor : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		OpenDoor();
-		escaping = true;
-		vacuum.active = true;
-		Camera.main.tag = null;
-		shipCam.camera.enabled = true;
-		shipCam.tag = "MainCamera";
-	
 		if(other.transform.name == "Player") {
+			if(upDoor != null) {
+				OpenDoor();
+			}
+			escaping = true;
+			//vacuum.active = true;
+
+			BlackHole[] blackHoles = transform.GetAllComponentsInChildren<BlackHole>();
+			foreach(BlackHole hole in blackHoles) {
+				hole.active = true;
+			}
+
+			Camera.main.tag = null;
+			shipCam.camera.enabled = true;
+			shipCam.tag = "MainCamera";
+
 			GameObject hud = GameObject.Find("HUD");
 
 			foreach(Transform child in hud.transform) {
@@ -62,7 +65,16 @@ public class ShipDoor : MonoBehaviour {
 	}
 
 	IEnumerator ShipTween() {
-		yield return new WaitForSeconds(10f);
+		if(upDoor != null) {
+			yield return new WaitForSeconds(10f);
+		}
+		else {
+			yield return new WaitForSeconds(2f);
+		}
 		HOTween.To(ship, 30f, new TweenParms().Prop("localPosition", new Vector3(0f, 0f, 1000f), true));
+		AsyncOperation async = Application.LoadLevelAsync("shiptest");
+		async.allowSceneActivation = false;
+		yield return new WaitForSeconds(5f);
+		async.allowSceneActivation = true;
 	}
 }

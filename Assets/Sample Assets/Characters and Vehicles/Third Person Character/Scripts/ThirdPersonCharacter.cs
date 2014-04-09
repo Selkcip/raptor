@@ -45,6 +45,8 @@ public class ThirdPersonCharacter : MonoBehaviour {
 	float forwardAmount;
 	Vector3 velocity;
 
+	public bool moving = false;
+
 	// Use this for initialization
 	void Start () {
 		animator = GetComponentInChildren<Animator>();
@@ -183,6 +185,7 @@ public class ThirdPersonCharacter : MonoBehaviour {
 					}
 
 					onGround = true;
+					//Commented this out because why is this even here? Why would you ever want to not use gravity? Plus the dudes were flying off into space.
 					rigidbody.useGravity = false;
 					break;
 				}
@@ -332,6 +335,8 @@ public class ThirdPersonCharacter : MonoBehaviour {
 			// we preserve the existing y part of the current velocity.
 			v.y = rigidbody.velocity.y;
 			rigidbody.velocity = v;
+
+			moving = v.magnitude > 0;
 		}
 	}
 	

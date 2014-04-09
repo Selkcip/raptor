@@ -11,10 +11,13 @@ public class Notoriety {
 public class RaptorInteraction : MonoBehaviour {
 	public Texture2D crosshair;
 	public Texture2D noiseIndicator;
-	public float maxHealth = 10;	//the number of times you can get hit
-	public float attack = 20f;
 
-	public Enemy eatTarget;
+	//Raptor Stats
+	public static float maxHealth = 10f;	//the number of times you can get hit
+	public static float attack = 20f;
+	public static float stealthTime = 180f; //time in seconds
+
+	public Transform eatTarget;
 
 	//sound stuff
 	public float walkNoiseLevel = 1;
@@ -66,11 +69,13 @@ public class RaptorInteraction : MonoBehaviour {
 
 	//Collection data
 	public static float mapAmountAcquired = 0;
-	public static int money = 0;
-	public static float notoriety;
+	public static int money = 100000;
+	public static float notoriety = 900000f;//Notoriety should increase by 2000 for killing a guy;
+	public static float notorietyStep = 2000;
 
 	// Use this for initialization
 	void Start() {
+		ShipDoor.escaping = false;
 		fpc = gameObject.GetComponent<FirstPersonCharacter>();
 		hud = gameObject.GetComponent<RaptorHUD>();
 		arms = gameObject.GetComponentInChildren<Animator>();
@@ -102,6 +107,8 @@ public class RaptorInteraction : MonoBehaviour {
 				SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/dying2"), SoundManager.SoundType.Sfx);
 			}
 		}
+
+		InAttackRange();
 	}
 
 	void HUD() {
@@ -198,7 +205,7 @@ public class RaptorInteraction : MonoBehaviour {
 			}
 
 			if (eatTarget != null){
-				eatTarget.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+				eatTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 			}
 			else {
 				toggleRotator(true);
@@ -306,13 +313,17 @@ public class RaptorInteraction : MonoBehaviour {
 		if(hud.stamina == 1.0f && !isPouncing && fpc.grounded) {
 			chainPounce = false;
 			isPouncing = true;
-			fpc.enabled = false;
+			//fpc.enabled = false;
 			fpc.grounded = false;
-			rigidbody.drag = 1;
+			//rigidbody.drag = 1;
 			//rigidbody.AddForce(transform.forward * 15f, ForceMode.Impulse);
 			//rigidbody.AddForce(transform.up * 5.5f, ForceMode.Impulse);
-			rigidbody.AddForce(Camera.main.transform.forward * 15f, ForceMode.Impulse);
-			rigidbody.AddForce(Camera.main.transform.up * 5.5f, ForceMode.Impulse);
+			rigidbody.velocity *= 0;
+			//rigidbody.AddForce(Camera.main.transform.forward * 15f, ForceMode.Impulse);
+			rigidbody.velocity += Camera.main.transform.forward * 15f;
+			//rigidbody.AddForce(Camera.main.transform.up * 5.5f, ForceMode.Impulse);
+			rigidbody.velocity += Camera.main.transform.up * 5.5f;
+			SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/slash2"), SoundManager.SoundType.Sfx);
 		}
 	}
 
@@ -320,7 +331,7 @@ public class RaptorInteraction : MonoBehaviour {
 		if(isPouncing) {
 			isPouncing = false;
 			rigidbody.drag = 0;
-			fpc.enabled = true;
+			//fpc.enabled = true;
 			//Chain pouncing
 			if(other.gameObject.tag == "enemy") {
 				//other.transform.root.GetComponent<Enemy>().KnockOut(knockOutTime);
@@ -391,7 +402,7 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	public void Hurt(float damage) {
-		health -= 1;
+		health -= damage;
 		hud.Deplete("health", 1.0f/maxHealth);
 		SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
 	}

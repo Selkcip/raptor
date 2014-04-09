@@ -3,6 +3,8 @@ using System.Collections;
 
 public class LockMouse : MonoBehaviour {
 
+	public bool lockMouse = true;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -10,6 +12,16 @@ public class LockMouse : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Screen.lockCursor = true;
+
+		if(Input.GetKey(KeyCode.P)) {
+			Application.LoadLevel(Application.loadedLevel);
+		}
+
+		if(lockMouse) {
+			Screen.lockCursor = true;
+		}
+		else {
+			Screen.lockCursor = false;
+		}
 	}
 }

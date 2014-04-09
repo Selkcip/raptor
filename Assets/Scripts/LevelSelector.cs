@@ -16,8 +16,7 @@ public class LevelSelector : MonoBehaviour {
 		ships = new ArrayList();
 	}
 
-	public void Load()
-	{
+	public void Load(){
 		print("Loading");
 		Application.LoadLevel("cargoship");
 	}

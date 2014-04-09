@@ -13,7 +13,7 @@ public class ShipGridItem : MonoBehaviour {
 		//cell = ShipGrid.GetPosI(transform.position);
 	}
 
-	public void Update() {
+	public virtual void Update() {
 		ShipGridCell newCell = ShipGrid.GetPosI(transform.position);
 		if(newCell != null && newCell != cell) {
 			cell = newCell;
