@@ -8440,8 +8440,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 742b40781446ac84b90e48018058a1d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  openDis: 1.5
   LeftDoor: {fileID: 400000}
   RightDoor: {fileID: 400002}
+  isOpen: 0
+  isLocked: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

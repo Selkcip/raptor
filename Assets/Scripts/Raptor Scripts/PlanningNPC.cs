@@ -460,22 +460,28 @@ public class PlanningNPC : MonoBehaviour {
 				float minAlarmDis = Mathf.Infinity;
 				Alarm minAlarm;
 				Vector3 minAlarmPos = transform.position;
-				minAlarm = Alarm.alarms[0];
-				if(!Alarm.activated) {
-					foreach(Alarm alarm in Alarm.alarms) {
-						targetPos = alarm.transform.position;
-						agent.SetDestination(targetPos);
-						float dis = agent.remainingDistance;// (alarm.transform.position - transform.position).magnitude;
-						if(dis < minAlarmDis) {
-							minAlarmDis = dis;
-							minAlarmPos = alarm.transform.position;
-							minAlarm = alarm;
+				if(Alarm.alarms.Count > 0) {
+					minAlarm = Alarm.alarms[0];
+					if(!Alarm.activated) {
+						foreach(Alarm alarm in Alarm.alarms) {
+							targetPos = alarm.transform.position;
+							agent.SetDestination(targetPos);
+							float dis = agent.remainingDistance;// (alarm.transform.position - transform.position).magnitude;
+							if(dis < minAlarmDis) {
+								minAlarmDis = dis;
+								minAlarmPos = alarm.transform.position;
+								minAlarm = alarm;
+							}
 						}
 					}
-				}
 
-				target = minAlarm.transform;
-				alarmFound = true;
+					target = minAlarm.transform;
+					alarmFound = true;
+				}
+				else {
+					Alarm.activated = true;
+					alarmActivated = true;
+				}
 
 				return false;
 			});

@@ -23,6 +23,7 @@ Shader "Decal/Cutout Bumped Specular" {
 			"RenderType" = "TransparentCutout"
 		}
 		Offset -1, -1
+		ZWrite Off
 		
 		CGPROGRAM
 		#pragma surface surf BlinnPhong alphatest:_Cutoff
