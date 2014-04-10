@@ -15,7 +15,6 @@ public class RaptorHUD : MonoBehaviour {
 	private GameObject defuseElement;
 	private UISlider defuseBar;
 	public static float defuseTime = 0f;
-	public static bool showDefuse = false;
 
 	//police timer
 	public static float pTime = 180; //time in seconds before police come
@@ -106,14 +105,21 @@ public class RaptorHUD : MonoBehaviour {
 	}
 
 	void UpdateDefuseBar() {
-		defuseElement.SetActive(showDefuse);
 		if(RaptorInteraction.defusing) {
-			showDefuse = true;
-			defuseBar.value = defuseTime;
+			defuseElement.SetActive(true);
+			RaptorHUD.defuseTime += 0.25f * Time.deltaTime;
 		}
 		else if(!RaptorInteraction.defusing) {
 			defuseTime = 0;
-			showDefuse = false;
+			defuseElement.SetActive(false);
+		}
+
+
+		defuseBar.value = defuseTime;
+		//hide when complete
+		if(defuseBar.value >= 1.0f) {
+			RaptorInteraction.defusing = false;
+			defuseElement.SetActive(false);
 		}
 	}
 }

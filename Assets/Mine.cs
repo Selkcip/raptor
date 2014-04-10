@@ -9,16 +9,18 @@ public class Mine : MonoBehaviour {
 	public bool hacked = false;
 	public bool activated = true;
 
+	private Transform center;
+
 	// Use this for initialization
 	void Start () {
-
+		center = transform.FindChild("center");
 	}
 
 	void OnTriggerEnter(Collider other) {
 		if(!hacked && other.tag == "Player") {
 			Explosion(other.transform, playerDamage);
 		}
-		else if(hacked && other.tag == "enemy") {
+		else if(hacked && other.tag == "enemy" && activated) {
 			Explosion(other.transform, damage);
 		}
 	}
@@ -34,14 +36,22 @@ public class Mine : MonoBehaviour {
 		//make an upgrade for dis shit
 		if(!hacked) {
 			RaptorInteraction.defusing = true;
-			RaptorHUD.defuseTime += 0.25f * Time.deltaTime;
+
 			if(RaptorHUD.defuseTime >= 1.0f) {
 				hacked = true;
+				center.renderer.material.color = Color.blue;
 			}
 		}
 		else if(hacked) {
-			activated = !activated;
+			if(Input.GetKeyDown(KeyCode.E)) {
+				activated = !activated;
+				if(activated) {
+					center.renderer.material.color = Color.black;
+				}
+				else {
+					center.renderer.material.color = Color.blue;
+				}
+			}
 		}
-		//switch a light on the mine to indicate on or off
 	}
 }

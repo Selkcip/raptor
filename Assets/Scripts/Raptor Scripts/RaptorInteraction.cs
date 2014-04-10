@@ -203,18 +203,26 @@ public class RaptorInteraction : MonoBehaviour {
 		if(Input.GetKey(KeyCode.E)) {
 			RaycastHit hit;
 			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2)) {
+				print(hit.transform.name);
 				hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+				if(hit.transform.tag != "trap") {
+					defusing = false;
+				}
 			}
-
-			if (eatTarget != null){
-				eatTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+			else {
+				defusing = false;
 			}
-			else{
-				toggleRotator(true);
-				rigidbody.freezeRotation = false;
-				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-				arms.SetBool("isEating", false);
-				eatSoundPlaying = false;
+			if(hit.transform != null && hit.transform.tag == "enemy") {
+				if(eatTarget != null) {
+					eatTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+				}
+				else {
+					toggleRotator(true);
+					rigidbody.freezeRotation = false;
+					rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+					arms.SetBool("isEating", false);
+					eatSoundPlaying = false;
+				}
 			}
 		}
 		//animation stuff
@@ -411,7 +419,7 @@ public class RaptorInteraction : MonoBehaviour {
 		SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
 	}
 
-	void toggleRotator(bool on){
+	public void toggleRotator(bool on){
 		GetComponent<SimpleMouseRotator>().enabled = on;
 		Camera.main.GetComponent<SimpleMouseRotator>().enabled = on;
 	}
