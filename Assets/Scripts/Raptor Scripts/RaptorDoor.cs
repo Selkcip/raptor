@@ -61,6 +61,15 @@ public class RaptorDoor : MonoBehaviour {
 		SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Door_Slide_2"), SoundManager.SoundType.Sfx, this.gameObject);
 		HOTween.To(LeftDoor, 1.0f, new TweenParms().Prop("localPosition", new Vector3(-openDis, 0f, 0f), true));
 		HOTween.To(RightDoor, 1.0f, new TweenParms().Prop("localPosition", new Vector3(openDis, 0f, 0f), true).OnComplete(Complete));
+
+		Vector3 pos = transform.TransformPoint(0, 0, 2.5f);
+		ShipGrid.UpdateCellLinksI(pos);
+		pos.y += 1;
+		ShipGrid.UpdateCellLinksI(pos);
+		pos.y += 1;
+		ShipGrid.UpdateCellLinksI(pos);
+		pos.y += 1;
+		ShipGrid.UpdateCellLinksI(pos);
 	}
 
 	public void CloseDoor() {
@@ -76,5 +85,13 @@ public class RaptorDoor : MonoBehaviour {
 
 	void Complete() {
 		tweening = false;
+		Vector3 pos = transform.TransformPoint(0, 0, 2.5f);
+		ShipGrid.UpdateCellLinksI(pos);
+		pos.y += 1;
+		ShipGrid.UpdateCellLinksI(pos);
+		pos.y += 1;
+		ShipGrid.UpdateCellLinksI(pos);
+		pos.y += 1;
+		ShipGrid.UpdateCellLinksI(pos);
 	}
 }
