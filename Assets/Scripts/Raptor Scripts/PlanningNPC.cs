@@ -21,6 +21,7 @@ public class PlanningNPC : MonoBehaviour {
 	public float inspectTime = 5f;
 	public float useTime = 5f;
 	public float patrolTime = 5f;
+	public bool followsNoise = false;
 	public float curiousNoiseLevel = 1f;
 	public float alarmedNoiseLevel = 5f;
 	public float noiseLevel = 0;
@@ -53,6 +54,10 @@ public class PlanningNPC : MonoBehaviour {
 	public bool canInspect = false;
 	public bool curious = false;
 	public bool alarmed = false;
+	public bool hasFlashlight = false;
+	public bool flashLightOn = false;
+	public bool needLight = false;
+	public bool canSee = false;
 
 	//Vector3 targetDir;
 	//Vector3 targetPos;
@@ -213,7 +218,7 @@ public class PlanningNPC : MonoBehaviour {
 			1);
 		goals.Add(gInspect);
 
-		gFollowNoise = new PlanGoal(
+		/*gFollowNoise = new PlanGoal(
 			"follow noise",
 			new PlanState() {
 				{"curious", true}
@@ -234,11 +239,11 @@ public class PlanningNPC : MonoBehaviour {
 				{"running", true}
 			},
 			1);
-		goals.Add(gChaseNoise);
+		goals.Add(gChaseNoise);*/
 	}
 
 	//Actions
-	protected PlanAction aPassOut, aSleep, aWakeUp, aStand, aMoveToTarget, aWalk, aRun, aUseObject, aFindAlarm, aActivateAlarm, aFlee, aInspect, aFindInteresting, aFollowNoise, aChaseNoise;
+	protected PlanAction aPassOut, aSleep, aWakeUp, aStand, aMoveToTarget, aWalk, aRun, aUseObject, aFindAlarm, aActivateAlarm, aFlee, aInspect, aFindInteresting, aFollowNoise, aChaseNoise, aEnableLight, aDisableLight;
 	public virtual void InitActions() {
 		aPassOut = new PlanAction(
 			new PlanState() {
@@ -402,7 +407,8 @@ public class PlanningNPC : MonoBehaviour {
 				{ "sleeping", false }
 			},
 			new PlanState() {
-				{ "usingObject", false }
+				{ "usingObject", false },
+				{ "alarmActivated", true }
 			},
 			delegate() {
 				animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1.0f);
@@ -499,15 +505,15 @@ public class PlanningNPC : MonoBehaviour {
 				{ "sleeping", false }
 			},
 			new PlanState() {
-				{ "alarmActivated", true },
+				//{ "alarmActivated", true },
 				{ "usingObject", true }
 			},
 			delegate() {
 				usingObject = true;
 				useTarget = target;
-				alarmActivated = true;
+				//alarmActivated = true;
 				enemySeen = false;
-				alertShip = false;
+				//alertShip = false;
 
 				return false;
 			});
@@ -613,12 +619,15 @@ public class PlanningNPC : MonoBehaviour {
 
 		aFollowNoise = new PlanAction(
 			new PlanState() {
+				{ "followsNoise", true },
 				{ "curious", true },
+				{ "alarmed", false },
 				{ "knockedOut", false },
 				{ "sleeping", false }
 			},
 			new PlanState() {
-				{ "curious", false }
+				{ "curious", false },
+				{ "playerVisible", true }
 			},
 			delegate() {
 				Move(noiseDir);
@@ -631,13 +640,15 @@ public class PlanningNPC : MonoBehaviour {
 
 		aChaseNoise = new PlanAction(
 			new PlanState() {
+				{ "followsNoise", true },
 				{ "alarmed", true },
 				{ "running", true },
 				{ "knockedOut", false },
 				{ "sleeping", false }
 			},
 			new PlanState() {
-				{ "alarmed", false }
+				{ "alarmed", false },
+				{ "playerVisible", true }
 			},
 			delegate() {
 				Move(noiseDir);
@@ -647,6 +658,46 @@ public class PlanningNPC : MonoBehaviour {
 			});
 		aChaseNoise.name = "chase noise";
 		planner.Add(aChaseNoise);
+
+		aEnableLight = new PlanAction(
+			new PlanState() {
+				{ "hasFlashlight", true },
+				{ "flashLightOn", false },
+				{ "needLight", true },
+				{ "knockedOut", false },
+				{ "sleeping", false }
+			},
+			new PlanState() {
+				{ "flashLightOn", true },
+				{ "needLight", false }
+			},
+			delegate() {
+				weapon.flashLight.enabled = true;
+
+				return false;
+			},
+			-2);
+		aEnableLight.name = "enable light";
+		planner.Add(aEnableLight);
+
+		aDisableLight = new PlanAction(
+			new PlanState() {
+				{ "hasFlashlight", true },
+				{ "flashLightOn", true },
+				{ "needLight", false },
+				{ "knockedOut", false },
+				{ "sleeping", false }
+			},
+			new PlanState() {
+				{ "flashLightOn", false }
+			},
+			delegate() {
+				weapon.flashLight.enabled = false;
+
+				return false;
+			});
+		aDisableLight.name = "disable light";
+		planner.Add(aDisableLight);
 	}
 
 	// Update is called once per frame
@@ -659,10 +710,14 @@ public class PlanningNPC : MonoBehaviour {
 		atTarget = hasTarget ? (target.position - transform.position).magnitude < targetChangeTolerance : false;
 		hasUseTarget = useTarget != null;
 		alarmActivated = Alarm.activated;
+		alertShip = alarmActivated ? false : alertShip;
 		bored = boredomLevel > 0;
 		canInspect = mostInteresting != null && mostInteresting.interestLevel <= boredomLevel;
 		curious = noiseLevel >= curiousNoiseLevel;
 		alarmed = noiseLevel >= alarmedNoiseLevel;
+		hasFlashlight = weapon != null && weapon.flashLight != null;
+		flashLightOn = hasFlashlight && weapon.flashLight.enabled == true;
+		needLight = lightLevel <= minLightLevel ? true : (lightLevel >= maxLightLevel ? false : needLight);
 
 		curFov = Mathf.Max(fov, curFov - 1.0f * Time.deltaTime);
 		curViewDis = Mathf.Max(0.0001f, viewDis * lightLevel / maxLightLevel);//Mathf.Max(viewDis, curViewDis - 1.0f * Time.deltaTime);

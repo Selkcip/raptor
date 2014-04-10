@@ -30,7 +30,7 @@ public class Pressureable : MonoBehaviour {
 				}
 			}
 
-			rigidbody.AddForce(force * 0.25f);
+			rigidbody.AddForce(force);
 		}
 	}
 }

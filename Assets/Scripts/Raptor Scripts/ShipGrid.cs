@@ -5,11 +5,13 @@ using System.Collections.Generic;
 public class ShipGridFluid {
 	public string type;
 	public float level;
+	public float lifeTime;
 	public float flowRate;
 
-	public ShipGridFluid(string type, float level, float flowRate) {
+	public ShipGridFluid(string type, float level, float lifeTime, float flowRate) {
 		this.type = type;
 		this.level = level;
+		this.lifeTime = lifeTime;
 		this.flowRate = flowRate;
 	}
 }
@@ -37,15 +39,18 @@ public class ShipGridCell {
 		contents.Remove(item);
 	}
 
-	public void AddFluid(string type, float amount, float flowRate) {
+	public void AddFluid(string type, float amount, float lifeTime, float flowRate, bool overFill = false) {
 		ShipGridFluid fluid;
 		fluids.TryGetValue(type, out fluid);
 		if(fluid == null) {
-			fluid = new ShipGridFluid(type, 0, 0);
+			fluid = new ShipGridFluid(type, 0, 0, 0);
 			fluids.Add(type, fluid);
 		}
-		fluid.level += amount;
-		fluid.flowRate = flowRate;
+		if(overFill || Mathf.Abs(fluid.level) <= Mathf.Abs(amount)) {
+			fluid.level = amount;
+			fluid.lifeTime = lifeTime;
+			fluid.flowRate = flowRate;
+		}
 	}
 
 	/*public void AddFluid(string type, float amount, float flowRate, float cutoff, List<ShipGridCell> filled) {
@@ -99,14 +104,17 @@ public class ShipGridCell {
 	public void Update(float dTime) {
 		foreach(KeyValuePair<string, ShipGridFluid> item in fluids) {
 			ShipGridFluid fluid = item.Value;
+			float absValue = Mathf.Abs(fluid.level);
+			float step = (1/fluid.lifeTime)*Time.deltaTime;
+			absValue = Mathf.Max(0, absValue-step);
 			float nCount = Mathf.Max(1, neighbors.Count);
-			float change = fluid.level;
-			fluid.level *= 1.0f-fluid.flowRate;
-			change -= fluid.level;
-			change *= 0.99f;
+			float change = fluid.level * fluid.flowRate;
+			//Debug.Log(fluid.level + " " + change);
+			//change /= nCount;
 			foreach(ShipGridCell neigh in neighbors) {
-				neigh.AddFluid(fluid.type, change/nCount, fluid.flowRate);
+				neigh.AddFluid(fluid.type, change, fluid.lifeTime, fluid.flowRate);
 			}
+			fluid.level = absValue * Mathf.Sign(fluid.level);
 		}
 	}
 }
@@ -351,21 +359,21 @@ public class ShipGrid : MonoBehaviour {
 		return cells[x][y][z];
 	}
 
-	public static void AddFluidI(Vector3 pos, string type, float amount, float flowRate, float cutoff) {
-		AddFluidI(pos.x, pos.y, pos.z, type, amount, flowRate, cutoff);
+	public static void AddFluidI(Vector3 pos, string type, float amount, float lifeTime, float flowRate) {
+		AddFluidI(pos.x, pos.y, pos.z, type, amount, lifeTime, flowRate);
 	}
 
-	public static void AddFluidI(float x, float y, float z, string type, float amount, float flowRate, float cutoff) {
-		instance.AddFluid(x, y, z, type, amount, flowRate, cutoff);
+	public static void AddFluidI(float x, float y, float z, string type, float amount, float lifeTime, float flowRate) {
+		instance.AddFluid(x, y, z, type, amount, lifeTime, flowRate);
 	}
 
-	public void AddFluid(Vector3 pos, string type, float amount, float flowRate, float cutoff) {
-		AddFluid(pos.x, pos.y, pos.z, type, amount, flowRate, cutoff);
+	public void AddFluid(Vector3 pos, string type, float amount, float lifeTime, float flowRate) {
+		AddFluid(pos.x, pos.y, pos.z, type, amount, lifeTime, flowRate);
 	}
 
-	public void AddFluid(float x, float y, float z, string type, float amount, float flowRate, float cutoff) {
+	public void AddFluid(float x, float y, float z, string type, float amount, float lifeTime, float flowRate) {
 		ShipGridCell cur = GetPos(x, y, z);
-		cur.AddFluid(type, amount, flowRate);
+		cur.AddFluid(type, amount, lifeTime, flowRate, false);
 
 		if(!fluids.Contains(type)) {
 			fluids.Add(type);
@@ -397,7 +405,7 @@ public class ShipGrid : MonoBehaviour {
 								//Debug.DrawLine(curPos + transform.forward * 0.1f, curPos + transform.forward * 0.1f + transform.up * fluid.level, Color.red, 0, true);
 							}
 							//}
-							if(level > 0) {
+							if(Mathf.Abs(level) > 0) {
 								Debug.DrawLine(curPos + transform.forward * 0.1f, curPos + transform.forward * 0.1f + transform.up * level, Color.red, 0, true);
 								//Debug.DrawLine(curPos, curPos+transform.up);
 								foreach(ShipGridCell neigh in cur.neighbors) {

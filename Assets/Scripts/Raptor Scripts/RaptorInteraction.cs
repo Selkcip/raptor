@@ -20,6 +20,8 @@ public class RaptorInteraction : MonoBehaviour {
 	public Transform eatTarget;
 
 	//sound stuff
+	public float noiseLifeTime = 0.5f;
+	public float noiseFlowRate = 0.9f;
 	public float walkNoiseLevel = 1;
 	public float walkNoiseFalloff = 0.25f;
 	public float runNoiseLevel = 5;
@@ -166,7 +168,7 @@ public class RaptorInteraction : MonoBehaviour {
 				prevGrounded = false;
 			}
 
-			ShipGrid.AddFluidI(transform.position, "noise", noiseLevel, noiseFalloff, 0.01f);
+			ShipGrid.AddFluidI(transform.position, "noise", noiseLevel, noiseLifeTime, noiseFlowRate);
 			//ShipGrid.AddFluidI(transform.position, "noise", 0, noiseFalloff, 0.01f);
 		}
 	}

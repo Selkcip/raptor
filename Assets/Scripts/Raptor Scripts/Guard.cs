@@ -174,6 +174,8 @@ public class Guard : PlanningNPC {
 			new PlanState() {
 				{ "enemySeen", false },
 				{ "enemyVisible", false },
+				{ "curious", false },
+				{ "alarmed", false },
 				{ "running", false },
 				{ "knockedOut", false },
 				{ "dead", false }
