@@ -8,6 +8,7 @@ public class FirstPersonCharacter : MonoBehaviour
 #if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8)
     [SerializeField] private bool walkByDefault = true;									// controls how the walk/run modifier key behaves.
 	[SerializeField] public float walkSpeed = 3f;                                      // The speed at which we want the character to move
+	public float maxMoveSpeed = 10;
 #endif
     [SerializeField] private AdvancedSettings advanced = new AdvancedSettings();        // The container for the advanced settings ( done this way so that the advanced setting are exposed under a foldout
 
@@ -65,7 +66,7 @@ public class FirstPersonCharacter : MonoBehaviour
 		RaycastHit[] hits = Physics.RaycastAll(ray, capsule.height * jumpRayLength );
 	       
         float nearest = Mathf.Infinity;
-	
+
 		if (grounded || rigidbody.velocity.y < 0.1f)
 		{
 			// Default value if nothing is detected:
@@ -86,10 +87,8 @@ public class FirstPersonCharacter : MonoBehaviour
 		}
 
 		Debug.DrawRay(ray.origin, ray.direction * capsule.height * jumpRayLength, grounded ? Color.green : Color.red );
-		
 
-            
-            // normalize input if it exceeds 1 in combined length:
+		// normalize input if it exceeds 1 in combined length:
 		if (input.sqrMagnitude > 1) input.Normalize();
 
 		// Get a vector which is desired move as a world-relative direction, including speeds
@@ -105,7 +104,21 @@ public class FirstPersonCharacter : MonoBehaviour
 		}
 
 		// Set the rigidbody's velocity according to the ground angle and desired move
-		rigidbody.velocity = desiredMove + Vector3.up * yv;
+		Vector3 vel = new Vector3(rigidbody.velocity.x, 0, rigidbody.velocity.z);
+		if(grounded) {
+			//vel *= desiredMove.magnitude > 0 ? 1 : 0;
+			vel = desiredMove;
+			//vel.z = desiredMove.z;
+		}
+		else {
+			Vector3 maxMove = transform.forward * speed + transform.right * strafeSpeed;
+			float velMag = vel.magnitude;
+			vel += desiredMove;
+			if(vel.magnitude > maxMove.magnitude) {
+				vel = vel.normalized * velMag; //not quite there
+			}
+		}
+		rigidbody.velocity = vel + Vector3.up * yv;
 
         // Use low/high friction depending on whether we're moving or not
         if (desiredMove.magnitude > 0 || !grounded)
