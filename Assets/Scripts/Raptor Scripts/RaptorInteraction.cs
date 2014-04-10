@@ -203,7 +203,6 @@ public class RaptorInteraction : MonoBehaviour {
 		if(Input.GetKey(KeyCode.E)) {
 			RaycastHit hit;
 			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2)) {
-				print(hit.transform.name);
 				hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 				if(hit.transform.tag != "trap") {
 					defusing = false;
