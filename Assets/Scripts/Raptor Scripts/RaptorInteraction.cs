@@ -13,11 +13,13 @@ public class RaptorInteraction : MonoBehaviour {
 	public Texture2D noiseIndicator;
 
 	//Raptor Stats
-	public static float maxHealth = 10f;	//the number of times you can get hit
+	public static float maxHealth = 100f;
 	public static float attack = 20f;
 	public static float stealthTime = 180f; //time in seconds
 
 	public Transform eatTarget;
+
+	public static bool defusing = false;
 
 	//sound stuff
 	public float noiseLifeTime = 0.5f;
@@ -206,27 +208,38 @@ public class RaptorInteraction : MonoBehaviour {
 			RaycastHit hit;
 			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2)) {
 				hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
-			}
-
-			if (eatTarget != null){
-				eatTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+				if(hit.transform.tag != "trap") {
+					defusing = false;
+				}
 			}
 			else {
-				toggleRotator(true);
-				rigidbody.freezeRotation = false;
-				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-				arms.SetBool("isEating", false);
-				eatSoundPlaying = false;
+				defusing = false;
+			}
+			if(hit.transform != null && hit.transform.tag == "enemy") {
+				if(eatTarget != null) {
+					eatTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+				}
+				else {
+					toggleRotator(true);
+					rigidbody.freezeRotation = false;
+					rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+					arms.SetBool("isEating", false);
+					eatSoundPlaying = false;
+				}
 			}
 		}
 		//animation stuff
 		else if(Input.GetKeyUp(KeyCode.E)) {
+			//eating stuff
 			eatTarget = null;
 			toggleRotator(true);
 			rigidbody.freezeRotation = false;
 			rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 			arms.SetBool("isEating", false);
 			eatSoundPlaying = false;
+
+			//defusing mines
+			defusing = false;
 		}
 
 		if(Input.GetKeyUp(KeyCode.F)) {
@@ -440,11 +453,12 @@ public class RaptorInteraction : MonoBehaviour {
 
 	public void Hurt(float damage) {
 		health -= damage;
-		hud.Deplete("health", 1.0f/maxHealth);
+		hud.Deplete("health", damage/maxHealth);
+		//print(health);
 		SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
 	}
 
-	void toggleRotator(bool on){
+	public void toggleRotator(bool on){
 		GetComponent<SimpleMouseRotator>().enabled = on;
 		Camera.main.GetComponent<SimpleMouseRotator>().enabled = on;
 	}

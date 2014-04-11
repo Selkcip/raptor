@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class Triggerable : MonoBehaviour {
 
 	public bool isTriggered = false;
-	public Triggerable[] triggers;
 	public bool or;
 	private bool result;
 	public List<Triggerable> triggerList = new List<Triggerable>();
@@ -18,17 +17,14 @@ public class Triggerable : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		foreach(Triggerable trigger in triggerList){
-			addTrigger(trigger);
-		}
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	protected virtual void Update () {
 		result = !or;
 		int triggerCount = 0;
 		foreach(Triggerable trigger in triggerList){
-			if (trigger){
+			if (trigger != null){
 				triggerCount++;
 				 if(trigger.isTriggered == or){
 					result = !result;
