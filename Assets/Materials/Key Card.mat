@@ -6,10 +6,10 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Bullet
-  m_Shader: {fileID: 4800000, guid: e9ceef4cba3c943ddb1ec971434ed28c, type: 3}
+  m_Name: Key Card
+  m_Shader: {fileID: 4800000, guid: c6664e3834a884b95b7232ae1e66bad7, type: 3}
   m_ShaderKeywords:
-  - GLOW11_GLOW_MAINTEX
+  - GLOW11_GLOW_MAINCOLOR
   m_CustomRenderQueue: -1
   m_SavedProperties:
     serializedVersion: 2
@@ -18,7 +18,7 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 2800000, guid: a4fe1b4d22105df44bfcef67bedc489e, type: 3}
+          m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -49,10 +49,6 @@ Material:
         second: .078125
       data:
         first:
-          name: _InvFade
-        second: 1
-      data:
-        first:
           name: _EmissionLM
         second: 0
       data:
@@ -63,15 +59,11 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: 1, g: 1, b: 1, a: 1}
+        second: {r: 1, g: 0, b: 0, a: 1}
       data:
         first:
           name: _SpecColor
-        second: {r: .5, g: .5, b: .5, a: 0}
-      data:
-        first:
-          name: _TintColor
-        second: {r: 1, g: 0, b: 0, a: .776470602}
+        second: {r: .5, g: .5, b: .5, a: 1}
       data:
         first:
           name: _GlowColor

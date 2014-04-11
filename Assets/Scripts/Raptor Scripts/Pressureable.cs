@@ -26,8 +26,12 @@ public class Pressureable : MonoBehaviour {
 					diff.x = neigh.x - cell.x;
 					diff.y = neigh.y - cell.y;
 					diff.z = neigh.z - cell.z;
-					force += diff * (pLevel - pressure.level);
+					force += diff * (pLevel - pressure.level)*Mathf.Abs(pressure.level);
 				}
+			}
+
+			if(force.magnitude > 0) {
+				//transform.SendMessageUpwards("KnockOut", 20, SendMessageOptions.DontRequireReceiver);
 			}
 
 			rigidbody.AddForce(force);

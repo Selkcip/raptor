@@ -243,6 +243,19 @@ public class ShipGrid : MonoBehaviour {
 		}
 	}
 
+	public static void UpdateRegionLinksI(Bounds bounds) {
+		if(instance != null) {
+			instance.UpdateRegionLinks(bounds);
+		}
+	}
+
+	public void UpdateRegionLinks(Bounds bounds) {
+		List<ShipGridCell> region = GetRegion(bounds);
+		foreach(ShipGridCell cur in region) {
+			UpdateCellLinks(cur);
+		}
+	}
+
 	public static void RebuildLinksI() {
 		if(m_instance != null) {
 			m_instance.RebuildLinks();
@@ -397,6 +410,41 @@ public class ShipGrid : MonoBehaviour {
 		return cells[x][y][z];
 	}
 
+	public static List<ShipGridCell> GetRegionI(Bounds bounds) {
+		if(instance != null) {
+			return instance.GetRegion(bounds);
+		}
+		return new List<ShipGridCell>();
+	}
+
+	public List<ShipGridCell> GetRegion(Bounds bounds) {
+		List<ShipGridCell> region = new List<ShipGridCell>();
+
+		int minX, minY, minZ, maxX, maxY, maxZ;
+		Vector3 minIndex = PosToIndex(bounds.min);
+		minX = (int)minIndex.x;
+		minY = (int)minIndex.y;
+		minZ = (int)minIndex.z;
+
+		Vector3 maxIndex = PosToIndex(bounds.max);
+		maxX = (int)maxIndex.x;
+		maxY = (int)maxIndex.y;
+		maxZ = (int)maxIndex.z;
+
+		//print("minX: " + minX + " minY: " + minY + " minZ: " + minZ);
+		//print("maxX: " + maxX + " maxY: " + maxY + " maxZ: " + maxZ);
+		for(int x = minX; x <= maxX; x++) {
+			for(int y = minY; y <= maxY; y++) {
+				for(int z = minZ; z <= maxZ; z++) {
+					//print("x: " + minX + " y: " + minY + " z: " + minZ);
+					region.Add(cells[x][y][z]);
+				}
+			}
+		}
+
+		return region;
+	}
+
 	public static void AddFluidI(Vector3 pos, string type, float amount, float lifeTime, float flowRate) {
 		AddFluidI(pos.x, pos.y, pos.z, type, amount, lifeTime, flowRate);
 	}
@@ -444,11 +492,11 @@ public class ShipGrid : MonoBehaviour {
 							}
 							//}
 							//if(Mathf.Abs(level) > 0) {
-							//	Debug.DrawLine(curPos + transform.forward * 0.1f, curPos + transform.forward * 0.1f + transform.up * level, Color.red, 0, true);
+								Debug.DrawLine(curPos + transform.forward * 0.1f, curPos + transform.forward * 0.1f + transform.up * level, Color.red, 0, true);
 								//Debug.DrawLine(curPos, curPos+transform.up);
 								foreach(ShipGridCell neigh in cur.neighbors) {
 									//print(neigh.n);
-									level = 0.5f;
+									//level = 0.5f;
 									Vector3 nPos = IndexToPos(neigh.x, neigh.y, neigh.z);
 									Debug.DrawLine(curPos, curPos + (nPos - curPos).normalized * 0.5f * level, Color.white, 0.1f, true);
 								}

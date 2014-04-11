@@ -10,6 +10,7 @@ public class RaptorDoor : MonoBehaviour {
 	private Transform RightDoor;
 	public float closeAfter = 5;
 	private float openTime = 0;
+	public int keyCardsToUnlock = 1;
 
 	public bool isOpen = false;
 	public bool isLocked = false;
@@ -48,12 +49,13 @@ public class RaptorDoor : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
+		other.SendMessageUpwards("UnlockDoor", this, SendMessageOptions.DontRequireReceiver);
 		OpenDoor();
 	}
 
 	// These Functions should animate the doors open and closed.
-	public void OpenDoor() {
-		if(isLocked || isOpen || tweening) {
+	public void OpenDoor(bool forceOpen = false) {
+		if(!forceOpen && (isLocked || isOpen || tweening)) {
 			return;
 		}
 		isOpen = true;
@@ -62,14 +64,7 @@ public class RaptorDoor : MonoBehaviour {
 		HOTween.To(LeftDoor, 1.0f, new TweenParms().Prop("localPosition", new Vector3(-openDis, 0f, 0f), true));
 		HOTween.To(RightDoor, 1.0f, new TweenParms().Prop("localPosition", new Vector3(openDis, 0f, 0f), true).OnComplete(Complete));
 
-		Vector3 pos = transform.TransformPoint(0, 0, 2.5f);
-		ShipGrid.UpdateCellLinksI(pos);
-		pos.y += 1;
-		ShipGrid.UpdateCellLinksI(pos);
-		pos.y += 1;
-		ShipGrid.UpdateCellLinksI(pos);
-		pos.y += 1;
-		ShipGrid.UpdateCellLinksI(pos);
+		UpdateGrid();
 	}
 
 	public void CloseDoor() {
@@ -85,13 +80,10 @@ public class RaptorDoor : MonoBehaviour {
 
 	void Complete() {
 		tweening = false;
-		Vector3 pos = transform.TransformPoint(0, 0, 2.5f);
-		ShipGrid.UpdateCellLinksI(pos);
-		pos.y += 1;
-		ShipGrid.UpdateCellLinksI(pos);
-		pos.y += 1;
-		ShipGrid.UpdateCellLinksI(pos);
-		pos.y += 1;
-		ShipGrid.UpdateCellLinksI(pos);
+		UpdateGrid();
+	}
+
+	void UpdateGrid() {
+		ShipGrid.UpdateRegionLinksI(collider.bounds);
 	}
 }

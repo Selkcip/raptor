@@ -321,7 +321,8 @@ public class PlanningNPC : MonoBehaviour {
 
 		aWalk = new PlanAction(
 			new PlanState() { 
-				{ "running", true }, 
+				{ "running", true },
+				{ "canInspect", false }
 			},
 			new PlanState() {
 				{ "running", false }
@@ -335,7 +336,8 @@ public class PlanningNPC : MonoBehaviour {
 
 		aRun = new PlanAction(
 			new PlanState() { 
-				{ "running", false }, 
+				{ "running", false },
+				{ "canInspect", false }
 			},
 			new PlanState() {
 				{ "running", true }
@@ -622,6 +624,7 @@ public class PlanningNPC : MonoBehaviour {
 				{ "followsNoise", true },
 				{ "curious", true },
 				{ "alarmed", false },
+				{ "enemyVisible", false },
 				{ "knockedOut", false },
 				{ "sleeping", false }
 			},
@@ -642,6 +645,7 @@ public class PlanningNPC : MonoBehaviour {
 			new PlanState() {
 				{ "followsNoise", true },
 				{ "alarmed", true },
+				{ "enemyVisible", false },
 				{ "running", true },
 				{ "knockedOut", false },
 				{ "sleeping", false }
@@ -675,10 +679,9 @@ public class PlanningNPC : MonoBehaviour {
 				weapon.flashLight.enabled = true;
 
 				return false;
-			},
-			-2);
+			});
 		aEnableLight.name = "enable light";
-		planner.Add(aEnableLight);
+		//planner.Add(aEnableLight);
 
 		aDisableLight = new PlanAction(
 			new PlanState() {
@@ -697,7 +700,7 @@ public class PlanningNPC : MonoBehaviour {
 				return false;
 			});
 		aDisableLight.name = "disable light";
-		planner.Add(aDisableLight);
+		//planner.Add(aDisableLight);
 	}
 
 	// Update is called once per frame
@@ -806,15 +809,27 @@ public class PlanningNPC : MonoBehaviour {
 			if(noise != null) {
 				noiseLevel = noise.level;
 				//noiseDir.Set(0, 0, 0);
-				foreach(ShipGridCell neigh in cell.neighbors) {
+				/*foreach(ShipGridCell neigh in cell.neighbors) {
 					neigh.fluids.TryGetValue("noise", out noise);
 					if(noise != null) {
 						if(noise.level > noiseLevel) {
 							noiseLevel = noise.level;
-							noiseDir = ShipGrid.IndexToPosI(neigh.x, neigh.y, neigh.z) - transform.position;
+							noiseDir += ShipGrid.IndexToPosI(neigh.x, neigh.y, neigh.z) - transform.position;
 						}
 					}
+				}*/
+				Vector3 diff = new Vector3();
+				foreach(ShipGridCell neigh in cell.neighbors) {
+					neigh.fluids.TryGetValue("noise", out noise);
+					if(noise != null) {
+						diff.x = neigh.x - cell.x;
+						diff.y = neigh.y - cell.y;
+						diff.z = neigh.z - cell.z;
+						noiseDir += diff * (noise.level - noiseLevel) * Mathf.Abs(noise.level);
+					}
 				}
+				noiseDir.Normalize();
+				//Debug.DrawRay(transform.position, noiseDir, Color.blue);
 			}
 
 			ShipGridFluid cellLight;
@@ -943,6 +958,10 @@ public class PlanningNPC : MonoBehaviour {
 
 	public void TakeMoney(int amount) {
 		money += amount;
+	}
+
+	public void UnlockDoor(RaptorDoor door) {
+		door.OpenDoor(true);
 	}
 
 	protected void Animation() {

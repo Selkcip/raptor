@@ -176,6 +176,7 @@ public class Guard : PlanningNPC {
 				{ "enemyVisible", false },
 				{ "curious", false },
 				{ "alarmed", false },
+				{ "canInspect", false },
 				{ "running", false },
 				{ "knockedOut", false },
 				{ "dead", false }
