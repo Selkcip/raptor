@@ -17,6 +17,9 @@ public class Collectible : ShipGridItem {
 	}
 
 	public void Use(GameObject user) {
+		if(cell != null) {
+			cell.RemoveItem(this);
+		}
 		user.SendMessage("Collect", this, SendMessageOptions.DontRequireReceiver);
 	}
 }

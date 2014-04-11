@@ -2,7 +2,7 @@
 using System.Collections;
 using Holoville.HOTween;
 
-public class RaptorDoor : MonoBehaviour {
+public class RaptorDoor : Triggerable {
 	public float openDis = 1.5f;
 	[SerializeField]
 	private Transform LeftDoor;
@@ -26,7 +26,8 @@ public class RaptorDoor : MonoBehaviour {
 	}
 
 	//Testing only
-	void Update() {
+	protected override void Update() {
+		//base.Update();
 		if(isOpen && !tweening) {
 			openTime += Time.deltaTime;
 			if(openTime >= closeAfter) {
