@@ -113,7 +113,7 @@ public class Guard : PlanningNPC {
 				{ "playerDead", true }
 			},
 			delegate() {
-				player.Hurt(punchDamage);
+				player.Hurt(new Damage(punchDamage, transform.position));
 				punchTime = punchCoolDown;
 
 				return false;

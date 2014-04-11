@@ -952,8 +952,8 @@ public class PlanningNPC : MonoBehaviour {
 		ClearPlan();
 	}
 
-	public void Hurt(float damage) {
-		health -= damage;
+	public void Hurt(Damage damage) {
+		health -= damage.amount;
 	}
 
 	public void TakeMoney(int amount) {

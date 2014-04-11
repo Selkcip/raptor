@@ -110,7 +110,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .768280566, y: .856578887, z: -34.2937202}
+  m_LocalPosition: {x: .0178332627, y: 1.49397981, z: -34.3645248}
   m_LocalScale: {x: .25, y: .25, z: .25}
   m_Children:
   - {fileID: 400010}
@@ -207,7 +207,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: 6986cbbe0d64cb24aa43d85dce05e679, type: 2}
+  - {fileID: 2100000, guid: e71525f182d3ea44d94457df4a129766, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -355,7 +355,7 @@ MonoBehaviour:
   interestLevel: 15
   carryable: 0
   useTarget: {fileID: 0}
-  droppable: 1
+  keyCard: 0
   value: 1
 --- !u!1001 &100100000
 Prefab:

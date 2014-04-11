@@ -11,6 +11,7 @@ public class Notoriety {
 public class RaptorInteraction : MonoBehaviour {
 	public Texture2D crosshair;
 	public Texture2D noiseIndicator;
+	public PainIndicator painIndicator;
 
 	//Raptor Stats
 	public static float maxHealth = 100f;
@@ -215,17 +216,15 @@ public class RaptorInteraction : MonoBehaviour {
 			else {
 				defusing = false;
 			}
-			if(hit.transform != null && hit.transform.tag == "enemy") {
-				if(eatTarget != null) {
-					eatTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
-				}
-				else {
-					toggleRotator(true);
-					rigidbody.freezeRotation = false;
-					rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-					arms.SetBool("isEating", false);
-					eatSoundPlaying = false;
-				}
+			if(eatTarget != null) {
+				eatTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+			}
+			else {
+				toggleRotator(true);
+				rigidbody.freezeRotation = false;
+				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+				arms.SetBool("isEating", false);
+				eatSoundPlaying = false;
 			}
 		}
 		//animation stuff
@@ -451,9 +450,15 @@ public class RaptorInteraction : MonoBehaviour {
 		}
 	}
 
-	public void Hurt(float damage) {
-		health -= damage;
-		hud.Deplete("health", damage/maxHealth);
+	public void Hurt(Damage damage) {
+		health -= damage.amount;
+		hud.Deplete("health", damage.amount/maxHealth);
+
+		PainIndicator indicator = (PainIndicator)Instantiate(painIndicator);
+		indicator.transform.parent = Camera.main.transform;
+		indicator.transform.localPosition = new Vector3(0, 0, 1);
+		indicator.dir = Camera.main.transform.position-damage.pos;
+
 		//print(health);
 		SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
 	}

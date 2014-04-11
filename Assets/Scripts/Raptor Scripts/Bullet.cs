@@ -6,8 +6,7 @@ using System.Collections.Generic;
 public class Bullet : MonoBehaviour {
 
 	public float velocity = 5;
-	public float playerDamage = 10;
-	public float damage = 25;
+	public float damage = 10;
 	public float life = 30;
 
 	// Use this for initialization
@@ -18,12 +17,7 @@ public class Bullet : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision col) {
-		if(col.transform.tag == "Player") {
-			col.transform.SendMessage("Hurt", playerDamage, SendMessageOptions.DontRequireReceiver);
-		}
-		else {
-			col.transform.SendMessage("Hurt", damage, SendMessageOptions.DontRequireReceiver);
-		}
+		col.transform.SendMessage("Hurt", new Damage(damage, transform.position), SendMessageOptions.DontRequireReceiver);
 
 		DecalSystem decals = DecalSystem.instance;
 		if(decals != null) {
