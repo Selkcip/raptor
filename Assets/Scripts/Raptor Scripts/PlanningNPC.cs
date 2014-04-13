@@ -611,6 +611,7 @@ public class PlanningNPC : MonoBehaviour {
 				if(inspectTimer >= inspectTime) {
 					inspectTimer = 0;
 					mostInteresting = null;
+					usingObject = false;
 					boredomLevel = 0;
 				}
 
@@ -749,51 +750,53 @@ public class PlanningNPC : MonoBehaviour {
 
 	protected void LookForEnemy() {
 		enemyVisible = false;
-		if(player != null && player.health > 0) {
-			Transform enemyHead = Camera.main.transform;
-			if(enemyHead != null) {
-				Vector3 enemyDiff = enemyHead.position - (transform.position + new Vector3(0, 1, 0));
-				Vector3 enemyDir = new Vector3();
-				enemyDir.x = enemyDiff.x;
-				enemyDir.y = enemyDiff.y;
-				enemyDir.z = enemyDiff.z;
-				enemyDiff.y = 0;
-				enemyDiff.Normalize();
+		if(!knockedOut) {
+			if(player != null && player.health > 0) {
+				Transform enemyHead = Camera.main.transform;
+				if(enemyHead != null) {
+					Vector3 enemyDiff = enemyHead.position - (transform.position + new Vector3(0, 1, 0));
+					Vector3 enemyDir = new Vector3();
+					enemyDir.x = enemyDiff.x;
+					enemyDir.y = enemyDiff.y;
+					enemyDir.z = enemyDiff.z;
+					enemyDiff.y = 0;
+					enemyDiff.Normalize();
 
-				if(Vector3.Dot(transform.forward, enemyDiff) >= 1.0f - (curFov / 2.0f) / 90.0f) {
-					RaycastHit hit;
-					if(Physics.Raycast(transform.position + new Vector3(0, 1, 0), enemyDir, out hit, curViewDis)) {
-						if(hit.collider.tag == "Player" || (hit.collider.transform.parent != null && hit.collider.transform.parent.tag == "Player")) {
-							noticeTimer += (1.0f - hit.distance / curViewDis) * Time.deltaTime;
-							if(noticeTimer >= noticeTime) {
-								enemyVisible = true;
-								enemySeen = true;
-								alertShip = true;
-								enemyPos = enemyHead.position;
-								//enemyDir = enemyHead.forward;
+					if(Vector3.Dot(transform.forward, enemyDiff) >= 1.0f - (curFov / 2.0f) / 90.0f) {
+						RaycastHit hit;
+						if(Physics.Raycast(transform.position + new Vector3(0, 1, 0), enemyDir, out hit, curViewDis)) {
+							if(hit.collider.tag == "Player" || (hit.collider.transform.parent != null && hit.collider.transform.parent.tag == "Player")) {
+								noticeTimer += (1.0f - hit.distance / curViewDis) * Time.deltaTime;
+								if(noticeTimer >= noticeTime) {
+									enemyVisible = true;
+									enemySeen = true;
+									alertShip = true;
+									enemyPos = enemyHead.position;
+									//enemyDir = enemyHead.forward;
+								}
 							}
-						}
-						else {
-							noticeTimer -= Time.deltaTime;
+							else {
+								noticeTimer -= Time.deltaTime;
+							}
 						}
 					}
 				}
 			}
-		}
-		if(enemySeen) {
-			if(!mentionEnemyVisible) {
-				List<string> lines = new List<string>();
-				lines.Add("sweetjesusisthataraptor");
-				lines.Add("whatwasthat");
-				lines.Add("didyouseethat");
-				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/" + lines[Random.Range(0, lines.Count - 1)]), SoundManager.SoundType.Dialogue, gameObject);
-				mentionEnemyVisible = true;
+			if(enemySeen) {
+				if(!mentionEnemyVisible) {
+					List<string> lines = new List<string>();
+					lines.Add("sweetjesusisthataraptor");
+					lines.Add("whatwasthat");
+					lines.Add("didyouseethat");
+					SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/" + lines[Random.Range(0, lines.Count - 1)]), SoundManager.SoundType.Dialogue, gameObject);
+					mentionEnemyVisible = true;
+				}
 			}
-		}
-		else {
-			if(mentionEnemyVisible) {
-				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/wherediditgo"), SoundManager.SoundType.Dialogue, gameObject);
-				mentionEnemyVisible = false;
+			else {
+				if(mentionEnemyVisible) {
+					SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/wherediditgo"), SoundManager.SoundType.Dialogue, gameObject);
+					mentionEnemyVisible = false;
+				}
 			}
 		}
 	}

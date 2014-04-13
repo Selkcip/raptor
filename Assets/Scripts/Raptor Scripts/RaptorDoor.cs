@@ -11,6 +11,7 @@ public class RaptorDoor : Triggerable {
 	public float closeAfter = 5;
 	private float openTime = 0;
 	public int keyCardsToUnlock = 1;
+	public bool openOnTriggered = true;
 
 	public bool isOpen = false;
 	public bool isLocked = false;
@@ -27,7 +28,7 @@ public class RaptorDoor : Triggerable {
 
 	//Testing only
 	protected override void Update() {
-		//base.Update();
+		base.Update();
 		if(isOpen && !tweening) {
 			openTime += Time.deltaTime;
 			if(openTime >= closeAfter) {
@@ -49,34 +50,45 @@ public class RaptorDoor : Triggerable {
 		}
 	}
 
-	void OnTriggerEnter(Collider other) {
+	void OnTriggerStay(Collider other) {
 		other.SendMessageUpwards("UnlockDoor", this, SendMessageOptions.DontRequireReceiver);
 		OpenDoor();
 	}
 
 	// These Functions should animate the doors open and closed.
 	public void OpenDoor(bool forceOpen = false) {
-		if(!forceOpen && (isLocked || isOpen || tweening)) {
-			return;
-		}
-		isOpen = true;
-		tweening = true;
-		SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Door_Slide_2"), SoundManager.SoundType.Sfx, this.gameObject);
-		HOTween.To(LeftDoor, 1.0f, new TweenParms().Prop("localPosition", new Vector3(-openDis, 0f, 0f), true));
-		HOTween.To(RightDoor, 1.0f, new TweenParms().Prop("localPosition", new Vector3(openDis, 0f, 0f), true).OnComplete(Complete));
+		if(!isOpen && !tweening) {
+			if(!isLocked || keyCardsToUnlock <= 0 || forceOpen) {
+				isOpen = true;
+				tweening = true;
+				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Door_Slide_2"), SoundManager.SoundType.Sfx, this.gameObject);
+				HOTween.To(LeftDoor, 1.0f, new TweenParms().Prop("localPosition", new Vector3(-openDis, 0f, 0f), true));
+				HOTween.To(RightDoor, 1.0f, new TweenParms().Prop("localPosition", new Vector3(openDis, 0f, 0f), true).OnComplete(Complete));
 
-		UpdateGrid();
+				UpdateGrid();
+			}
+		}
 	}
 
 	public void CloseDoor() {
-		if(!isOpen || tweening) {
-			return;
+		if(isOpen && !tweening) {
+			SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Door_Slide_1"), SoundManager.SoundType.Sfx, this.gameObject);
+			isOpen = false;
+			tweening = true;
+			HOTween.To(LeftDoor, 1.0f, new TweenParms().Prop("localPosition", new Vector3(openDis, 0f, 0f), true));
+			HOTween.To(RightDoor, 1.0f, new TweenParms().Prop("localPosition", new Vector3(-openDis, 0f, 0f), true).OnComplete(Complete));
 		}
-		SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Door_Slide_1"), SoundManager.SoundType.Sfx, this.gameObject);
-		isOpen = false;
-		tweening = true;
-		HOTween.To(LeftDoor, 1.0f, new TweenParms().Prop("localPosition", new Vector3(openDis, 0f, 0f), true));
-		HOTween.To(RightDoor, 1.0f, new TweenParms().Prop("localPosition", new Vector3(-openDis, 0f, 0f), true).OnComplete(Complete));
+	}
+
+	public void Activate(bool triggered) {
+		if(triggered) {
+			if(openOnTriggered) {
+				OpenDoor(true);
+			}
+			else {
+				CloseDoor();
+			}
+		}
 	}
 
 	void Complete() {

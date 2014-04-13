@@ -37,7 +37,7 @@ public class Tripwire : Triggerable {
 	}
 
 	void Explosion(Transform other, float damageValue) {
-		other.transform.SendMessageUpwards("Hurt", damageValue, SendMessageOptions.DontRequireReceiver);
+		other.transform.SendMessageUpwards("Hurt", new Damage(damageValue, transform.position), SendMessageOptions.DontRequireReceiver);
 		ShipGrid.AddFluidI(transform.position, "pressure", 200f, 1f, 0.01f);
 		hacked = true;
 		renderer.enabled = false;

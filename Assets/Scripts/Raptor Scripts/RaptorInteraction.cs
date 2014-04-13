@@ -207,7 +207,10 @@ public class RaptorInteraction : MonoBehaviour {
 
 		if(Input.GetKey(KeyCode.E)) {
 			RaycastHit hit;
-			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2)) {
+			int mask = ~(1 << LayerMask.NameToLayer("Enemy"));
+			print(mask);
+			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2, mask)) {
+				print(hit.transform.tag);
 				hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 				if(hit.transform.tag != "trap") {
 					defusing = false;
@@ -252,7 +255,7 @@ public class RaptorInteraction : MonoBehaviour {
 			if(inventory.childCount > 0) {
 				foreach(Transform child in inventory) {
 					Collectible collectible = child.GetComponent<Collectible>();
-					if(collectible != null && !collectible.keyCard) {
+					if(collectible != null && collectible.droppable && !collectible.keyCard) {
 						child.parent = null;
 						child.position = Camera.main.transform.TransformPoint(0, 0, 1);
 						RaycastHit hit;
@@ -297,11 +300,11 @@ public class RaptorInteraction : MonoBehaviour {
 					//do damage
 					if(isPouncing) {
 						//hit.transform.root.GetComponent<Enemy>().Hurt(1000);
-						hit.transform.SendMessageUpwards("Hurt", 1000, SendMessageOptions.DontRequireReceiver);
+						hit.transform.SendMessageUpwards("Hurt", new Damage(1000, transform.position), SendMessageOptions.DontRequireReceiver);
 					}
 					else {
 						//hit.transform.root.GetComponent<Enemy>().Hurt(attack);
-						hit.transform.SendMessageUpwards("Hurt", attack, SendMessageOptions.DontRequireReceiver);					
+						hit.transform.SendMessageUpwards("Hurt", new Damage(attack, transform.position), SendMessageOptions.DontRequireReceiver);					
 					}
 					bloodSpurt.Play();
 				}
@@ -461,6 +464,17 @@ public class RaptorInteraction : MonoBehaviour {
 
 		//print(health);
 		SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
+	}
+
+	public void SellCollectibles() {
+		if(inventory.childCount > 0) {
+			foreach(Transform child in inventory) {
+				Collectible collectible = child.GetComponent<Collectible>();
+				if(collectible != null && !collectible.keyCard) {
+					money += collectible.value;
+				}
+			}
+		}
 	}
 
 	public void toggleRotator(bool on){

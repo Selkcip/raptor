@@ -37,7 +37,7 @@ public class Triggerable : MonoBehaviour {
 			isTriggered = result;
 			//gameObject.SendMessage("activate", isTriggered, SendMessageOptions.DontRequireReceiver);
 		}
-	
-		gameObject.SendMessage("activate", isTriggered, SendMessageOptions.DontRequireReceiver);
+
+		gameObject.SendMessage("Activate", isTriggered, SendMessageOptions.DontRequireReceiver);
 	}
 }
