@@ -19,8 +19,8 @@ Shader "Decal/Cutout Bumped Specular" {
 	SubShader {
 		Tags {
 			"Queue" = "AlphaTest"
-			"IgnoreProjector" = "True"
-			"RenderType" = "TransparentCutout"
+			//"IgnoreProjector" = "True"
+			//"RenderType" = "TransparentCutout"
 		}
 		Offset -1, -1
 		ZWrite Off

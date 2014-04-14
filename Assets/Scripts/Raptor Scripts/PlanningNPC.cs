@@ -957,6 +957,9 @@ public class PlanningNPC : MonoBehaviour {
 
 	public void Hurt(Damage damage) {
 		health -= damage.amount;
+		SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/hurt"), SoundManager.SoundType.Dialogue, gameObject);
+		curFov = 360;
+		noticeTimer = noticeTime;
 	}
 
 	public void TakeMoney(int amount) {

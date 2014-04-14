@@ -19,6 +19,7 @@ public class ShipGridFluid {
 public class ShipGridCell {
 	public int n;
 	public int x, y, z;
+	public float minFluidLevel = 0.01f;
 	public List<ShipGridCell> neighbors = new List<ShipGridCell>();
 	public List<ShipGridItem> contents = new List<ShipGridItem>();
 	//public List<ShipGridFluid> fluids = new List<ShipGridFluid>();
@@ -105,16 +106,21 @@ public class ShipGridCell {
 		foreach(KeyValuePair<string, ShipGridFluid> item in fluids) {
 			ShipGridFluid fluid = item.Value;
 			float absValue = Mathf.Abs(fluid.level);
-			float step = (1/fluid.lifeTime)*Time.deltaTime;
-			absValue = Mathf.Max(0, absValue-step);
-			float nCount = Mathf.Max(1, neighbors.Count);
-			float change = fluid.level * fluid.flowRate;
-			//Debug.Log(fluid.level + " " + change);
-			//change /= nCount;
-			foreach(ShipGridCell neigh in neighbors) {
-				neigh.AddFluid(fluid.type, change, fluid.lifeTime, fluid.flowRate);
+			if(absValue >= minFluidLevel) {
+				float step = (1 / fluid.lifeTime) * Time.deltaTime;
+				absValue = Mathf.Max(0, absValue - step);
+				float nCount = Mathf.Max(1, neighbors.Count);
+				float change = fluid.level * fluid.flowRate;
+				//Debug.Log(fluid.level + " " + change);
+				//change /= nCount;
+				foreach(ShipGridCell neigh in neighbors) {
+					neigh.AddFluid(fluid.type, change, fluid.lifeTime, fluid.flowRate);
+				}
+				fluid.level = absValue * Mathf.Sign(fluid.level);
 			}
-			fluid.level = absValue * Mathf.Sign(fluid.level);
+			else {
+				fluid.level = 0;
+			}
 		}
 	}
 }
@@ -122,6 +128,7 @@ public class ShipGridCell {
 public class ShipGrid : MonoBehaviour {
 	public Vector3 cellSize = new Vector3(5, 5, 5);
 	public int updateStepSize = 10;
+	public float minFluidLevel = 0.01f;
 	public Vector3 divs;
 	public bool debugLines = false;
 	public string debugFluid = "heat";
@@ -185,6 +192,7 @@ public class ShipGrid : MonoBehaviour {
 					cellCount++;
 					ShipGridCell cell = new ShipGridCell(i, j, k);
 					cell.n = cellCount;
+					cell.minFluidLevel = minFluidLevel;
 					row.Add(cell);
 				}
 			}

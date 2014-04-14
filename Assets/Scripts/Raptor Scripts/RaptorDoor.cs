@@ -21,7 +21,7 @@ public class RaptorDoor : Triggerable {
 
 	public void LockDoor(bool locked) {
 		isLocked = locked;
-		if(isOpen) {
+		if(isOpen && locked) {
 			CloseDoor();
 		}
 	}
@@ -57,6 +57,7 @@ public class RaptorDoor : Triggerable {
 
 	// These Functions should animate the doors open and closed.
 	public void OpenDoor(bool forceOpen = false) {
+		openTime = 0;
 		if(!isOpen && !tweening) {
 			if(!isLocked || keyCardsToUnlock <= 0 || forceOpen) {
 				isOpen = true;

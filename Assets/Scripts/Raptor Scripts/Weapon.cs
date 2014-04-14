@@ -58,6 +58,7 @@ public class Weapon : ShipGridItem {
 						clip--;
 						GameObject bullet = (GameObject)Instantiate(projectile, muzzle.position, muzzle.rotation);
 						bullet.GetComponent<Bullet>().damage = damage;
+						SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/lasers/laser0"), SoundManager.SoundType.Sfx, gameObject);
 					}
 				}
 				return true;

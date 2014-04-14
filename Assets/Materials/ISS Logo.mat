@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Decals
+  m_Name: ISS Logo
   m_Shader: {fileID: 4800000, guid: bf1cef45520776b4480ca39af29e6870, type: 3}
   m_ShaderKeywords: []
   m_CustomRenderQueue: -1
@@ -17,28 +17,28 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 2800000, guid: 8ab8425d88a1e21489577089017178e0, type: 3}
+          m_Texture: {fileID: 2800000, guid: 98448ad966851c048aee7fed89c9ea19, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _BumpMap
         second:
-          m_Texture: {fileID: 2800000, guid: 671e6fd285e4da440ac28b8b7f398f45, type: 3}
+          m_Texture: {fileID: 2800000, guid: 55a2705d826740841aa82efe3d620d04, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _ParallaxMap
         second:
-          m_Texture: {fileID: 2800000, guid: 8ab8425d88a1e21489577089017178e0, type: 3}
+          m_Texture: {fileID: 2800000, guid: 98448ad966851c048aee7fed89c9ea19, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
           name: _Cutoff
-        second: .0178571437
+        second: .5
       data:
         first:
           name: _Shininess
@@ -46,7 +46,7 @@ Material:
       data:
         first:
           name: _Parallax
-        second: .0799999982
+        second: .0505357124
     m_Colors:
       data:
         first:

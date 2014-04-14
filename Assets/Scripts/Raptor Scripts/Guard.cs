@@ -9,6 +9,7 @@ public class Guard : PlanningNPC {
 
 	public bool playerDead = false;
 	public bool nearEnemy = false;
+	public bool facingEnemy = false;
 	public bool canPunch = false;
 	public bool canShoot = false;
 
@@ -36,7 +37,7 @@ public class Guard : PlanningNPC {
 		goals.Add(gKillPlayer);
 	}
 
-	PlanAction aFindPlayer, aChasePlayer, aPunchPlayer, aCoolPunch, aShootPlayer, aPatrol;
+	PlanAction aFindPlayer, aChasePlayer, aPunchPlayer, aCoolPunch, aShootPlayer, aPatrol, aFacePlayer;
 	public override void InitActions() {
 		base.InitActions();
 
@@ -68,7 +69,7 @@ public class Guard : PlanningNPC {
 		aChasePlayer = new PlanAction(
 			new PlanState() {
 				{ "enemySeen", true },
-				//{ "enemyVisible", true },
+				//{ "enemyVisible", false },
 				{ "nearEnemy", false },
 				{ "running", true },
 				{ "knockedOut", false },
@@ -138,10 +139,36 @@ public class Guard : PlanningNPC {
 		aCoolPunch.name = "cool punch";
 		planner.Add(aCoolPunch);
 
+		aFacePlayer = new PlanAction(
+			new PlanState() {
+				{ "enemySeen", true },
+				{ "enemyVisible", true },
+				//{ "standing", true },
+				{ "facingEnemy", false },
+				{ "knockedOut", false },
+				{ "dead", false }
+			},
+			new PlanState() {
+				{ "facingEnemy", true }
+			},
+			delegate() {
+				Vector3 targetDir = (enemyPos - transform.position).normalized;
+
+				Move(Vector3.zero, enemyPos);
+
+				//facingEnemy = Vector3.Dot(targetDir, transform.forward) >= 0.9f;
+
+				return false;
+			});
+		aFacePlayer.name = "face player";
+		planner.Add(aFacePlayer);
+
 		aShootPlayer = new PlanAction(
 			new PlanState() {
 				{ "enemySeen", true },
 				{ "enemyVisible", true },
+				{ "nearEnemy", false },
+				{ "facingEnemy", true },
 				{ "canShoot", true },
 				{ "standing", true },
 				{ "knockedOut", false },
@@ -151,7 +178,7 @@ public class Guard : PlanningNPC {
 				{ "playerDead", true }
 			},
 			delegate() {
-				//Vector3 targetDir = (enemyPos - transform.position).normalized;
+				Vector3 targetDir = (enemyPos - transform.position).normalized;
 
 				Move(Vector3.zero, enemyPos);
 
@@ -215,6 +242,9 @@ public class Guard : PlanningNPC {
 		playerDead = player.health <= 0;
 		canPunch = punchTime <= 0;
 		nearEnemy = (enemyPos - transform.position).magnitude <= punchDistance;
+		Vector3 enemyDiff = enemyPos - transform.position;
+		enemyDiff.y *= 0;
+		facingEnemy = Vector3.Dot(enemyDiff.normalized, transform.forward) >= 0.9f;
 		canShoot = weapon != null && weapon.hasAmmo;
 
 		//This should be last in most cases

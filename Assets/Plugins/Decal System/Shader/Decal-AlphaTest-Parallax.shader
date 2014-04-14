@@ -25,39 +25,40 @@ Shader "Decal/Cutout Parallax Diffuse" {
 			"RenderType" = "TransparentCutout"
 		}
 		Offset -1, -1
+		ZWrite Off
 		
 		CGPROGRAM
-#pragma surface surf BlinnPhong alphatest:_Cutoff
-#pragma target 3.0
+		#pragma surface surf BlinnPhong alpha
+		#pragma target 3.0
 
-sampler2D _MainTex;
-sampler2D _BumpMap;
-sampler2D _ParallaxMap;
-fixed4 _Color;
-half _Shininess;
-float _Parallax;
+		sampler2D _MainTex;
+		sampler2D _BumpMap;
+		sampler2D _ParallaxMap;
+		fixed4 _Color;
+		half _Shininess;
+		float _Parallax;
 
-struct Input {
-	float2 uv_MainTex;
-	float2 uv_BumpMap;
-	float3 viewDir;
-};
+		struct Input {
+			float2 uv_MainTex;
+			float2 uv_BumpMap;
+			float3 viewDir;
+		};
 
-void surf (Input IN, inout SurfaceOutput o) {
-	half h = tex2D (_ParallaxMap, IN.uv_BumpMap).w;
-	float2 offset = ParallaxOffset (h, _Parallax, IN.viewDir);
-	IN.uv_MainTex += offset;
-	IN.uv_BumpMap += offset;
+		void surf (Input IN, inout SurfaceOutput o) {
+			half h = tex2D (_ParallaxMap, IN.uv_BumpMap).w;
+			float2 offset = ParallaxOffset (h, _Parallax, IN.viewDir);
+			IN.uv_MainTex += offset;
+			IN.uv_BumpMap += offset;
 	
-	fixed4 tex = tex2D(_MainTex, IN.uv_MainTex);
-	float4 mix = tex*_Color;
-	o.Albedo = mix.rgb;//tex.rgb * _Color.rgb;
-	o.Gloss = tex.a;
-	o.Alpha = mix.a;//tex.a * _Color.a;
-	o.Specular = _Shininess;
-	o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
-}
-ENDCG
+			fixed4 tex = tex2D(_MainTex, IN.uv_MainTex);
+			float4 mix = tex*_Color;
+			o.Albedo = mix.rgb;//tex.rgb * _Color.rgb;
+			o.Gloss = tex.a;
+			o.Alpha = mix.a;//tex.a * _Color.a;
+			o.Specular = _Shininess;
+			o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+		}
+		ENDCG
 	}
 
 	FallBack "Decal/Cutout Diffuse"

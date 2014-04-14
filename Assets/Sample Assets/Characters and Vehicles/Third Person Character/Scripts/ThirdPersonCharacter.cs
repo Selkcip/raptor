@@ -282,8 +282,13 @@ public class ThirdPersonCharacter : MonoBehaviour {
 
 		// the anim speed multiplier allows the overall speed of walking/running to be tweaked in the inspector,
 		// which affects the movement speed because of the root motion.
-		if (onGround && moveInput.magnitude > 0) {
-			animator.speed = animSpeedMultiplier;
+		if (onGround) {
+			if(moveInput.magnitude > 0) {
+				animator.speed = animSpeedMultiplier;
+			}
+			else {
+				//animator.speed = 0;
+			}
 		} else {
 			// but we don't want to use that while airborne
 			animator.speed = 1;
@@ -336,7 +341,13 @@ public class ThirdPersonCharacter : MonoBehaviour {
 			v.y = rigidbody.velocity.y;
 			rigidbody.velocity = v;
 
-			moving = v.magnitude > 0;
+			if(v.magnitude < 0.001) {
+				v *= 0;
+				moving = false;
+			}
+			else {
+				moving = true;
+			}
 		}
 	}
 	

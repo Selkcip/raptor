@@ -96,6 +96,7 @@ public class RaptorInteraction : MonoBehaviour {
 			Controls();
 			HUD();
 			MakeNoise();
+			CheckGrid();
 
 			//prevents the player from getting stuck when pouncing next to a wall
 			if(hud.stamina <= 0f) {
@@ -176,6 +177,15 @@ public class RaptorInteraction : MonoBehaviour {
 		}
 	}
 
+	void CheckGrid() {
+		ShipGridCell cell = ShipGrid.GetPosI(transform.position);
+		ShipGridFluid damage;
+		cell.fluids.TryGetValue("damage", out damage);
+		if(damage != null && damage.level > 1f) {
+			Hurt(new Damage(damage.level, transform.position));
+		}
+	}
+
 	void Animation() {
 		currentState = arms.GetCurrentAnimatorStateInfo(0);
 
@@ -208,9 +218,7 @@ public class RaptorInteraction : MonoBehaviour {
 		if(Input.GetKey(KeyCode.E)) {
 			RaycastHit hit;
 			int mask = ~(1 << LayerMask.NameToLayer("Enemy"));
-			print(mask);
 			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2, mask)) {
-				print(hit.transform.tag);
 				hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 				if(hit.transform.tag != "trap") {
 					defusing = false;
