@@ -3,7 +3,8 @@ using System.Collections;
 using Holoville.HOTween;
 
 public class RaptorDoor : Triggerable {
-	public float openDis = 1.5f;
+	public Vector3 leftOpenDir = new Vector3(-1.5f, 0, 0);
+	public Vector3 rightOpenDir = new Vector3(1.5f, 0, 0);
 	[SerializeField]
 	private Transform LeftDoor;
 	[SerializeField]
@@ -11,7 +12,8 @@ public class RaptorDoor : Triggerable {
 	public float closeAfter = 5;
 	private float openTime = 0;
 	public int keyCardsToUnlock = 1;
-	public bool openOnTriggered = true;
+	public bool openOnTrigger = true;
+	public bool openOnTriggerable = true;
 
 	public bool isOpen = false;
 	public bool isLocked = false;
@@ -51,8 +53,12 @@ public class RaptorDoor : Triggerable {
 	}
 
 	void OnTriggerStay(Collider other) {
-		other.SendMessageUpwards("UnlockDoor", this, SendMessageOptions.DontRequireReceiver);
-		OpenDoor();
+		if(openOnTrigger) {
+			bool wasLocked = isLocked;
+			other.SendMessageUpwards("UnlockDoor", this, SendMessageOptions.DontRequireReceiver);
+			OpenDoor();
+			isLocked = wasLocked;
+		}
 	}
 
 	// These Functions should animate the doors open and closed.
@@ -63,8 +69,8 @@ public class RaptorDoor : Triggerable {
 				isOpen = true;
 				tweening = true;
 				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Door_Slide_2"), SoundManager.SoundType.Sfx, this.gameObject);
-				HOTween.To(LeftDoor, 1.0f, new TweenParms().Prop("localPosition", new Vector3(-openDis, 0f, 0f), true));
-				HOTween.To(RightDoor, 1.0f, new TweenParms().Prop("localPosition", new Vector3(openDis, 0f, 0f), true).OnComplete(Complete));
+				HOTween.To(LeftDoor, 1.0f, new TweenParms().Prop("localPosition", leftOpenDir, true));
+				HOTween.To(RightDoor, 1.0f, new TweenParms().Prop("localPosition", rightOpenDir, true).OnComplete(Complete));
 
 				UpdateGrid();
 			}
@@ -76,14 +82,14 @@ public class RaptorDoor : Triggerable {
 			SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Door_Slide_1"), SoundManager.SoundType.Sfx, this.gameObject);
 			isOpen = false;
 			tweening = true;
-			HOTween.To(LeftDoor, 1.0f, new TweenParms().Prop("localPosition", new Vector3(openDis, 0f, 0f), true));
-			HOTween.To(RightDoor, 1.0f, new TweenParms().Prop("localPosition", new Vector3(-openDis, 0f, 0f), true).OnComplete(Complete));
+			HOTween.To(LeftDoor, 1.0f, new TweenParms().Prop("localPosition", -leftOpenDir, true));
+			HOTween.To(RightDoor, 1.0f, new TweenParms().Prop("localPosition", -rightOpenDir, true).OnComplete(Complete));
 		}
 	}
 
 	public void Activate(bool triggered) {
 		if(triggered) {
-			if(openOnTriggered) {
+			if(openOnTriggerable) {
 				OpenDoor(true);
 			}
 			else {

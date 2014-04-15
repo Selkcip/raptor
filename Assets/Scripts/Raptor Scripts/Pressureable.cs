@@ -26,7 +26,7 @@ public class Pressureable : MonoBehaviour {
 					diff.x = neigh.x - cell.x;
 					diff.y = neigh.y - cell.y;
 					diff.z = neigh.z - cell.z;
-					force += diff * (pLevel - pressure.level)*Mathf.Abs(pressure.level);
+					force += (diff * (pLevel - pressure.level)).normalized*Mathf.Abs(pressure.level);
 				}
 			}
 

@@ -114,7 +114,9 @@ public class ShipGridCell {
 				//Debug.Log(fluid.level + " " + change);
 				//change /= nCount;
 				foreach(ShipGridCell neigh in neighbors) {
-					neigh.AddFluid(fluid.type, change, fluid.lifeTime, fluid.flowRate);
+					if(neigh.neighbors.Contains(this)) {
+						neigh.AddFluid(fluid.type, change, fluid.lifeTime, fluid.flowRate);
+					}
 				}
 				fluid.level = absValue * Mathf.Sign(fluid.level);
 			}
@@ -499,6 +501,7 @@ public class ShipGrid : MonoBehaviour {
 								//Debug.DrawLine(curPos + transform.forward * 0.1f, curPos + transform.forward * 0.1f + transform.up * fluid.level, Color.red, 0, true);
 							}
 							//}
+							//level = 1;
 							//if(Mathf.Abs(level) > 0) {
 								Debug.DrawLine(curPos + transform.forward * 0.1f, curPos + transform.forward * 0.1f + transform.up * level, Color.red, 0, true);
 								//Debug.DrawLine(curPos, curPos+transform.up);
