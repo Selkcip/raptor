@@ -112,6 +112,7 @@ public class ThirdPersonCharacter : MonoBehaviour {
 		// direction. 
 		Vector3 localMove = transform.InverseTransformDirection (moveInput);
 		turnAmount = Mathf.Atan2 (localMove.x, localMove.z);
+		turnAmount *= localMove.normalized.magnitude;
 		forwardAmount = localMove.z;
 	}
 
@@ -122,7 +123,7 @@ public class ThirdPersonCharacter : MonoBehaviour {
 		if (Mathf.Abs (forwardAmount) < .01f) {
 			Vector3 lookDelta = transform.InverseTransformDirection (lookPos - transform.position);
 			float lookAngle = Mathf.Atan2 (lookDelta.x, lookDelta.z) * Mathf.Rad2Deg;
-
+			
 			// are we beyond the threshold of where need to turn to face the camera?
 			if (Mathf.Abs (lookAngle) > advancedSettings.autoTurnThresholdAngle) {
 				turnAmount += lookAngle * advancedSettings.autoTurnSpeed * .001f;

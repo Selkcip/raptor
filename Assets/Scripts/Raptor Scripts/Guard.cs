@@ -105,6 +105,7 @@ public class Guard : PlanningNPC {
 				{ "enemySeen", true },
 				{ "enemyVisible", true },
 				{ "nearEnemy", true },
+				{ "facingEnemy", true },
 				{ "standing", true },
 				{ "canPunch", true },
 				{ "knockedOut", false },
