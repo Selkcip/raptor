@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class TriggerableLight : Triggerable {
+	public static List<TriggerableLight> lights = new List<TriggerableLight>();
+
+	public string room = "ship";
 
 	void Start () {
 		activateOnStateChange = true;
+		lights.Add(this);
 	}
 
-	void Activate(bool triggered) {
+	public void Activate(bool triggered) {
 		if(light != null) {
 			light.enabled = triggered;
 		}

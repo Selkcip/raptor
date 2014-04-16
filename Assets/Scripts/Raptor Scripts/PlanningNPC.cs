@@ -640,7 +640,7 @@ public class PlanningNPC : MonoBehaviour {
 				return false;
 			});
 		aFollowNoise.name = "follow noise";
-		planner.Add(aFollowNoise);
+		//planner.Add(aFollowNoise);
 
 		aChaseNoise = new PlanAction(
 			new PlanState() {
@@ -662,7 +662,7 @@ public class PlanningNPC : MonoBehaviour {
 				return false;
 			});
 		aChaseNoise.name = "chase noise";
-		planner.Add(aChaseNoise);
+		//planner.Add(aChaseNoise);
 
 		aEnableLight = new PlanAction(
 			new PlanState() {
@@ -722,6 +722,10 @@ public class PlanningNPC : MonoBehaviour {
 		hasFlashlight = weapon != null && weapon.flashLight != null;
 		flashLightOn = hasFlashlight && weapon.flashLight.enabled == true;
 		needLight = lightLevel <= minLightLevel ? true : (lightLevel >= maxLightLevel ? false : needLight);
+
+		if(weapon != null && weapon.flashLight != null) {
+			weapon.flashLight.enabled = lightLevel <= minLightLevel ? true : (lightLevel >= maxLightLevel ? false : weapon.flashLight.enabled);
+		}
 
 		curFov = Mathf.Max(fov, curFov - 1.0f * Time.deltaTime);
 		curViewDis = Mathf.Max(0.0001f, viewDis * lightLevel / maxLightLevel);//Mathf.Max(viewDis, curViewDis - 1.0f * Time.deltaTime);

@@ -82,6 +82,7 @@ public class RaptorInteraction : MonoBehaviour {
 	public static int money = 100000;
 	public static float notoriety = 900000f;//Notoriety should increase by 2000 for killing a guy;
 	public static float notorietyStep = 2000;
+	public static int keyCount = 0;
 
 	public Transform inventory;
 
@@ -400,7 +401,8 @@ public class RaptorInteraction : MonoBehaviour {
 				other.transform.SendMessageUpwards("KnockOut", knockOutTime, SendMessageOptions.DontRequireReceiver);
 				chainPounce = true;
 			}
-			else if(other.transform.tag == "room") {
+			//else if(other.transform.tag == "room") {
+			else if(other.rigidbody == null) {
 				RaycastHit hit;
 				//check if the raptor is facing the wall
 				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 0.5f)) {
@@ -457,18 +459,21 @@ public class RaptorInteraction : MonoBehaviour {
 		obj.transform.parent = inventory;
 		obj.transform.localPosition *= 0;
 		obj.gameObject.active = false;
+		if(obj.keyCard) {
+			keyCount++;
+		}
 	}
 
 	public void UnlockDoor(RaptorDoor door) {
-		int cardCount = 0;
+		/*int cardCount = 0;
 		foreach(Transform child in inventory) {
 			Collectible collectible = child.GetComponent<Collectible>();
 			if(collectible != null && collectible.keyCard) {
 				cardCount++;
 			}
-		}
+		}*/
 
-		if(cardCount >= door.keyCardsToUnlock) {
+		if(keyCount >= door.keyCardsToUnlock) {
 			door.LockDoor(false);
 		}
 	}

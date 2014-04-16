@@ -68,7 +68,7 @@ public class RaptorHUD : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		keyCardLabel.text = "Key Cards: " + 69;
+		keyCardLabel.text = "Key Cards: " + RaptorInteraction.keyCount;
 
 		//stamina updates
 		if(stamina < 0f) {
