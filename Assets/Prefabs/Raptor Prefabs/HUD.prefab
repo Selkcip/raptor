@@ -141,7 +141,7 @@ GameObject:
   - 4: {fileID: 400016}
   - 114: {fileID: 11400018}
   m_Layer: 8
-  m_Name: HUD-StealthTimer
+  m_Name: Key Card Count
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -199,6 +199,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &100024
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400024}
+  - 114: {fileID: 11400032}
+  m_Layer: 8
+  m_Name: HUD-StealthTimer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -228,7 +244,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
   m_LocalRotation: {x: 0, y: 0, z: -8.74227766e-08, w: 1}
-  m_LocalPosition: {x: -207.333496, y: 159, z: 0}
+  m_LocalPosition: {x: -263.333527, y: 190.5, z: 0}
   m_LocalScale: {x: .766719043, y: .999924481, z: .999924481}
   m_Children:
   - {fileID: 400002}
@@ -263,7 +279,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100010}
   m_LocalRotation: {x: 0, y: 0, z: -8.74227766e-08, w: 1}
-  m_LocalPosition: {x: -252.333496, y: 135, z: 0}
+  m_LocalPosition: {x: -771.444885, y: 427.000031, z: 0}
   m_LocalScale: {x: .766719043, y: .999924481, z: .999924481}
   m_Children:
   - {fileID: 400008}
@@ -276,14 +292,15 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100012}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -27, y: -.272571146, z: -25}
-  m_LocalScale: {x: .00546448072, y: .00546448072, z: .00546448072}
+  m_LocalPosition: {x: -27, y: 0, z: -25}
+  m_LocalScale: {x: .00466200477, y: .00466200477, z: .00466200477}
   m_Children:
   - {fileID: 400014}
   - {fileID: 400010}
   - {fileID: 400004}
-  - {fileID: 400016}
+  - {fileID: 400024}
   - {fileID: 400020}
+  - {fileID: 400016}
   m_Father: {fileID: 0}
 --- !u!4 &400014
 Transform:
@@ -303,7 +320,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100016}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.83332825, y: 161, z: 0}
+  m_LocalPosition: {x: 826.706543, y: 452.000031, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400012}
@@ -325,7 +342,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100020}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.166671753, y: 7.62939453e-06, z: 0}
+  m_LocalPosition: {x: -.369171143, y: 0, z: 0}
   m_LocalScale: {x: .982812583, y: 1, z: 1}
   m_Children:
   - {fileID: 400018}
@@ -342,6 +359,17 @@ Transform:
   m_LocalScale: {x: 1.017488, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400020}
+--- !u!4 &400024
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100024}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.63082886, y: 453.000031, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400012}
 --- !u!20 &2000000
 Camera:
   m_ObjectHideFlags: 1
@@ -737,33 +765,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftAnchor:
     target: {fileID: 400012}
-    relative: .5
-    absolute: -42
+    relative: 1
+    absolute: -142
   rightAnchor:
     target: {fileID: 400012}
-    relative: .5
-    absolute: 52
+    relative: 1
+    absolute: -17
   bottomAnchor:
     target: {fileID: 400012}
     relative: 1
-    absolute: -32
+    absolute: -33
   topAnchor:
     target: {fileID: 400012}
     relative: 1
-    absolute: -12
+    absolute: -13
   mColor: {r: 1, g: 1, b: 1, a: 1}
-  mPivot: 4
-  mWidth: 94
+  mPivot: 5
+  mWidth: 125
   mHeight: 20
   mDepth: 2
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 4.69999981
+  aspectRatio: 6.25
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 0}
   mFont: {fileID: 11400000, guid: ac44b8a25154a9d40a172ab5851e0986, type: 2}
-  mText: 3:00
+  mText: 'Key Cards: 0'
   mFontSize: 20
   mFontStyle: 0
   mEncoding: 1
@@ -838,7 +866,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100020}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0d15ff9fd80670345b53fd7be4f2f295, type: 3}
   m_Name: 
@@ -846,15 +874,13 @@ MonoBehaviour:
   sprite: {fileID: 11400020}
   colors:
   - {r: 1, g: 0, b: 0, a: 1}
-  - {r: 1, g: .921568632, b: .0156862754, a: 1}
-  - {r: 0, g: 1, b: 0, a: 1}
 --- !u!114 &11400024
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100020}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1fdca5042b1d12a4890ec1bd4f04290d, type: 3}
   m_Name: 
@@ -883,10 +909,7 @@ MonoBehaviour:
   mValue: 0
   mFill: 0
   numberOfSteps: 0
-  onChange:
-  - mTarget: {fileID: 11400030}
-    mMethodName: SetCurrentPercent
-    oneShot: 0
+  onChange: []
   foreground: {fileID: 0}
   rawValue: 1
   direction: 2
@@ -968,17 +991,17 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 28
+  mWidth: 70
   mHeight: 20
   mDepth: 3
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.39999998
+  aspectRatio: 3.5
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 0}
   mFont: {fileID: 11400000, guid: 29056518aafb01b49a5b08faf8e30cff, type: 2}
-  mText: 0%
+  mText: Hacking
   mFontSize: 20
   mFontStyle: 0
   mEncoding: 1
@@ -988,6 +1011,66 @@ MonoBehaviour:
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
   mOverflow: 2
+  mMaterial: {fileID: 0}
+  mApplyGradient: 1
+  mGradientTop: {r: 1, g: 1, b: 1, a: 1}
+  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mSpacingX: 0
+  mSpacingY: 0
+  mShrinkToFit: 0
+  mMaxLineWidth: 0
+  mMaxLineHeight: 0
+  mLineWidth: 0
+  mMultiline: 1
+--- !u!114 &11400032
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9d0b5f3bbe925a408bd595c79d0bf63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftAnchor:
+    target: {fileID: 400012}
+    relative: .5
+    absolute: -42
+  rightAnchor:
+    target: {fileID: 400012}
+    relative: .5
+    absolute: 52
+  bottomAnchor:
+    target: {fileID: 400012}
+    relative: 1
+    absolute: -32
+  topAnchor:
+    target: {fileID: 400012}
+    relative: 1
+    absolute: -12
+  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mPivot: 4
+  mWidth: 94
+  mHeight: 20
+  mDepth: 2
+  autoResizeBoxCollider: 0
+  hideIfOffScreen: 0
+  keepAspectRatio: 0
+  aspectRatio: 4.69999981
+  keepCrispWhenShrunk: 1
+  mTrueTypeFont: {fileID: 0}
+  mFont: {fileID: 11400000, guid: ac44b8a25154a9d40a172ab5851e0986, type: 2}
+  mText: 3:00
+  mFontSize: 20
+  mFontStyle: 0
+  mEncoding: 1
+  mMaxLineCount: 0
+  mEffectStyle: 0
+  mEffectColor: {r: 0, g: 0, b: 0, a: 1}
+  mSymbols: 1
+  mEffectDistance: {x: 1, y: 1}
+  mOverflow: 0
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
