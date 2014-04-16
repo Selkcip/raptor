@@ -16,6 +16,9 @@ public class RaptorHUD : MonoBehaviour {
 	private UISlider defuseBar;
 	public static float defuseTime = 0f;
 
+	private GameObject keyCard;
+	private UILabel keyCardLabel;
+
 	//police timer
 	public static float pTime = 180; //time in seconds before police come
 	const float pAdjust = 20000f;	//cap on notoriety's effect on the timer
@@ -31,6 +34,9 @@ public class RaptorHUD : MonoBehaviour {
 		defuseElement = GameObject.Find("HUD-Defuse");
 		defuseBar = defuseElement.GetComponent<UISlider>();
 		defuseTime = 0f;
+
+		keyCard = GameObject.Find("Key Card Count");
+		keyCardLabel = keyCard.GetComponent<UILabel>();
 
 		if(GameObject.Find("HUD-StealthTimer") != null) {
 			stealthTimer = GameObject.Find("HUD-StealthTimer").GetComponent<UILabel>();
@@ -61,6 +67,9 @@ public class RaptorHUD : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
+		keyCardLabel.text = "Key Cards: " + 69;
+
 		//stamina updates
 		if(stamina < 0f) {
 			stamina = 0f;
