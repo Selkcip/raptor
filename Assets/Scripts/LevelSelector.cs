@@ -70,17 +70,23 @@ public class LevelSelector : MonoBehaviour {
             Destroy(derb);
         }
 
-        /*bool hasAvailable = true;
+      /*  bool hasAvailable = true;
         while (hasAvailable) {
             // spawn debris
             // check for available locations within despawnRadius adjacent to existing
                         
             // place one near center if none yet
             if (debris.Count < 1) {
-                GameObject derb = (GameObject)Instantiate(debrisObject, );
+				float x = Random.value * debrisSpawn.x - debrisSpawn.x / 2;
+				float y = Random.value * debrisSpawn.y - debrisSpawn.y / 2;
+
+                GameObject derb = (GameObject)Instantiate(debrisObject, new Vector2(x, y), Quaternion.identity);
+				debris.Add(derb);
             }
+
+			foreach(GameObject derb in debris)
+
+
         }*/
-
-
 	}
 }
