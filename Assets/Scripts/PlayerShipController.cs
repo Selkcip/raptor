@@ -5,6 +5,7 @@ public class PlayerShipController : MonoBehaviour {
 
     public float forwardForce, reverseForce, sideForce;
 	public float turnRate; // deg/s
+    public float maxSpeed;
 
     public bool isCloaked, isDead;
 	public float cloakTime, cloakRechargeTime, cloakLerpTime; // time full cloak lasts, time full recharge takes, time of cloak transition
@@ -115,6 +116,9 @@ public class PlayerShipController : MonoBehaviour {
 		{
 			reload -= Time.deltaTime;
 		}
+
+        if (rigidbody2D.velocity.magnitude > maxSpeed)
+            rigidbody2D.velocity = rigidbody2D.velocity.normalized * maxSpeed;
 	}
 
 	void Shoot()

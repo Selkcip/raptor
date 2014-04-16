@@ -14,7 +14,7 @@ GameObject:
   - 114: {fileID: 11400000}
   - 60: {fileID: 6000000}
   m_Layer: 8
-  m_Name: EnemyShip
+  m_Name: CargoShip
   m_TagString: enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -110,7 +110,9 @@ MonoBehaviour:
   fireAngle: 2
   bullet: {fileID: 100000, guid: e70b81815de3a2340873cd1bcd9e02e4, type: 2}
   bulletSpeed: 25
+  reload: 0
   reloadTime: .5
+  player: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
