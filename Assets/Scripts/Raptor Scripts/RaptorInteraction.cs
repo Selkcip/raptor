@@ -22,6 +22,11 @@ public class RaptorInteraction : MonoBehaviour {
 
 	public static bool defusing = false;
 
+	private bool climbing = false;
+	public Transform raptorArms;
+	Quaternion armRotation;
+	Quaternion defaultRotation;
+
 	//sound stuff
 	public float noiseLifeTime = 0.5f;
 	public float noiseFlowRate = 0.9f;
@@ -87,6 +92,8 @@ public class RaptorInteraction : MonoBehaviour {
 		hud = gameObject.GetComponent<RaptorHUD>();
 		arms = gameObject.GetComponentInChildren<Animator>();
 		health = maxHealth;
+
+		defaultRotation = raptorArms.localRotation;
 	}
 
 	// Update is called once per frame
@@ -116,7 +123,7 @@ public class RaptorInteraction : MonoBehaviour {
 			}
 		}
 
-		InAttackRange();
+		Climb();
 	}
 
 	void HUD() {
@@ -203,6 +210,11 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void Controls() {
+		//TESTING
+		if(Input.GetKey(KeyCode.U)) {
+			print(fpc.grounded);
+		}
+
 		if(Input.GetMouseButton(0)) {
 			Slash();
 		}
@@ -258,7 +270,13 @@ public class RaptorInteraction : MonoBehaviour {
 				edge.enabled = !edge.enabled;// heatRenderer.enabled;
 			}
 		}
-
+		
+		//Stop climbing
+		if(Input.GetKey(KeyCode.Space) && climbing) {
+			climbing = false;
+			rigidbody.constraints = RigidbodyConstraints.None;
+		}
+		
 		if(Input.GetKeyUp(KeyCode.R)) {
 			if(inventory.childCount > 0) {
 				foreach(Transform child in inventory) {
@@ -355,7 +373,10 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void Pounce() {
-		if(hud.stamina == 1.0f && !isPouncing && fpc.grounded) {
+		if(hud.stamina == 1.0f && !isPouncing && (fpc.grounded || climbing)) {
+			rigidbody.constraints = RigidbodyConstraints.None;
+			climbing = false;
+
 			chainPounce = false;
 			isPouncing = true;
 			fpc.grounded = false;
@@ -372,11 +393,22 @@ public class RaptorInteraction : MonoBehaviour {
 			isPouncing = false;
 			rigidbody.drag = 0;
 			//fpc.enabled = true;
+
 			//Chain pouncing
 			if(other.gameObject.tag == "enemy") {
 				//other.transform.root.GetComponent<Enemy>().KnockOut(knockOutTime);
 				other.transform.SendMessageUpwards("KnockOut", knockOutTime, SendMessageOptions.DontRequireReceiver);
 				chainPounce = true;
+			}
+			else if(other.transform.tag == "room") {
+				RaycastHit hit;
+				//check if the raptor is facing the wall
+				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 0.5f)) {
+					climbing = true;
+					armRotation = raptorArms.rotation;//Camera.main.transform.rotation;
+					rigidbody.constraints = RigidbodyConstraints.FreezePosition;
+
+				}
 			}
 		}
 	}
@@ -482,6 +514,17 @@ public class RaptorInteraction : MonoBehaviour {
 					money += collectible.value;
 				}
 			}
+		}
+	}
+
+	void Climb() {
+		if(climbing) {
+			raptorArms.rotation = armRotation;
+			//Camera.main.GetComponent<SimpleMouseRotator>().rotationRange.x = 0f;
+		}
+		else {
+			raptorArms.localRotation = defaultRotation;
+			//Camera.main.GetComponent<SimpleMouseRotator>().rotationRange.x = 170f;
 		}
 	}
 
