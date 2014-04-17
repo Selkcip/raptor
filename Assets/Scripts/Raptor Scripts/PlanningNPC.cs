@@ -46,6 +46,7 @@ public class PlanningNPC : MonoBehaviour {
 	public bool usingObject = false;
 	public bool crouch = false;
 	public bool enemyVisible = false;
+	public bool enemyNoticed = false;
 	public bool enemySeen = false;
 	public bool alertShip = false;
 	public bool alarmFound = false;
@@ -741,7 +742,7 @@ public class PlanningNPC : MonoBehaviour {
 		LookForEnemy();
 		CheckGrid();
 
-		Plan();
+		//Plan();
 	}
 
 	protected void Move(Vector3 moveDir, Vector3 lookPos) {
@@ -758,35 +759,39 @@ public class PlanningNPC : MonoBehaviour {
 			if(player != null && player.health > 0) {
 				Transform enemyHead = Camera.main.transform;
 				if(enemyHead != null) {
+					float enemyVisibility = 1;
+					enemyVisibility += player.isMoving ? 1 : 0;
+					enemyVisibility += player.isRunning ? 1 : 0;
+					enemyVisibility += player.isSlashing ? 1 : 0;
+					enemyVisibility *= player.isCrouching ? 0.5f : 1;
+					enemyVisibility /= 4; //Number of inputs
+
 					Vector3 enemyDiff = enemyHead.position - (transform.position + new Vector3(0, 1, 0));
-					Vector3 enemyDir = new Vector3();
-					enemyDir.x = enemyDiff.x;
-					enemyDir.y = enemyDiff.y;
-					enemyDir.z = enemyDiff.z;
-					enemyDiff.y = 0;
 					enemyDiff.Normalize();
+
+					Debug.DrawRay(transform.position + new Vector3(0, 1, 0), enemyDiff, Color.red);
+					Debug.DrawLine(transform.position + new Vector3(0, 1, 0), transform.position + new Vector3(0, 1, 0)+enemyDiff*viewDis, Color.green);
 
 					if(Vector3.Dot(transform.forward, enemyDiff) >= 1.0f - (curFov / 2.0f) / 90.0f) {
 						RaycastHit hit;
-						if(Physics.Raycast(transform.position + new Vector3(0, 1, 0), enemyDir, out hit, curViewDis)) {
+						if(Physics.Raycast(transform.position + new Vector3(0, 1, 0), enemyDiff, out hit, curViewDis)) {
 							if(hit.collider.tag == "Player" || (hit.collider.transform.parent != null && hit.collider.transform.parent.tag == "Player")) {
-								noticeTimer += (1.0f - hit.distance / curViewDis) * Time.deltaTime;
+								/*noticeTimer += (1.0f - hit.distance / curViewDis) * Time.deltaTime;
 								if(noticeTimer >= noticeTime) {
-									enemyVisible = true;
 									enemySeen = true;
 									alertShip = true;
 									enemyPos = enemyHead.position;
 									//enemyDir = enemyHead.forward;
-								}
+								}*/
 							}
 							else {
-								noticeTimer -= Time.deltaTime;
+								//noticeTimer -= Time.deltaTime;
 							}
 						}
 					}
 				}
 			}
-			if(enemySeen) {
+			/*if(enemySeen) {
 				if(!mentionEnemyVisible) {
 					List<string> lines = new List<string>();
 					lines.Add("sweetjesusisthataraptor");
@@ -801,7 +806,7 @@ public class PlanningNPC : MonoBehaviour {
 					SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/wherediditgo"), SoundManager.SoundType.Dialogue, gameObject);
 					mentionEnemyVisible = false;
 				}
-			}
+			}*/
 		}
 	}
 

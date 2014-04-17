@@ -53,14 +53,16 @@ public class RaptorInteraction : MonoBehaviour {
 	static int crouchIdleState = Animator.StringToHash("Base Layer.crouching_Idle");
 
 	private bool prevGrounded = true;
+	public bool isMoving = false;
+	public bool isRunning = false;
 
 	private bool chainPounce = true;
 	private bool isPouncing = false;
 	private int pounceCoolDown = 3;
 
-	private bool isSlashing = false;
+	public bool isSlashing = false;
 
-	private bool isCrouching = false;
+	public bool isCrouching = false;
 
 	//sound stuff
 	bool eatSoundPlaying = false;
@@ -101,6 +103,9 @@ public class RaptorInteraction : MonoBehaviour {
 	void Update() {
 		Animation();
 		if(health > 0) {
+			isMoving = fpc.moving;
+			isRunning = fpc.running;
+
 			Controls();
 			HUD();
 			MakeNoise();
