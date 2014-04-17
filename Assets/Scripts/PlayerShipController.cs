@@ -34,7 +34,7 @@ public class PlayerShipController : MonoBehaviour {
 	void Update() {
 		if (!isDead)
 		{
-			print(cloakTrans);
+			//print(cloakTrans);
 			renderer.material.SetFloat("_CloakAmt", cloakTrans * 128);
 			// rotate ship to point at current mouse position on screen
 			/*float distance = transform.position.z - Camera.main.transform.position.z;
