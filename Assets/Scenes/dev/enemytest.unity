@@ -962,7 +962,7 @@ Transform:
   m_PrefabInternal: {fileID: 1792569635}
   m_GameObject: {fileID: 40631985}
   m_LocalRotation: {x: 0, y: 0, z: -8.74227766e-08, w: 1}
-  m_LocalPosition: {x: -275.405762, y: 112, z: 0}
+  m_LocalPosition: {x: -323.000092, y: 166, z: 0}
   m_LocalScale: {x: .766719043, y: .999924481, z: .999924481}
   m_Children:
   - {fileID: 2068258213}
@@ -9646,7 +9646,7 @@ MonoBehaviour:
   runSpeed: 1
   viewDis: 20
   fov: 90
-  noticeTime: .100000001
+  noticeTime: .25
   health: 100
   fleeHealth: 50
   standTime: 5
@@ -9665,6 +9665,7 @@ MonoBehaviour:
   weaponAnchor: {fileID: 1775680240}
   money: 0
   sleepTime: 0
+  enemyVisibility: 1
   sleeping: 0
   knockedOut: 0
   dead: 0
@@ -9692,6 +9693,7 @@ MonoBehaviour:
   canSee: 0
   curFov: 0
   curViewDis: 0
+  noticeTimer: 0
   enemyPos: {x: 0, y: 0, z: 0}
   useTarget: {fileID: 0}
   noiseDir: {x: 0, y: 0, z: 0}
@@ -12521,7 +12523,7 @@ MonoBehaviour:
   noiseIndicator: {fileID: 2800000, guid: 3c052bc48c620a646a1df18bca5e388c, type: 3}
   painIndicator: {fileID: 11400000, guid: f400208c1502ccb43b2de1a1bdfcb74e, type: 2}
   eatTarget: {fileID: 0}
-  raptorArms: {fileID: 0}
+  raptorArms: {fileID: 118514729}
   noiseLifeTime: .100000001
   noiseFlowRate: .899999976
   walkNoiseLevel: 5
@@ -12534,6 +12536,10 @@ MonoBehaviour:
   knockOutTime: 10
   bloodSpurt: {fileID: 1719424219}
   health: 0
+  isMoving: 0
+  isRunning: 0
+  isSlashing: 0
+  isCrouching: 0
   inventory: {fileID: 113306596}
 --- !u!114 &303852424
 MonoBehaviour:
@@ -16252,6 +16258,10 @@ Prefab:
     - target: {fileID: 400014, guid: 38bd599c76693664f86db2a145010ee0, type: 2}
       propertyPath: m_LocalRotation.w
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 38bd599c76693664f86db2a145010ee0, type: 2}
+      propertyPath: noticeTime
+      value: .25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 38bd599c76693664f86db2a145010ee0, type: 2}
@@ -20665,7 +20675,7 @@ Transform:
   m_GameObject: {fileID: 502356100}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -27, y: 0, z: -25}
-  m_LocalScale: {x: .00625000009, y: .00625000009, z: .00625000009}
+  m_LocalScale: {x: .00467289705, y: .00467289705, z: .00467289705}
   m_Children:
   - {fileID: 357748894}
   - {fileID: 40631986}
@@ -32009,6 +32019,10 @@ Prefab:
       propertyPath: noiseLifeTime
       value: .100000001
       objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: be787895470e15641b218e6df92fce40, type: 2}
+      propertyPath: raptorArms
+      value: 
+      objectReference: {fileID: 118514729}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: be787895470e15641b218e6df92fce40, type: 2}
   m_RootGameObject: {fileID: 303852420}
@@ -42542,6 +42556,7 @@ MonoBehaviour:
   weaponAnchor: {fileID: 1033110509}
   money: 0
   sleepTime: 0
+  enemyVisibility: 1
   sleeping: 0
   knockedOut: 0
   dead: 0
@@ -42569,6 +42584,7 @@ MonoBehaviour:
   canSee: 0
   curFov: 0
   curViewDis: 0
+  noticeTimer: 0
   enemyPos: {x: 0, y: 0, z: 0}
   useTarget: {fileID: 0}
   noiseDir: {x: 0, y: 0, z: 0}
@@ -45714,6 +45730,7 @@ MonoBehaviour:
   weaponAnchor: {fileID: 0}
   money: 0
   sleepTime: 0
+  enemyVisibility: 1
   sleeping: 0
   knockedOut: 0
   dead: 0
@@ -45741,6 +45758,7 @@ MonoBehaviour:
   canSee: 0
   curFov: 0
   curViewDis: 0
+  noticeTimer: 0
   enemyPos: {x: 0, y: 0, z: 0}
   useTarget: {fileID: 0}
   noiseDir: {x: 0, y: 0, z: 0}
@@ -54463,7 +54481,7 @@ Transform:
   m_PrefabInternal: {fileID: 1792569635}
   m_GameObject: {fileID: 1587038431}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5, y: 138, z: 0}
+  m_LocalPosition: {x: 5, y: 192, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 502356101}
@@ -55435,7 +55453,7 @@ Transform:
   m_PrefabInternal: {fileID: 1792569635}
   m_GameObject: {fileID: 1630642304}
   m_LocalRotation: {x: 0, y: 0, z: -8.74227766e-08, w: 1}
-  m_LocalPosition: {x: -230.405762, y: 136, z: 0}
+  m_LocalPosition: {x: -278.000092, y: 190, z: 0}
   m_LocalScale: {x: .766719043, y: .999924481, z: .999924481}
   m_Children:
   - {fileID: 1388261307}
@@ -61646,31 +61664,31 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400010, guid: c4ad97ddb1cc29346b52194dd8a5354a, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -275.405762
+      value: -323.000092
       objectReference: {fileID: 0}
     - target: {fileID: 400010, guid: c4ad97ddb1cc29346b52194dd8a5354a, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 112
+      value: 166
       objectReference: {fileID: 0}
     - target: {fileID: 400012, guid: c4ad97ddb1cc29346b52194dd8a5354a, type: 2}
       propertyPath: m_LocalScale.x
-      value: .00625000009
+      value: .00467289705
       objectReference: {fileID: 0}
     - target: {fileID: 400012, guid: c4ad97ddb1cc29346b52194dd8a5354a, type: 2}
       propertyPath: m_LocalScale.y
-      value: .00625000009
+      value: .00467289705
       objectReference: {fileID: 0}
     - target: {fileID: 400012, guid: c4ad97ddb1cc29346b52194dd8a5354a, type: 2}
       propertyPath: m_LocalScale.z
-      value: .00625000009
+      value: .00467289705
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: c4ad97ddb1cc29346b52194dd8a5354a, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -230.405762
+      value: -278.000092
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: c4ad97ddb1cc29346b52194dd8a5354a, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 136
+      value: 190
       objectReference: {fileID: 0}
     - target: {fileID: 400020, guid: c4ad97ddb1cc29346b52194dd8a5354a, type: 2}
       propertyPath: m_LocalPosition.x
@@ -61682,15 +61700,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400024, guid: c4ad97ddb1cc29346b52194dd8a5354a, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 138
+      value: 192
       objectReference: {fileID: 0}
     - target: {fileID: 400016, guid: c4ad97ddb1cc29346b52194dd8a5354a, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 331.405762
+      value: 379.000092
       objectReference: {fileID: 0}
     - target: {fileID: 400016, guid: c4ad97ddb1cc29346b52194dd8a5354a, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 137
+      value: 191
+      objectReference: {fileID: 0}
+    - target: {fileID: 400020, guid: c4ad97ddb1cc29346b52194dd8a5354a, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c4ad97ddb1cc29346b52194dd8a5354a, type: 2}
@@ -62911,7 +62933,7 @@ Transform:
   m_PrefabInternal: {fileID: 1792569635}
   m_GameObject: {fileID: 1840929944}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 331.405762, y: 137, z: 0}
+  m_LocalPosition: {x: 379.000092, y: 191, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 502356101}

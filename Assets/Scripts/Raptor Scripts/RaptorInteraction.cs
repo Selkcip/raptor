@@ -61,8 +61,8 @@ public class RaptorInteraction : MonoBehaviour {
 	private int pounceCoolDown = 3;
 
 	public bool isSlashing = false;
-
 	public bool isCrouching = false;
+	public float lightLevel = 0;
 
 	//sound stuff
 	bool eatSoundPlaying = false;
@@ -192,6 +192,12 @@ public class RaptorInteraction : MonoBehaviour {
 
 	void CheckGrid() {
 		ShipGridCell cell = ShipGrid.GetPosI(transform.position);
+
+		ShipGridFluid cellLight;
+		cell.fluids.TryGetValue("light", out cellLight);
+		float newLight = cellLight != null ? cellLight.level : 0;
+		lightLevel += (newLight - lightLevel) * 0.1f;
+
 		ShipGridFluid damage;
 		cell.fluids.TryGetValue("damage", out damage);
 		if(damage != null && damage.level > 1f) {

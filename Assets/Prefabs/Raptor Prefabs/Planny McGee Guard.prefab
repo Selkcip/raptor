@@ -1293,7 +1293,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100014}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 16, z: -80}
+  m_LocalPosition: {x: 0, y: 8, z: -62}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400084}
@@ -2556,7 +2556,7 @@ MonoBehaviour:
   targetChangeTolerance: 2
   walkSpeed: .5
   runSpeed: 1
-  viewDis: 20
+  viewDis: 10
   fov: 90
   noticeTime: .100000001
   health: 100
@@ -2577,6 +2577,7 @@ MonoBehaviour:
   weaponAnchor: {fileID: 400132}
   money: 0
   sleepTime: 0
+  enemyVisibility: 1
   sleeping: 0
   knockedOut: 0
   dead: 0
@@ -2604,6 +2605,7 @@ MonoBehaviour:
   canSee: 0
   curFov: 0
   curViewDis: 0
+  noticeTimer: 0
   enemyPos: {x: 0, y: 0, z: 0}
   useTarget: {fileID: 0}
   noiseDir: {x: 0, y: 0, z: 0}
@@ -2717,7 +2719,7 @@ MonoBehaviour:
   flashLight: {fileID: 10800000}
   projectile: {fileID: 100000, guid: 21ce2b659f9571247ba772f0ef6e7f5b, type: 2}
   hasAmmo: 0
-  damage: 1
+  damage: 25
   clip: 0
   dropped: 0
 --- !u!114 &11400012
@@ -3342,7 +3344,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 0, y: 0, z: -1}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.324942499, y: 3.76491471e-07, z: -2.83498639e-06}
+  m_ConnectedAnchor: {x: -.324941158, y: 4.75433183e-07, z: 8.50990148e-07}
   m_SwingAxis: {x: 1, y: 0, z: 0}
   m_LowTwistLimit:
     limit: -90
@@ -3376,7 +3378,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: -1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.335947156, y: 8.82987621e-08, z: -.0173538458}
+  m_ConnectedAnchor: {x: -.335946351, y: 8.83011495e-08, z: -.0173575729}
   m_SwingAxis: {x: 0, y: 0, z: -1}
   m_LowTwistLimit:
     limit: -20
@@ -3444,7 +3446,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.243567988, y: -.2394609, z: -.0178504698}
+  m_ConnectedAnchor: {x: -.243567869, y: -.2394609, z: -.017846657}
   m_SwingAxis: {x: 0, y: 0, z: -1}
   m_LowTwistLimit:
     limit: -70
@@ -3512,7 +3514,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.521895528, y: -3.1505553e-07, z: -4.32298179e-07}
+  m_ConnectedAnchor: {x: -.521896422, y: -4.50294273e-08, z: -4.8782266e-07}
   m_SwingAxis: {x: 0, y: 0, z: 1}
   m_LowTwistLimit:
     limit: -80
@@ -3546,7 +3548,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 0, y: 0, z: -1}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.324942321, y: 9.26948019e-07, z: -1.63010372e-06}
+  m_ConnectedAnchor: {x: -.324941099, y: -9.79974971e-07, z: 1.56808801e-06}
   m_SwingAxis: {x: -1, y: 0, z: 0}
   m_LowTwistLimit:
     limit: -90
@@ -3580,7 +3582,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.521895468, y: 1.99335986e-07, z: -1.16248009e-06}
+  m_ConnectedAnchor: {x: -.521896362, y: -6.21774419e-08, z: -1.21535106e-06}
   m_SwingAxis: {x: 0, y: 0, z: 1}
   m_LowTwistLimit:
     limit: -80
@@ -3614,7 +3616,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: -1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.438362509, y: 1.73801752e-07, z: .0403523333}
+  m_ConnectedAnchor: {x: -.438363373, y: 1.73799407e-07, z: .040356189}
   m_SwingAxis: {x: 0, y: 0, z: -1}
   m_LowTwistLimit:
     limit: -40
@@ -3648,7 +3650,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: -1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.243567988, y: .239461154, z: -.0178501029}
+  m_ConnectedAnchor: {x: -.243567899, y: .239461154, z: -.0178462844}
   m_SwingAxis: {x: 0, y: 0, z: -1}
   m_LowTwistLimit:
     limit: -70

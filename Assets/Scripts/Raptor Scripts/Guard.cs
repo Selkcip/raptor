@@ -88,7 +88,9 @@ public class Guard : PlanningNPC {
 				// update the agents posiiton 
 				agent.transform.position = transform.position;
 
-				if((enemyPos-transform.position).magnitude <= targetChangeTolerance){
+				//print(agent.remainingDistance);
+
+				if(agent.remainingDistance <= targetChangeTolerance) {
 					enemySeen = false;
 				}
 
@@ -142,7 +144,7 @@ public class Guard : PlanningNPC {
 
 		aFacePlayer = new PlanAction(
 			new PlanState() {
-				{ "enemySeen", true },
+				//{ "enemySeen", true },
 				{ "enemyVisible", true },
 				//{ "standing", true },
 				{ "facingEnemy", false },
@@ -150,7 +152,8 @@ public class Guard : PlanningNPC {
 				{ "dead", false }
 			},
 			new PlanState() {
-				{ "facingEnemy", true }
+				{ "facingEnemy", true },
+				{ "enemySeen", true }
 			},
 			delegate() {
 				Vector3 targetDir = (enemyPos - transform.position).normalized;
