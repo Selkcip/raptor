@@ -101,8 +101,8 @@ public class RaptorInteraction : MonoBehaviour {
 		arms = gameObject.GetComponentInChildren<Animator>();
 		health = maxHealth;
 
-		pauseMenu = GameObject.Find("Pause Menu");
-		pauseMenu.SetActive(false);
+		//pauseMenu = GameObject.Find("Pause Menu");
+		//pauseMenu.SetActive(false);
 
 		hudObject = GameObject.Find("HUD");
 
@@ -232,14 +232,14 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void Controls() {
-		if(Input.GetKeyDown(KeyCode.Escape)) {
+		/*if(Input.GetKeyDown(KeyCode.Escape)) {
 			Time.timeScale = 0;
 			pauseMenu.SetActive(true);
 			hudObject.SetActive(false);
 			toggleRotator(false);
 			paused = true;
 			LockMouse.lockMouse = false;
-		}
+		}*/
 
 		if(!paused) {
 			if(Input.GetKey(KeyCode.U)) {
@@ -487,11 +487,13 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	public void Collect(Collectible obj) {
-		obj.transform.parent = inventory;
-		obj.transform.localPosition *= 0;
-		obj.gameObject.active = false;
-		if(obj.keyCard) {
-			keyCount++;
+		if(inventory != null) {
+			obj.transform.parent = inventory;
+			obj.transform.localPosition *= 0;
+			obj.gameObject.active = false;
+			if(obj.keyCard) {
+				keyCount++;
+			}
 		}
 	}
 

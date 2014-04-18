@@ -12,6 +12,7 @@ public class RaptorDoor : Triggerable {
 	public float closeAfter = 5;
 	private float openTime = 0;
 	public int keyCardsToUnlock = 1;
+	public bool guardsCanUnlock = true;
 	public bool openOnTrigger = true;
 	public bool openOnTriggerable = true;
 

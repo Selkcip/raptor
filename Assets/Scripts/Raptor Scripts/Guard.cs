@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Guard : PlanningNPC {
 
-	public float punchDamage = 0.5f;
+	public float punchDamage = 5;
 	public float punchDistance = 2;
 	public float punchCoolDown = 1;
 
@@ -108,7 +108,7 @@ public class Guard : PlanningNPC {
 				{ "enemyVisible", true },
 				{ "nearEnemy", true },
 				{ "facingEnemy", true },
-				{ "standing", true },
+				//{ "standing", true },
 				{ "canPunch", true },
 				{ "knockedOut", false },
 				{ "dead", false }
@@ -226,7 +226,7 @@ public class Guard : PlanningNPC {
 				NavMeshHit hit;
 				agent.Raycast(transform.position+transform.forward, out hit);
 
-				if(hit.hit || patrolTimer >= patrolTime || (patrolPos - transform.position).magnitude <= targetChangeTolerance) {
+				if(hit.hit || patrolTimer >= patrolTime || agent.remainingDistance <= targetChangeTolerance) {
 					patrolPos = transform.position + transform.forward * 10;
 					patrolTimer = 0;
 				}

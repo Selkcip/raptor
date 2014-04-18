@@ -30,6 +30,7 @@ public class PlanningNPC : MonoBehaviour {
 	public float lightLevel = 0;
 	public Weapon weapon;
 	public Transform weaponAnchor;
+	public Transform inventory;
 	public int money = 0;
 	public float sleepTime = 0;
 
@@ -390,6 +391,11 @@ public class PlanningNPC : MonoBehaviour {
 				// update the agents posiiton 
 				agent.transform.position = transform.position;
 
+				if(agent.pathStatus == NavMeshPathStatus.PathPartial) {
+					//print("can't reach target");
+					useTarget = null;
+				}
+
 				// use the values to move the character
 				//character.Move(agent.desiredVelocity.normalized * speed, false, false, targetPos);
 				Move(agent.desiredVelocity, targetPos);
@@ -407,7 +413,7 @@ public class PlanningNPC : MonoBehaviour {
 				{ "hasUseTarget", true },
 				{ "usingObject", true },
 				{ "atTarget", true },
-				{ "standing", true },
+				//{ "standing", true },
 				{ "knockedOut", false },
 				{ "sleeping", false }
 			},
@@ -477,7 +483,7 @@ public class PlanningNPC : MonoBehaviour {
 						foreach(Alarm alarm in Alarm.alarms) {
 							targetPos = alarm.transform.position;
 							agent.SetDestination(targetPos);
-							float dis = agent.remainingDistance;// (alarm.transform.position - transform.position).magnitude;
+							float dis = (alarm.transform.position - transform.position).magnitude;
 							if(dis < minAlarmDis) {
 								minAlarmDis = dis;
 								minAlarmPos = alarm.transform.position;
@@ -577,6 +583,7 @@ public class PlanningNPC : MonoBehaviour {
 				{ "bored", true },
 				{ "canInspect", true },
 				{ "atTarget", true },
+				{ "enemyVisible", false },
 				{ "knockedOut", false },
 				{ "sleeping", false }
 			},
@@ -741,10 +748,12 @@ public class PlanningNPC : MonoBehaviour {
 
 		speed = running ? runSpeed : walkSpeed;
 
-		LookForEnemy();
-		CheckGrid();
+		if(!dead) {
+			LookForEnemy();
+			CheckGrid();
 
-		Plan();
+			Plan();
+		}
 	}
 
 	protected void Move(Vector3 moveDir, Vector3 lookPos) {
@@ -769,28 +778,30 @@ public class PlanningNPC : MonoBehaviour {
 					enemyVisibility /= 5; //Number of inputs
 					enemyVisibility *= Mathf.Max(0, player.lightLevel / maxLightLevel);
 
-					Vector3 enemyDiff = enemyHead.position - (transform.position + new Vector3(0, 1, 0));
-					enemyDiff.Normalize();
+					if(enemyVisibility >= 0.01f) {
+						Vector3 enemyDiff = enemyHead.position - (transform.position + new Vector3(0, 1, 0));
+						enemyDiff.Normalize();
 
-					if(Vector3.Dot(transform.forward, enemyDiff) >= 1.0f - (curFov / 2.0f) / 90.0f) {
-						RaycastHit hit;
-						if(Physics.Raycast(transform.position + new Vector3(0, 1, 0), enemyDiff, out hit, curViewDis)) {
-							if(hit.collider.tag == "Player" || (hit.collider.transform.parent != null && hit.collider.transform.parent.tag == "Player")) {
-								enemyVisible = true;
-								noticeTimer += enemyVisibility * Mathf.Max(0, (1.0f - hit.distance / curViewDis)) * Time.deltaTime;
-								if(noticeTimer >= noticeTime) {
-									enemySeen = true;
-									alertShip = true;
-									enemyPos = enemyHead.position;
-									//enemyDir = enemyHead.forward;
+						if(Vector3.Dot(transform.forward, enemyDiff) >= 1.0f - (curFov / 2.0f) / 90.0f) {
+							RaycastHit hit;
+							if(Physics.Raycast(transform.position + new Vector3(0, 1, 0), enemyDiff, out hit, curViewDis)) {
+								if(hit.collider.tag == "Player" || (hit.collider.transform.parent != null && hit.collider.transform.parent.tag == "Player")) {
+									enemyVisible = true;
+									noticeTimer += enemyVisibility * Mathf.Max(0, (1.0f - hit.distance / curViewDis)) * Time.deltaTime;
+									if(noticeTimer >= noticeTime) {
+										enemySeen = true;
+										alertShip = true;
+										enemyPos = enemyHead.position;
+										//enemyDir = enemyHead.forward;
+									}
 								}
 							}
+							Color rayColor = Color.green;
+							rayColor = enemyVisible ? Color.magenta : rayColor;
+							rayColor = enemySeen ? Color.red : rayColor;
+							//Debug.DrawRay(transform.position + new Vector3(0, 1, 0), enemyDiff, Color.red);
+							Debug.DrawLine(transform.position + new Vector3(0, 1, 0), transform.position + new Vector3(0, 1, 0) + enemyDiff * curViewDis, rayColor);
 						}
-						Color rayColor = Color.green;
-						rayColor = enemyVisible ? Color.magenta : rayColor;
-						rayColor = enemySeen ? Color.red : rayColor;
-						//Debug.DrawRay(transform.position + new Vector3(0, 1, 0), enemyDiff, Color.red);
-						Debug.DrawLine(transform.position + new Vector3(0, 1, 0), transform.position + new Vector3(0, 1, 0) + enemyDiff * curViewDis, rayColor);
 					}
 
 					if(!enemyVisible) {
@@ -931,8 +942,9 @@ public class PlanningNPC : MonoBehaviour {
 		if(user.tag == "Player") {
 			RaptorInteraction player = user.GetComponent<RaptorInteraction>();
 			if(!knockedOut) {
-				RaptorInteraction.notoriety += Notoriety.steal;
-				player.SendMessage("TakeMoney", 1, SendMessageOptions.DontRequireReceiver);
+				//RaptorInteraction.notoriety += Notoriety.steal;
+				//player.SendMessage("TakeMoney", 1, SendMessageOptions.DontRequireReceiver);
+				LoseCollectible(user);
 			}
 			else {
 				if(health > 0) {
@@ -943,10 +955,11 @@ public class PlanningNPC : MonoBehaviour {
 					player.SendMessage("Eat", 1, SendMessageOptions.DontRequireReceiver);
 					if(bodyRemaining > 0.25) {
 						player.eatTarget = transform;
-						transform.localScale = new Vector3(bodyRemaining, bodyRemaining, bodyRemaining);
+						//transform.localScale = new Vector3(bodyRemaining, bodyRemaining, bodyRemaining);
 					}
 					else {
 						player.eatTarget = null;
+						DropEverything();
 						Destroy(gameObject);
 					}
 				}
@@ -983,7 +996,49 @@ public class PlanningNPC : MonoBehaviour {
 	}
 
 	public void UnlockDoor(RaptorDoor door) {
-		door.OpenDoor(true);
+		door.OpenDoor(door.guardsCanUnlock);
+	}
+
+	public void Collect(Collectible obj) {
+		if(inventory != null) {
+			obj.transform.parent = inventory;
+			obj.transform.localPosition *= 0;
+			obj.gameObject.active = false;
+		}
+	}
+
+	public void LoseCollectible(GameObject thief) {
+		foreach(Transform child in inventory) {
+			Collectible collectible = child.GetComponent<Collectible>();
+			if(collectible != null) {
+				RaptorInteraction.notoriety += Notoriety.steal;
+				child.parent = null;
+				child.position = transform.TransformPoint(0, 1, -1);
+				RaycastHit hit;
+				if(Physics.Raycast(transform.TransformPoint(0, 1, -1), -transform.forward, out hit, 1)) {
+					child.position = hit.point;
+				}
+				child.gameObject.active = true;
+				//thief.SendMessageUpwards("Collect", collectible, SendMessageOptions.DontRequireReceiver);
+				break;
+			}
+		}
+	}
+
+	public void DropEverything() {
+		foreach(Transform child in inventory) {
+			Collectible collectible = child.GetComponent<Collectible>();
+			if(collectible != null) {
+				child.parent = null;
+				child.position = transform.position+Vector3.up;
+				/*RaycastHit hit;
+				if(Physics.Raycast(transform.TransformPoint(0, 1, -1), -transform.forward, out hit, 1)) {
+					child.position = hit.point;
+				}*/
+				child.gameObject.active = true;
+				//thief.SendMessageUpwards("Collect", collectible, SendMessageOptions.DontRequireReceiver);
+			}
+		}
 	}
 
 	protected void Animation() {
