@@ -80,6 +80,11 @@ public class RaptorInteraction : MonoBehaviour {
 	public static float notoriety = 900000f;//Notoriety should increase by 2000 for killing a guy;
 	public static float notorietyStep = 2000;
 
+	//Pause
+	GameObject pauseMenu;
+	GameObject hudObject;
+	public bool paused = false;
+
 	// Use this for initialization
 	void Start() {
 		ShipDoor.escaping = false;
@@ -87,6 +92,11 @@ public class RaptorInteraction : MonoBehaviour {
 		hud = gameObject.GetComponent<RaptorHUD>();
 		arms = gameObject.GetComponentInChildren<Animator>();
 		health = maxHealth;
+
+		pauseMenu = GameObject.Find("Pause Menu");
+		pauseMenu.SetActive(false);
+
+		hudObject = GameObject.Find("HUD");
 
 		defaultRotation = raptorArms.localRotation;
 	}
@@ -195,72 +205,82 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void Controls() {
-		//TESTING
-		if(Input.GetKey(KeyCode.U)) {
-			print(fpc.grounded);
+		if(Input.GetKeyDown(KeyCode.Escape)) {
+			Time.timeScale = 0;
+			pauseMenu.SetActive(true);
+			hudObject.SetActive(false);
+			toggleRotator(false);
+			paused = true;
+			LockMouse.lockMouse = false;
 		}
 
-		if(Input.GetMouseButton(0)) {
-			Slash();
-		}
-		else if(Input.GetMouseButtonDown(1)) {
-			Pounce();
-		}
-
-		if(Input.GetKeyDown(KeyCode.LeftControl)) {
-			isCrouching = !isCrouching;
-			Crouch(isCrouching);
-		}
-
-		if(Input.GetKey(KeyCode.E)) {
-			RaycastHit hit;
-			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2)) {
-				hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
-				if(hit.transform.tag != "trap") {
-					defusing = false;
-				}
+		if(!paused) {
+			if(Input.GetKey(KeyCode.U)) {
+				print(fpc.grounded);
 			}
-			else {
-				defusing = false;
+
+			if(Input.GetMouseButton(0)) {
+				Slash();
 			}
-			if(hit.transform != null && hit.transform.tag == "enemy") {
-				if(eatTarget != null) {
-					eatTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+			else if(Input.GetMouseButtonDown(1)) {
+				Pounce();
+			}
+
+			if(Input.GetKeyDown(KeyCode.LeftControl)) {
+				isCrouching = !isCrouching;
+				Crouch(isCrouching);
+			}
+
+			if(Input.GetKey(KeyCode.E)) {
+				RaycastHit hit;
+				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2)) {
+					hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+					if(hit.transform.tag != "trap") {
+						defusing = false;
+					}
 				}
 				else {
-					toggleRotator(true);
-					rigidbody.freezeRotation = false;
-					rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-					arms.SetBool("isEating", false);
-					eatSoundPlaying = false;
+					defusing = false;
+				}
+				if(hit.transform != null && hit.transform.tag == "enemy") {
+					if(eatTarget != null) {
+						eatTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+					}
+					else {
+						toggleRotator(true);
+						rigidbody.freezeRotation = false;
+						rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+						arms.SetBool("isEating", false);
+						eatSoundPlaying = false;
+					}
 				}
 			}
-		}
-		//animation stuff
-		else if(Input.GetKeyUp(KeyCode.E)) {
-			//eating stuff
-			eatTarget = null;
-			toggleRotator(true);
-			rigidbody.freezeRotation = false;
-			rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-			arms.SetBool("isEating", false);
-			eatSoundPlaying = false;
+			//animation stuff
+			else if(Input.GetKeyUp(KeyCode.E)) {
+				//eating stuff
+				eatTarget = null;
+				toggleRotator(true);
+				rigidbody.freezeRotation = false;
+				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+				arms.SetBool("isEating", false);
+				eatSoundPlaying = false;
 
-			//defusing mines
-			defusing = false;
-		}
-
-		if(Input.GetKeyUp(KeyCode.F)) {
-			EdgeDetectEffectNormals edge = Camera.main.GetComponent<EdgeDetectEffectNormals>();
-			if(edge != null) {
-				edge.enabled = !edge.enabled;// heatRenderer.enabled;
+				//defusing mines
+				defusing = false;
 			}
-		}
 
-		//Stop climbing
-		if(Input.GetKey(KeyCode.Space) && climbing) {
-			climbing = false;
-			rigidbody.constraints = RigidbodyConstraints.None;
+			if(Input.GetKeyUp(KeyCode.F)) {
+				EdgeDetectEffectNormals edge = Camera.main.GetComponent<EdgeDetectEffectNormals>();
+				if(edge != null) {
+					edge.enabled = !edge.enabled;// heatRenderer.enabled;
+				}
+			}
+
+			//Stop climbing
+			if(Input.GetKey(KeyCode.Space) && climbing) {
+				climbing = false;
+				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+			}
 		}
 	}
 
@@ -342,7 +362,7 @@ public class RaptorInteraction : MonoBehaviour {
 
 	void Pounce() {
 		if(hud.stamina == 1.0f && !isPouncing && (fpc.grounded || climbing)) {
-			rigidbody.constraints = RigidbodyConstraints.None;
+			rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 			climbing = false;
 
 			chainPounce = false;

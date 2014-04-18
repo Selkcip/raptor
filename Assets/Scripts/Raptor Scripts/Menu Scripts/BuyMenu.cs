@@ -17,6 +17,7 @@ public class Upgrade {
 
 		priceLabel = GameObject.Find(label).GetComponent<UILabel>();
 		checkbox = GameObject.Find(box).GetComponent<UIToggle>();
+		checkbox.value = false;
 
 		level = 1;
 		addedToTotal = false;
@@ -114,6 +115,5 @@ public class BuyMenu : MonoBehaviour {
 	}
 
 	void UpdateOrders() {
-
 	}
 }
