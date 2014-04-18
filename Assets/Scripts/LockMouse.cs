@@ -3,7 +3,7 @@ using System.Collections;
 
 public class LockMouse : MonoBehaviour {
 
-	public bool lockMouse = true;
+	public static bool lockMouse = true;
 
 	// Use this for initialization
 	void Start () {
