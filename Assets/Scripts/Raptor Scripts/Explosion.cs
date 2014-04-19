@@ -7,6 +7,9 @@ public class Explosion : Triggerable {
 	public float force = 10;
 	public float forceLifeTime = 0.01f;
 	public float forceFlowRate = 0.9f;
+	public float noise = 20;
+	public float noiseLifeTime = 0.01f;
+	public float noiseFlowRate = 0.9f;
 	public float damage = 10;
 	public float damageLifeTime = 0.0001f;
 	public float damageFlowRate = 0.5f;
@@ -21,6 +24,7 @@ public class Explosion : Triggerable {
 	public void Activate(bool triggered) {
 		if(triggered) {
 			ShipGrid.AddFluidI(transform.position, "pressure", force, forceLifeTime, forceFlowRate);
+			ShipGrid.AddFluidI(transform.position, "noise", noise, noiseLifeTime, noiseFlowRate);
 			ShipGrid.AddFluidI(transform.position, "damage", damage, damageLifeTime, damageFlowRate);
 			if(particleSystem != null) {
 				particleSystem.Play();

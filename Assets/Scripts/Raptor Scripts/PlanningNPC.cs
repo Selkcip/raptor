@@ -638,6 +638,7 @@ public class PlanningNPC : MonoBehaviour {
 		aInspect.name = "inspect";
 		planner.Add(aInspect);
 
+		//Maybe these should do a short path search and choose a cell to move to using the nav mesh
 		aFollowNoise = new PlanAction(
 			new PlanState() {
 				{ "followsNoise", true },
@@ -759,9 +760,9 @@ public class PlanningNPC : MonoBehaviour {
 		if(!dead) {
 			LookForEnemy();
 			CheckGrid();
-
-			Plan();
 		}
+
+		Plan();
 	}
 
 	protected void Move(Vector3 moveDir, Vector3 lookPos) {
@@ -917,7 +918,7 @@ public class PlanningNPC : MonoBehaviour {
 					}
 				}
 				else {
-					print(action.name + " failed: " + action.input.ToString() + " != " + action.input.Extract(this).ToString());
+					//print(action.name + " failed: " + action.input.ToString() + " != " + action.input.Extract(this).ToString());
 					ClearPlan();
 				}
 			}
