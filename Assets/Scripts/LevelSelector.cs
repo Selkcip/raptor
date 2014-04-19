@@ -11,7 +11,7 @@ public class LevelSelector : MonoBehaviour {
 	public GameObject policeShip;
 	public GameObject cargoShip;
 
-    public Vector2 debrisSpawn; // x, y between debris
+    public Vector2 debrisRadius;
     public Vector2 debrisDepth; // min/max depth of debris
     public GameObject debrisObject;
 
@@ -70,90 +70,48 @@ public class LevelSelector : MonoBehaviour {
             Destroy(derb);
         }
 
-        //print(debris.Count);
-        ArrayList newDerbs = new ArrayList(debris);
         // background debris
-        if (newDerbs.Count < 1) {
+        if (debris.Count < 1) {
             // place one near center if none yet
-			float x = Random.value * debrisSpawn.x - debrisSpawn.x / 2; // random x
-        	float y = Random.value * debrisSpawn.y - debrisSpawn.y / 2; // random y
-            float z = -Random.value * (debrisDepth.y - debrisDepth.x) - debrisDepth.x; // random depth
+            Vector2 position = Random.insideUnitCircle.normalized * debrisRadius.x / 4;
+            float z = Random.value * (debrisDepth.y - debrisDepth.x) + debrisDepth.x; // random depth
 
-            GameObject derb = (GameObject)Instantiate(debrisObject, new Vector3(x, y, z), Quaternion.identity);
-			newDerbs.Add(derb);
+            GameObject derb = (GameObject)Instantiate(debrisObject, new Vector3(position.x, position.y, z), Quaternion.identity);
+            debris.Add(derb);
         }
-
+        ArrayList newDerbs = new ArrayList(debris);
 
         //while (newDerbs.Count > 0) {
-            // spawn debris
             ArrayList toBeAdded = new ArrayList();
-			foreach(GameObject derb in newDerbs) {
-                // check if there is a derb above/below/left/right and is within despawnRadius
-                bool above = false, below = false, left = false, right = false;
-                foreach (GameObject oldDerb in debris) {
-                    Rect rect = new Rect(derb.transform.position.x - debrisSpawn.x / 2, derb.transform.position.y + debrisSpawn.y * 2, debrisSpawn.x, debrisSpawn.y); // above
-                    if (rect.Contains(oldDerb.transform.position) && rect.yMin - transform.position.y < despawnRadius)
-                        above = true;
-                    rect = new Rect(derb.transform.position.x - debrisSpawn.x / 2, derb.transform.position.y - debrisSpawn.y, debrisSpawn.x, debrisSpawn.y); // below
-                    if (rect.Contains(oldDerb.transform.position) && transform.position.y - rect.yMax < despawnRadius)
-                        below = true;
-                    rect = new Rect(derb.transform.position.x - debrisSpawn.x * 2, derb.transform.position.y + debrisSpawn.y / 2, debrisSpawn.x, debrisSpawn.y); // left
-                    if (rect.Contains(oldDerb.transform.position) && transform.position.x - rect.xMin < despawnRadius)
-                        left = true;
-                    rect = new Rect(derb.transform.position.x + debrisSpawn.x , derb.transform.position.y + debrisSpawn.y / 2, debrisSpawn.x, debrisSpawn.y); // right
-                    if (rect.Contains(oldDerb.transform.position) && rect.xMax - transform.position.x < despawnRadius)
-                        right = true;
+            foreach (GameObject derb in newDerbs) {
+                Vector2 position = (Vector2)derb.transform.position + Random.insideUnitCircle.normalized * (debrisRadius.x + (debrisRadius.x - debrisRadius.y) * Random.value);
+                bool add = true;
+                if (((Vector2)transform.position - position).magnitude > despawnRadius) { 
+                    add = false;
+                    continue;
                 }
-
-                // if empty place a new one, add it to new derb list
-                if (!above) { // above
-                    float x = derb.transform.position.x + Random.value * debrisSpawn.x - debrisSpawn.x / 2; // random x
-                    float y = derb.transform.position.y + Random.value * debrisSpawn.y + debrisSpawn.y; // random y
-                    float z = -Random.value * (debrisDepth.y - debrisDepth.x) - debrisDepth.x; // random depth
-                    GameObject newDerb = (GameObject)Instantiate(debrisObject, new Vector3(x, y, z), Quaternion.identity);
+                foreach (GameObject oldDerb in debris)
+                    if (((Vector2)oldDerb.transform.position - position).magnitude < debrisRadius.x) { 
+                        add = false;
+                        break;
+                    }
+                foreach (GameObject oldDerb in toBeAdded)
+                    if (((Vector2)oldDerb.transform.position - position).magnitude < debrisRadius.x) { 
+                        add = false;
+                        break;
+                    }
+                if (add) {
+                    float z = Random.value * (debrisDepth.y - debrisDepth.x) + debrisDepth.x; // random depth
+                    GameObject newDerb = (GameObject)Instantiate(debrisObject, new Vector3(position.x, position.y, z), Quaternion.identity);
                     toBeAdded.Add(newDerb);
-                    print("above");
-                }
-                if (!below) { 
-                    // below
-                    float x = derb.transform.position.x + Random.value * debrisSpawn.x - debrisSpawn.x / 2; // random x
-                    float y = derb.transform.position.y - Random.value * debrisSpawn.y - debrisSpawn.y; // random y
-                    float z = -Random.value * (debrisDepth.y - debrisDepth.x) - debrisDepth.x; // random depth
-                    GameObject newDerb = (GameObject)Instantiate(debrisObject, new Vector3(x, y, z), Quaternion.identity);
-                    toBeAdded.Add(newDerb);
-                    print("below");
-                }
-                if (!left) {                    
-                    // left
-                    float x = derb.transform.position.x - Random.value * debrisSpawn.x - debrisSpawn.x; // random x
-                    float y = derb.transform.position.y + Random.value * debrisSpawn.y - debrisSpawn.y / 2; // random y
-                    float z = -Random.value * (debrisDepth.y - debrisDepth.x) - debrisDepth.x; // random depth
-                    GameObject newDerb = (GameObject)Instantiate(debrisObject, new Vector3(x, y, z), Quaternion.identity);
-                    toBeAdded.Add(newDerb);
-                    print("left");
-                }
-                if (!right) {
-                    // right
-                    float x = derb.transform.position.x + Random.value * debrisSpawn.x + debrisSpawn.x; // random x
-                    float y = derb.transform.position.y + Random.value * debrisSpawn.y - debrisSpawn.y / 2; // random y
-                    float z = -Random.value * (debrisDepth.y - debrisDepth.x) - debrisDepth.x; // random depth
-                    GameObject newDerb = (GameObject)Instantiate(debrisObject, new Vector3(x, y, z), Quaternion.identity);
-                    toBeAdded.Add(newDerb);
-                    print("right");
                 }
             }
-            // place checked in actual
-            foreach (GameObject derb in newDerbs)
-            {
+            newDerbs.Clear();
+            print(newDerbs.Count);
+            foreach (GameObject derb in toBeAdded) {
+                newDerbs.Add(derb);
                 debris.Add(derb);
             }
-            // remove checked derbs from new derb list
-            newDerbs.Clear();
-
-            print("Added: " + toBeAdded.Count);
-            // add the new derbs
-            foreach (GameObject derb in toBeAdded)
-                newDerbs.Add(derb);
         //}
 	}
 }
