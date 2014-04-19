@@ -63,6 +63,7 @@ public class RaptorInteraction : MonoBehaviour {
 	public bool isSlashing = false;
 	public bool isCrouching = false;
 	public float lightLevel = 0;
+	public float maxLightLevel = 10;
 
 	//sound stuff
 	bool eatSoundPlaying = false;
@@ -120,6 +121,12 @@ public class RaptorInteraction : MonoBehaviour {
 			HUD();
 			MakeNoise();
 			CheckGrid();
+
+			EdgeDetectEffectNormals edge = Camera.main.GetComponent<EdgeDetectEffectNormals>();
+			if(edge != null) {
+				edge.enabled = true;// heatRenderer.enabled;
+				edge.edgesOnly = Mathf.Lerp(edge.edgesOnly, Mathf.Max(0, Mathf.Min(1, 1 - lightLevel / maxLightLevel)), 0.1f);
+			}
 
 			//prevents the player from getting stuck when pouncing next to a wall
 			if(hud.stamina <= 0f) {
@@ -207,6 +214,7 @@ public class RaptorInteraction : MonoBehaviour {
 		cell.fluids.TryGetValue("light", out cellLight);
 		float newLight = cellLight != null ? cellLight.level : 0;
 		lightLevel += (newLight - lightLevel) * 0.1f;
+		lightLevel = Mathf.Lerp(lightLevel, newLight, 0.75f);
 
 		ShipGridFluid damage;
 		cell.fluids.TryGetValue("damage", out damage);

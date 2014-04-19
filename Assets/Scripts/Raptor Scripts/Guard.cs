@@ -41,31 +41,6 @@ public class Guard : PlanningNPC {
 	public override void InitActions() {
 		base.InitActions();
 
-		aFindPlayer = new PlanAction(
-			new PlanState() {
-				{ "enemySeen", true },
-				{ "enemyVisible", false },
-				{ "running", true },
-				{ "knockedOut", false },
-				{ "dead", false }
-			},
-			new PlanState() {
-				{ "playerVisible", true }
-			},
-			delegate() {
-				Vector3 moveDir = enemyPos-transform.position;
-				if(moveDir.magnitude > targetChangeTolerance) {
-					Move(moveDir, enemyPos);
-				}
-				else {
-					enemySeen = false;
-				}
-
-				return false;
-			});
-		aFindPlayer.name = "find player";
-		//planner.Add(aFindPlayer);
-
 		aChasePlayer = new PlanAction(
 			new PlanState() {
 				{ "enemySeen", true },
@@ -90,7 +65,7 @@ public class Guard : PlanningNPC {
 
 				//print(agent.remainingDistance);
 
-				if(agent.remainingDistance <= targetChangeTolerance) {
+				if(agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
 					enemySeen = false;
 				}
 
@@ -205,9 +180,10 @@ public class Guard : PlanningNPC {
 			new PlanState() {
 				{ "enemySeen", false },
 				{ "enemyVisible", false },
-				//{ "curious", false },
-				//{ "alarmed", false },
+				{ "curious", false },
+				{ "alarmed", false },
 				{ "canInspect", false },
+				{ "alertShip", false },
 				{ "running", false },
 				{ "knockedOut", false },
 				{ "dead", false }
@@ -226,7 +202,7 @@ public class Guard : PlanningNPC {
 				NavMeshHit hit;
 				agent.Raycast(transform.position+transform.forward, out hit);
 
-				if(hit.hit || patrolTimer >= patrolTime || agent.remainingDistance <= targetChangeTolerance) {
+				if(hit.hit || patrolTimer >= patrolTime || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
 					patrolPos = transform.position + transform.forward * 10;
 					patrolTimer = 0;
 				}

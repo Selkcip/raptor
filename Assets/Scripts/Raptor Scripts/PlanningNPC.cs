@@ -222,7 +222,7 @@ public class PlanningNPC : MonoBehaviour {
 			1);
 		goals.Add(gInspect);
 
-		/*gFollowNoise = new PlanGoal(
+		gFollowNoise = new PlanGoal(
 			"follow noise",
 			new PlanState() {
 				{"curious", true}
@@ -243,7 +243,7 @@ public class PlanningNPC : MonoBehaviour {
 				{"running", true}
 			},
 			1);
-		goals.Add(gChaseNoise);*/
+		goals.Add(gChaseNoise);
 	}
 
 	//Actions
@@ -273,6 +273,9 @@ public class PlanningNPC : MonoBehaviour {
 					weapon = null;
 					carryingObject = false;
 				}
+
+				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/dying"), SoundManager.SoundType.Dialogue, gameObject);
+
 				return false;
 			});
 		aPassOut.name = "pass out";
@@ -318,6 +321,7 @@ public class PlanningNPC : MonoBehaviour {
 					animator.SetBool("GetUpFromBack", false);
 					knockedOut = false;
 				}
+				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/iguessipassedout"), SoundManager.SoundType.Dialogue, gameObject);
 				return false;
 			});
 		aWakeUp.name = "wake up";
@@ -570,6 +574,10 @@ public class PlanningNPC : MonoBehaviour {
 			delegate() {
 				target = mostInteresting.transform;
 
+				if(mostInteresting.GetComponent<PlanningNPC>() != null) {
+					alertShip = true;
+				}
+
 				return false;
 			});
 		aFindInteresting.name = "find interesting";
@@ -650,7 +658,7 @@ public class PlanningNPC : MonoBehaviour {
 				return false;
 			});
 		aFollowNoise.name = "follow noise";
-		//planner.Add(aFollowNoise);
+		planner.Add(aFollowNoise);
 
 		aChaseNoise = new PlanAction(
 			new PlanState() {
@@ -672,7 +680,7 @@ public class PlanningNPC : MonoBehaviour {
 				return false;
 			});
 		aChaseNoise.name = "chase noise";
-		//planner.Add(aChaseNoise);
+		planner.Add(aChaseNoise);
 
 		aEnableLight = new PlanAction(
 			new PlanState() {
@@ -909,7 +917,7 @@ public class PlanningNPC : MonoBehaviour {
 					}
 				}
 				else {
-					//print(action.name + " failed: " + action.input.ToString() + " != " + action.input.Extract(this).ToString());
+					print(action.name + " failed: " + action.input.ToString() + " != " + action.input.Extract(this).ToString());
 					ClearPlan();
 				}
 			}
