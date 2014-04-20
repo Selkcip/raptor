@@ -538,7 +538,7 @@ public class PlanningNPC : MonoBehaviour {
 		aFlee = new PlanAction(
 			new PlanState() {
 				{ "healthLow", true },
-				{ "enemyVisible", true },
+				{ "enemySeen", true },
 				{ "running", true },
 				{ "knockedOut", false },
 				{ "sleeping", false }
@@ -547,11 +547,12 @@ public class PlanningNPC : MonoBehaviour {
 				{ "enemyVisible", false }
 			},
 			delegate() {
-				targetPos = transform.position + (transform.position - player.transform.position) * 100;
+				targetPos = transform.position + (transform.position - player.transform.position);
 				agent.SetDestination(targetPos);
 
 				// update the agents posiiton 
 				agent.transform.position = transform.position;
+				//print(agent.desiredVelocity);
 
 				// use the values to move the character
 				Move(agent.desiredVelocity, targetPos);

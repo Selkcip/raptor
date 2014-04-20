@@ -3,18 +3,20 @@ using System.Collections;
 using Holoville.HOTween;
 
 public class RaptorDoor : Triggerable {
+	public float closeAfter = 5;
+	private float openTime = 0;
+	public int keyCardsToUnlock = 1;
+	public float notorietyToLock = 10000;
+	public bool guardsCanUnlock = true;
+	public bool openOnTrigger = true;
+	public bool openOnTriggerable = true;
+
 	public Vector3 leftOpenDir = new Vector3(-1.5f, 0, 0);
 	public Vector3 rightOpenDir = new Vector3(1.5f, 0, 0);
 	[SerializeField]
 	private Transform LeftDoor;
 	[SerializeField]
 	private Transform RightDoor;
-	public float closeAfter = 5;
-	private float openTime = 0;
-	public int keyCardsToUnlock = 1;
-	public bool guardsCanUnlock = true;
-	public bool openOnTrigger = true;
-	public bool openOnTriggerable = true;
 
 	public bool isOpen = false;
 	public bool isLocked = false;
@@ -40,7 +42,11 @@ public class RaptorDoor : Triggerable {
 			}
 		}
 
-		if(Input.GetKeyDown(KeyCode.L)) {
+		if(RaptorInteraction.notoriety >= notorietyToLock) {
+			LockDoor(true);
+		}
+
+		/*if(Input.GetKeyDown(KeyCode.L)) {
 			OpenDoor();
 		}
 
@@ -50,7 +56,7 @@ public class RaptorDoor : Triggerable {
 		else if(Input.GetKeyDown(KeyCode.J)) {
 			LockDoor(!isLocked);
 			print(isLocked);
-		}
+		}*/
 	}
 
 	void OnTriggerStay(Collider other) {

@@ -60,11 +60,11 @@ GameObject:
   m_Component:
   - 4: {fileID: 400006}
   - 114: {fileID: 11400000}
-  - 65: {fileID: 6500000}
+  - 136: {fileID: 13600000}
   m_Layer: 0
   m_Name: Proximity Mine
   m_TagString: trap
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: -1003283189, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -103,7 +103,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: -.353553295, y: .612372577, z: .612372398, w: .353553295}
-  m_LocalPosition: {x: 0, y: .00468061119, z: -2.04595965e-10}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.04720795, y: 1.04720795, z: 1.04720783}
   m_Children: []
   m_Father: {fileID: 400006}
@@ -114,7 +114,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
   m_LocalRotation: {x: -.707106888, y: 0, z: -0, w: .707106769}
-  m_LocalPosition: {x: 0, y: .00468061119, z: -2.04595965e-10}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.04720783, y: 1.04720783, z: 1.04720783}
   m_Children: []
   m_Father: {fileID: 400006}
@@ -125,7 +125,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 18.3978138, y: .0183193721, z: -25.171339}
+  m_LocalPosition: {x: 0, y: 0, z: -10.75}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400000}
@@ -140,7 +140,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100008}
   m_LocalRotation: {x: .353553444, y: .612372458, z: .612372339, w: -.353553444}
-  m_LocalPosition: {x: 0, y: .00468061119, z: -2.04595965e-10}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.04720783, y: 1.04720795, z: 1.04720783}
   m_Children: []
   m_Father: {fileID: 400006}
@@ -256,18 +256,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100008}
   m_Mesh: {fileID: 4300002, guid: d19e302694ef2ab4f87b2556f34cce13, type: 3}
---- !u!65 &6500000
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100006}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: .401593983, y: .109190822, z: .402004659}
-  m_Center: {x: .0120277405, y: .0406511426, z: -.0245895386}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -283,6 +271,21 @@ MonoBehaviour:
   playerDamage: 50
   hacked: 0
   activated: 1
+  notorietyToSpawn: 10000
+  explosionPrefab: {fileID: 11400000, guid: 49c0090d6c2c4b74fac120fec2ac4058, type: 2}
+--- !u!136 &13600000
+CapsuleCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100006}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: .230000004
+  m_Height: .100000001
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

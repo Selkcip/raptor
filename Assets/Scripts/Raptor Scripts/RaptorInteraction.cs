@@ -83,7 +83,7 @@ public class RaptorInteraction : MonoBehaviour {
 	//Collection data
 	public static float mapAmountAcquired = 0;
 	public static int money = 100000;
-	public static float notoriety = 900000f;//Notoriety should increase by 2000 for killing a guy;
+	public static float notoriety = 0f;//Notoriety should increase by 2000 for killing a guy;
 	public static float notorietyStep = 2000;
 	public static int keyCount = 0;
 
@@ -301,13 +301,6 @@ public class RaptorInteraction : MonoBehaviour {
 
 				//defusing mines
 				defusing = false;
-			}
-
-			if(Input.GetKeyUp(KeyCode.F)) {
-				EdgeDetectEffectNormals edge = Camera.main.GetComponent<EdgeDetectEffectNormals>();
-				if(edge != null) {
-					edge.enabled = !edge.enabled;// heatRenderer.enabled;
-				}
 			}
 		
 			//Stop climbing

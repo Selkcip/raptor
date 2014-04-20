@@ -77,9 +77,12 @@ MonoBehaviour:
   force: 100
   forceLifeTime: 1.00000001e-07
   forceFlowRate: .899999976
-  damage: 10
-  damageLifeTime: 9.99999994e-09
-  damageFlowRate: .899999976
+  noise: 20
+  noiseLifeTime: .00999999978
+  noiseFlowRate: .899999976
+  damage: 0
+  damageLifeTime: 0
+  damageFlowRate: 0
   explodeOnStart: 0
 --- !u!198 &19800000
 ParticleSystem:

@@ -30,7 +30,7 @@ GameObject:
   m_Layer: 0
   m_Name: Tripwire
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: -1003283189, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -78,7 +78,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: -4.37113883e-08}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -1.1920929e-07, y: 0, z: 1.00000012}
   m_LocalScale: {x: .366955012, y: .366955012, z: .0624100007}
   m_Children: []
   m_Father: {fileID: 400002}
@@ -88,8 +88,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 25.0676689, y: .543012857, z: -31.0640621}
+  m_LocalRotation: {x: 0, y: .707106829, z: 0, w: .707106829}
+  m_LocalPosition: {x: 0, y: 1, z: -14}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400006}
@@ -103,7 +103,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
   m_LocalRotation: {x: .5, y: -.5, z: .5, w: -.5}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -1.1920929e-07, y: 0, z: 1.00000012}
   m_LocalScale: {x: -.0182700008, y: -.0182700008, z: -.0182700008}
   m_Children: []
   m_Father: {fileID: 400002}
@@ -114,7 +114,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -.940313339}
+  m_LocalPosition: {x: 1.1920929e-07, y: 0, z: -1.00000012}
   m_LocalScale: {x: .366955161, y: .366955161, z: .0624104664}
   m_Children: []
   m_Father: {fileID: 400002}
@@ -248,12 +248,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4995d9943047b4b449a43102bf377c89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  activateOnStateChange: 0
   isTriggered: 0
   or: 0
   triggerList: []
   playerDamage: 50
   hacked: 0
   explosive: 1
+  notorietyToSpawn: 10000
   emitter1: {fileID: 400006}
   emitter2: {fileID: 400000}
   laser: {fileID: 400004}

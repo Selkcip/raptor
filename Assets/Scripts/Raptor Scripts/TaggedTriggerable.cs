@@ -33,7 +33,7 @@ public class TaggedTriggerable : Triggerable {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if(tags.Contains(other.tag) || tags.Contains(other.transform.parent.tag)) {
+		if(tags.Count <= 0 || tags.Contains(other.tag) || (other.transform.parent != null && tags.Contains(other.transform.parent.tag))) {
 			isTriggered = true;
 		}
 	}

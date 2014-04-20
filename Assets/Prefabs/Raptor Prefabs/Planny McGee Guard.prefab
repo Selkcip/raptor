@@ -543,22 +543,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &100068
-GameObject:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 400068}
-  - 137: {fileID: 13700002}
-  m_Layer: 0
-  m_Name: Cube_002
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &100070
 GameObject:
   m_ObjectHideFlags: 1
@@ -979,22 +963,6 @@ GameObject:
   - 4: {fileID: 400122}
   m_Layer: 0
   m_Name: f_middle_01_L
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &100124
-GameObject:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 400124}
-  - 137: {fileID: 13700008}
-  m_Layer: 0
-  m_Name: Cube_001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1506,7 +1474,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100014}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 8.04050446, z: -64.1430588}
+  m_LocalPosition: {x: 24.2099781, y: 0, z: -19.4943657}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400084}
@@ -1820,17 +1788,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400134}
---- !u!4 &400068
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100068}
-  m_LocalRotation: {x: 0, y: -0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 400084}
 --- !u!4 &400070
 Transform:
   m_ObjectHideFlags: 1
@@ -1926,8 +1883,6 @@ Transform:
   - {fileID: 400082}
   - {fileID: 400048}
   - {fileID: 400102}
-  - {fileID: 400124}
-  - {fileID: 400068}
   - {fileID: 400128}
   m_Father: {fileID: 400014}
 --- !u!4 &400086
@@ -2160,17 +2115,6 @@ Transform:
   m_Children:
   - {fileID: 400020}
   m_Father: {fileID: 400138}
---- !u!4 &400124
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100124}
-  m_LocalRotation: {x: 0, y: -0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.49011612e-08, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 400084}
 --- !u!4 &400126
 Transform:
   m_ObjectHideFlags: 1
@@ -3333,7 +3277,7 @@ MonoBehaviour:
   hasTarget: 0
   atTarget: 0
   standing: 0
-  running: 1
+  running: 0
   carryingObject: 0
   hasUseTarget: 0
   usingObject: 0
@@ -3926,7 +3870,7 @@ SkinnedMeshRenderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: 4f9ac049fbae49d4a89eeb25cd23395f, type: 2}
+  - {fileID: 2100000, guid: c6dda9e03da4aae4a94b8a452d8988cf, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -4004,97 +3948,6 @@ SkinnedMeshRenderer:
   m_AABB:
     m_Center: {x: -.810201943, y: 2.16066837e-07, z: -.103623688}
     m_Extent: {x: .18963486, y: .102500074, z: .174880177}
-  m_DirtyAABB: 0
---- !u!137 &13700002
-SkinnedMeshRenderer:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100068}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_LightmapIndex: 255
-  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
-  m_Materials:
-  - {fileID: 2100000, guid: bd7bf1efcaffb3d40973078aad823af4, type: 2}
-  m_SubsetIndices: 
-  m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 0
-  m_LightProbeAnchor: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_SortingLayerID: 0
-  serializedVersion: 2
-  m_Quality: 0
-  m_UpdateWhenOffscreen: 0
-  m_Mesh: {fileID: 4300006, guid: 6b761c39009bbc24d87080a4b8542934, type: 3}
-  m_Bones:
-  - {fileID: 400056}
-  - {fileID: 400040}
-  - {fileID: 400042}
-  - {fileID: 400086}
-  - {fileID: 400080}
-  - {fileID: 400118}
-  - {fileID: 400050}
-  - {fileID: 400034}
-  - {fileID: 400010}
-  - {fileID: 400114}
-  - {fileID: 400092}
-  - {fileID: 400090}
-  - {fileID: 400062}
-  - {fileID: 400008}
-  - {fileID: 400024}
-  - {fileID: 400060}
-  - {fileID: 400138}
-  - {fileID: 400122}
-  - {fileID: 400020}
-  - {fileID: 400018}
-  - {fileID: 400016}
-  - {fileID: 400004}
-  - {fileID: 400030}
-  - {fileID: 400000}
-  - {fileID: 400098}
-  - {fileID: 400036}
-  - {fileID: 400108}
-  - {fileID: 400002}
-  - {fileID: 400094}
-  - {fileID: 400126}
-  - {fileID: 400074}
-  - {fileID: 400130}
-  - {fileID: 400136}
-  - {fileID: 400150}
-  - {fileID: 400026}
-  - {fileID: 400006}
-  - {fileID: 400022}
-  - {fileID: 400140}
-  - {fileID: 400120}
-  - {fileID: 400076}
-  - {fileID: 400104}
-  - {fileID: 400028}
-  - {fileID: 400144}
-  - {fileID: 400100}
-  - {fileID: 400096}
-  - {fileID: 400046}
-  - {fileID: 400032}
-  - {fileID: 400088}
-  - {fileID: 400052}
-  - {fileID: 400112}
-  - {fileID: 400148}
-  - {fileID: 400064}
-  - {fileID: 400070}
-  - {fileID: 400072}
-  - {fileID: 400012}
-  - {fileID: 400044}
-  - {fileID: 400078}
-  - {fileID: 400116}
-  - {fileID: 400146}
-  m_BlendShapeWeights: []
-  m_RootBone: {fileID: 400056}
-  m_AABB:
-    m_Center: {x: -.834146619, y: 2.60770321e-07, z: -.137712598}
-    m_Extent: {x: .179365963, y: .194397748, z: .189868599}
   m_DirtyAABB: 0
 --- !u!137 &13700004
 SkinnedMeshRenderer:
@@ -4281,97 +4134,6 @@ SkinnedMeshRenderer:
     m_Center: {x: -.806897163, y: 2.08616257e-07, z: -.103389427}
     m_Extent: {x: .203743339, y: .109297089, z: .182437375}
   m_DirtyAABB: 0
---- !u!137 &13700008
-SkinnedMeshRenderer:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100124}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_LightmapIndex: 255
-  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
-  m_Materials:
-  - {fileID: 2100000, guid: bd7bf1efcaffb3d40973078aad823af4, type: 2}
-  m_SubsetIndices: 
-  m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 0
-  m_LightProbeAnchor: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_SortingLayerID: 0
-  serializedVersion: 2
-  m_Quality: 0
-  m_UpdateWhenOffscreen: 0
-  m_Mesh: {fileID: 4300000, guid: 6b761c39009bbc24d87080a4b8542934, type: 3}
-  m_Bones:
-  - {fileID: 400056}
-  - {fileID: 400040}
-  - {fileID: 400042}
-  - {fileID: 400086}
-  - {fileID: 400080}
-  - {fileID: 400118}
-  - {fileID: 400050}
-  - {fileID: 400034}
-  - {fileID: 400010}
-  - {fileID: 400114}
-  - {fileID: 400092}
-  - {fileID: 400090}
-  - {fileID: 400062}
-  - {fileID: 400008}
-  - {fileID: 400024}
-  - {fileID: 400060}
-  - {fileID: 400138}
-  - {fileID: 400122}
-  - {fileID: 400020}
-  - {fileID: 400018}
-  - {fileID: 400016}
-  - {fileID: 400004}
-  - {fileID: 400030}
-  - {fileID: 400000}
-  - {fileID: 400098}
-  - {fileID: 400036}
-  - {fileID: 400108}
-  - {fileID: 400002}
-  - {fileID: 400094}
-  - {fileID: 400126}
-  - {fileID: 400074}
-  - {fileID: 400130}
-  - {fileID: 400136}
-  - {fileID: 400150}
-  - {fileID: 400026}
-  - {fileID: 400006}
-  - {fileID: 400022}
-  - {fileID: 400140}
-  - {fileID: 400120}
-  - {fileID: 400076}
-  - {fileID: 400104}
-  - {fileID: 400028}
-  - {fileID: 400144}
-  - {fileID: 400100}
-  - {fileID: 400096}
-  - {fileID: 400046}
-  - {fileID: 400032}
-  - {fileID: 400088}
-  - {fileID: 400052}
-  - {fileID: 400112}
-  - {fileID: 400148}
-  - {fileID: 400064}
-  - {fileID: 400070}
-  - {fileID: 400072}
-  - {fileID: 400012}
-  - {fileID: 400044}
-  - {fileID: 400078}
-  - {fileID: 400116}
-  - {fileID: 400146}
-  m_BlendShapeWeights: []
-  m_RootBone: {fileID: 400056}
-  m_AABB:
-    m_Center: {x: -.093406707, y: 2.38418579e-07, z: -.0710505545}
-    m_Extent: {x: .668838263, y: .675770998, z: .367820352}
-  m_DirtyAABB: 0
 --- !u!144 &14400000
 CharacterJoint:
   m_ObjectHideFlags: 1
@@ -4382,7 +4144,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 0, y: 0, z: -1}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.32494244, y: -5.43604926e-07, z: -2.59458579e-06}
+  m_ConnectedAnchor: {x: -.324941218, y: 1.99064502e-07, z: -1.16714227e-06}
   m_SwingAxis: {x: 1, y: 0, z: 0}
   m_LowTwistLimit:
     limit: -90
@@ -4416,7 +4178,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: -1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.335947156, y: 8.82987621e-08, z: -.0173538458}
+  m_ConnectedAnchor: {x: -.335945874, y: 5.26913269e-09, z: -.0173574705}
   m_SwingAxis: {x: 0, y: 0, z: -1}
   m_LowTwistLimit:
     limit: -20
@@ -4450,7 +4212,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.0375498384, y: .0980000347, z: .040844094}
+  m_ConnectedAnchor: {x: -.0375496075, y: .0979995579, z: .0408441462}
   m_SwingAxis: {x: 0, y: 0, z: 1}
   m_LowTwistLimit:
     limit: -20
@@ -4484,7 +4246,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.243567988, y: -.2394609, z: -.0178504698}
+  m_ConnectedAnchor: {x: -.243568048, y: -.239460006, z: -.0178485606}
   m_SwingAxis: {x: 0, y: 0, z: -1}
   m_LowTwistLimit:
     limit: -70
@@ -4518,7 +4280,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.0375497974, y: -.0980000198, z: .0408439524}
+  m_ConnectedAnchor: {x: -.0375495665, y: -.0979996175, z: .0408440046}
   m_SwingAxis: {x: 0, y: 0, z: 1}
   m_LowTwistLimit:
     limit: -20
@@ -4552,7 +4314,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.521896422, y: -4.50294273e-08, z: -4.8782266e-07}
+  m_ConnectedAnchor: {x: -.521896124, y: 5.05182754e-07, z: -4.47991795e-07}
   m_SwingAxis: {x: 0, y: 0, z: 1}
   m_LowTwistLimit:
     limit: -80
@@ -4586,7 +4348,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 0, y: 0, z: -1}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.32494238, y: -2.8863326e-08, z: -1.85684007e-06}
+  m_ConnectedAnchor: {x: -.324941158, y: -4.73156433e-07, z: -3.91728264e-07}
   m_SwingAxis: {x: -1, y: 0, z: 0}
   m_LowTwistLimit:
     limit: -90
@@ -4620,7 +4382,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.521896362, y: -6.21774419e-08, z: -1.21535106e-06}
+  m_ConnectedAnchor: {x: -.521896183, y: -4.89612376e-07, z: 7.17463934e-07}
   m_SwingAxis: {x: 0, y: 0, z: 1}
   m_LowTwistLimit:
     limit: -80
@@ -4654,7 +4416,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: -1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.438363492, y: 1.73801865e-07, z: .0403523743}
+  m_ConnectedAnchor: {x: -.438363135, y: 1.68642238e-08, z: .0403561741}
   m_SwingAxis: {x: 0, y: 0, z: -1}
   m_LowTwistLimit:
     limit: -40
@@ -4688,7 +4450,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: -1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -.243567988, y: .239461154, z: -.0178501029}
+  m_ConnectedAnchor: {x: -.243567958, y: .239461958, z: -.0178481918}
   m_SwingAxis: {x: 0, y: 0, z: -1}
   m_LowTwistLimit:
     limit: -70

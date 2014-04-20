@@ -9,27 +9,36 @@ public class Mine : MonoBehaviour {
 	public bool hacked = false;
 	public bool activated = true;
 
+	public float notorietyToSpawn = 10000;
+
+	public Explosion explosionPrefab;
+
 	private Transform center;
 
 	// Use this for initialization
 	void Start () {
+		if(RaptorInteraction.notoriety < notorietyToSpawn) Destroy(gameObject);
+
 		center = transform.FindChild("center");
 	}
 
-	void OnTriggerEnter(Collider other) {
-		if(!hacked && other.tag == "Player") {
-			Explosion(other.transform, playerDamage);
+	void OnCollisionEnter(Collision col) {
+		if(!hacked && col.transform.tag == "Player") {
+			Explosion(col.transform, playerDamage);
 		}
-		else if(hacked && other.tag == "enemy" && activated) {
-			Explosion(other.transform, damage);
+		else if(hacked && col.transform.tag == "enemy" && activated) {
+			Explosion(col.transform, damage);
 		}
 	}
 
 	void Explosion(Transform other, float damageValue) {
 		other.transform.SendMessageUpwards("Hurt", new Damage(damageValue, transform.position), SendMessageOptions.DontRequireReceiver);
-		ShipGrid.AddFluidI(transform.position, "pressure", 200f, 1f, 0.01f);
+		//ShipGrid.AddFluidI(transform.position, "pressure", 50f, 0.00001f, 0.9f);
+
+		Explosion exp = (Explosion)Instantiate(explosionPrefab, transform.position, transform.rotation);
+		exp.explodeOnStart = true;
+
 		Destroy(gameObject);
-		//add sound and explosion effect
 	}
 
 	public void Use() {
