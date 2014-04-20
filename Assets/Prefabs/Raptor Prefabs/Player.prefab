@@ -172,7 +172,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: -4.37113883e-08}
-  m_LocalPosition: {x: 0, y: 2, z: -33}
+  m_LocalPosition: {x: 0, y: 1, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400000}
@@ -393,6 +393,7 @@ MonoBehaviour:
   noiseIndicator: {fileID: 2800000, guid: 3c052bc48c620a646a1df18bca5e388c, type: 3}
   painIndicator: {fileID: 11400000, guid: f400208c1502ccb43b2de1a1bdfcb74e, type: 2}
   eatTarget: {fileID: 0}
+  raptorArms: {fileID: 400010}
   noiseLifeTime: .00999999978
   noiseFlowRate: .899999976
   walkNoiseLevel: 10
@@ -405,7 +406,14 @@ MonoBehaviour:
   knockOutTime: 10
   bloodSpurt: {fileID: 19800000}
   health: 0
+  isMoving: 0
+  isRunning: 0
+  isSlashing: 0
+  isCrouching: 0
+  lightLevel: 0
+  maxLightLevel: 10
   inventory: {fileID: 400014}
+  paused: 0
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -624,7 +632,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7fb8f2025ce7d74f9d7d35809f23313, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockMouse: 1
 --- !u!114 &11400022
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -701,7 +708,7 @@ MonoBehaviour:
   edgeExp: 1
   sampleDist: 1
   edgesOnly: 1
-  edgesOnlyBgColor: {r: 0, g: 1, b: .140625, a: 1}
+  edgesOnlyBgColor: {r: 1, g: 0, b: 0, a: 1}
   edgeDetectShader: {fileID: 4800000, guid: 0d1644bdf064147baa97f235fc5b4903, type: 3}
 --- !u!114 &11400032
 MonoBehaviour:
@@ -760,7 +767,7 @@ MonoBehaviour:
   hdr: 0
   sepBlurSpread: 2.5
   quality: 1
-  bloomIntensity: .0500000007
+  bloomIntensity: .5
   bloomThreshhold: .5
   bloomThreshholdColor: {r: 1, g: 1, b: 1, a: 1}
   bloomBlurIterations: 2

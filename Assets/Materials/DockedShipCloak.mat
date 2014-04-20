@@ -45,16 +45,16 @@ Material:
         second: 1
       data:
         first:
-          name: _BumpAmt
-        second: 128
-      data:
-        first:
           name: _GlowStrength
         second: 0
       data:
         first:
-          name: _CloakAmt
+          name: _BumpAmt
         second: 128
+      data:
+        first:
+          name: _CloakAmt
+        second: 0
     m_Colors:
       data:
         first:
@@ -66,9 +66,9 @@ Material:
         second: {r: 1, g: 1, b: 1, a: 1}
       data:
         first:
-          name: _ColorTint
+          name: _GlowColor
         second: {r: 1, g: 1, b: 1, a: 1}
       data:
         first:
-          name: _GlowColor
+          name: _ColorTint
         second: {r: 1, g: 1, b: 1, a: 1}
