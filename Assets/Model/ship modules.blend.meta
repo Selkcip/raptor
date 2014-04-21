@@ -1,0 +1,122 @@
+fileFormatVersion: 2
+guid: 19ab4b53794095d4e83cb6467154fba1
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: __Floor
+    100002: Corner
+    100004: Corner_Floor
+    100006: Floor
+    100008: //RootNode
+    100010: T_Floor
+    100012: Wall
+    100014: Ceiling_Slant
+    100016: Doorway
+    100018: Floor_Slant
+    100020: Vent_Entrance
+    100022: Wall_Slant
+    100024: Wall_Slant_2
+    400000: __Floor
+    400002: Corner
+    400004: Corner_Floor
+    400006: Floor
+    400008: //RootNode
+    400010: T_Floor
+    400012: Wall
+    400014: Ceiling_Slant
+    400016: Doorway
+    400018: Floor_Slant
+    400020: Vent_Entrance
+    400022: Wall_Slant
+    400024: Wall_Slant_2
+    2300000: __Floor
+    2300002: Corner
+    2300004: Corner_Floor
+    2300006: Floor
+    2300008: T_Floor
+    2300010: Wall
+    2300012: Ceiling_Slant
+    2300014: Doorway
+    2300016: Floor_Slant
+    2300018: Vent_Entrance
+    2300020: Wall_Slant
+    2300022: Wall_Slant_2
+    3300000: __Floor
+    3300002: Corner
+    3300004: Corner_Floor
+    3300006: Floor
+    3300008: T_Floor
+    3300010: Wall
+    3300012: Ceiling_Slant
+    3300014: Doorway
+    3300016: Floor_Slant
+    3300018: Vent_Entrance
+    3300020: Wall_Slant
+    3300022: Wall_Slant_2
+    4300000: __Floor
+    4300002: T_Floor
+    4300004: Corner_Floor
+    4300006: Corner
+    4300008: Wall
+    4300010: Floor
+    4300012: Ceiling_Slant
+    4300014: Wall_Slant_2
+    4300016: Wall_Slant
+    4300018: Floor_Slant
+    4300020: Vent_Entrance
+    4300022: Doorway
+    7400000: Default Take
+    9500000: //RootNode
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

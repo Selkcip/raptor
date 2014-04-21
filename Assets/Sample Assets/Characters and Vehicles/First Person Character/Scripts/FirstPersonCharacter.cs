@@ -20,7 +20,7 @@ public class FirstPersonCharacter : MonoBehaviour
     }
 
     private CapsuleCollider capsule;                                                    // The capsule collider for the first person character
-    private const float jumpRayLength = 1.2f; //0.7f                                          // The length of the ray used for testing against the ground when jumping
+    public float jumpRayLength = 1.0f; //0.7f                                          // The length of the ray used for testing against the ground when jumping
 	public bool grounded { get; set; }
 	public bool moving = false;
 	public bool running = false;
@@ -65,7 +65,7 @@ public class FirstPersonCharacter : MonoBehaviour
 		RaycastHit[] hits = Physics.RaycastAll(ray, capsule.height * jumpRayLength );
 	       
         float nearest = Mathf.Infinity;
-	
+
 		if (grounded || rigidbody.velocity.y < 0.1f)
 		{
 			// Default value if nothing is detected:
@@ -86,17 +86,15 @@ public class FirstPersonCharacter : MonoBehaviour
 		}
 
 		Debug.DrawRay(ray.origin, ray.direction * capsule.height * jumpRayLength, grounded ? Color.green : Color.red );
-		
 
-            
-            // normalize input if it exceeds 1 in combined length:
+		// normalize input if it exceeds 1 in combined length:
 		if (input.sqrMagnitude > 1) input.Normalize();
 
 		// Get a vector which is desired move as a world-relative direction, including speeds
 		Vector3 desiredMove = transform.forward * input.y * speed + transform.right * input.x * strafeSpeed;
 
 		// preserving current y velocity (for falling, gravity)
-		float yv = rigidbody.velocity.y;
+		float yv = grounded && rigidbody.velocity.y > 0 ? 0 : rigidbody.velocity.y;
 
 		// add jump power
 		if (grounded && jump) {
@@ -105,7 +103,21 @@ public class FirstPersonCharacter : MonoBehaviour
 		}
 
 		// Set the rigidbody's velocity according to the ground angle and desired move
-		rigidbody.velocity = desiredMove + Vector3.up * yv;
+		Vector3 vel = new Vector3(rigidbody.velocity.x, 0, rigidbody.velocity.z);
+		if(grounded) {
+			//vel *= desiredMove.magnitude > 0 ? 1 : 0;
+			vel = desiredMove;
+			//vel.z = desiredMove.z;
+		}
+		else {
+			Vector3 maxMove = transform.forward * speed + transform.right * strafeSpeed;
+			float velMag = vel.magnitude;
+			vel += desiredMove;
+			if(vel.magnitude > maxMove.magnitude) {
+				vel = vel.normalized * velMag; //not quite there
+			}
+		}
+		rigidbody.velocity = vel + Vector3.up * yv;
 
         // Use low/high friction depending on whether we're moving or not
         if (desiredMove.magnitude > 0 || !grounded)

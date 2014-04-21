@@ -54,6 +54,7 @@ GameObject:
   - 114: {fileID: 11400008}
   - 64: {fileID: 6400000}
   - 65: {fileID: 6500004}
+  - 114: {fileID: 11400012}
   m_Layer: 0
   m_Name: Doorway
   m_TagString: Untagged
@@ -90,7 +91,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.37438202, y: 8.17742443, z: 7.96993589}
+  m_LocalPosition: {x: 20.612114, y: 0, z: -23.5792694}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400000}
@@ -8428,6 +8429,22 @@ MonoBehaviour:
   previousTransform: {x: 0, y: 0, z: 0}
   isSelectable: 1
   _name: Cube
+--- !u!114 &11400012
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 742b40781446ac84b90e48018058a1d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openDis: 1.5
+  LeftDoor: {fileID: 400000}
+  RightDoor: {fileID: 400002}
+  isOpen: 0
+  isLocked: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

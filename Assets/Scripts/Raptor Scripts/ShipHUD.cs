@@ -18,7 +18,7 @@ public class ShipHUD : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		notoriety.text = "Notoriety: " + RaptorInteraction.notoriety;
-		money.text = "Money: ¥" + RaptorInteraction.money;
+		money.text = "Money: $" + RaptorInteraction.money;
 		map.text = "Map Completion: " + RaptorInteraction.mapAmountAcquired + "%";
 	}
 }

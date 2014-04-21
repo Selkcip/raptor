@@ -19,9 +19,7 @@ public class ScreenSpaceGI : ImageEffectBase {
 		m_Downsampling = Mathf.Max(1, m_Downsampling);
 		RenderTexture rtRef = RenderTexture.GetTemporary(source.width / m_Downsampling, source.height / m_Downsampling, 0);
 
-		Vector4 normal = new Vector4(1, 1, 1, 0);
 		raySpread = Mathf.Max(1, raySpread);
-		//normal = camera.worldToCameraMatrix.MultiplyVector(normal);
 		mat.SetMatrix("UnProj", (camera.projectionMatrix * camera.worldToCameraMatrix).inverse);
 		mat.SetMatrix("Proj", (camera.projectionMatrix * camera.worldToCameraMatrix));
 		mat.SetMatrix("CamToWorld", (camera.cameraToWorldMatrix));

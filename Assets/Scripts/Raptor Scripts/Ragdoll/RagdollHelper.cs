@@ -119,7 +119,7 @@ public class RagdollHelper : MonoBehaviour {
 	}
 	
 	// Initialization, first frame of game
-	void Start ()
+	void Awake()
 	{
 		//Set all RigidBodies to kinematic so that they can be controlled with Mecanim
 		//and there will be no glitches when transitioning to a ragdoll

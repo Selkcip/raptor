@@ -45,6 +45,8 @@ public class ThirdPersonCharacter : MonoBehaviour {
 	float forwardAmount;
 	Vector3 velocity;
 
+	public bool moving = false;
+
 	// Use this for initialization
 	void Start () {
 		animator = GetComponentInChildren<Animator>();
@@ -110,6 +112,7 @@ public class ThirdPersonCharacter : MonoBehaviour {
 		// direction. 
 		Vector3 localMove = transform.InverseTransformDirection (moveInput);
 		turnAmount = Mathf.Atan2 (localMove.x, localMove.z);
+		turnAmount *= localMove.normalized.magnitude;
 		forwardAmount = localMove.z;
 	}
 
@@ -120,7 +123,7 @@ public class ThirdPersonCharacter : MonoBehaviour {
 		if (Mathf.Abs (forwardAmount) < .01f) {
 			Vector3 lookDelta = transform.InverseTransformDirection (lookPos - transform.position);
 			float lookAngle = Mathf.Atan2 (lookDelta.x, lookDelta.z) * Mathf.Rad2Deg;
-
+			
 			// are we beyond the threshold of where need to turn to face the camera?
 			if (Mathf.Abs (lookAngle) > advancedSettings.autoTurnThresholdAngle) {
 				turnAmount += lookAngle * advancedSettings.autoTurnSpeed * .001f;
@@ -183,6 +186,7 @@ public class ThirdPersonCharacter : MonoBehaviour {
 					}
 
 					onGround = true;
+					//Commented this out because why is this even here? Why would you ever want to not use gravity? Plus the dudes were flying off into space.
 					rigidbody.useGravity = false;
 					break;
 				}
@@ -279,8 +283,13 @@ public class ThirdPersonCharacter : MonoBehaviour {
 
 		// the anim speed multiplier allows the overall speed of walking/running to be tweaked in the inspector,
 		// which affects the movement speed because of the root motion.
-		if (onGround && moveInput.magnitude > 0) {
-			animator.speed = animSpeedMultiplier;
+		if (onGround) {
+			if(moveInput.magnitude > 0) {
+				animator.speed = animSpeedMultiplier;
+			}
+			else {
+				//animator.speed = 0;
+			}
 		} else {
 			// but we don't want to use that while airborne
 			animator.speed = 1;
@@ -332,6 +341,14 @@ public class ThirdPersonCharacter : MonoBehaviour {
 			// we preserve the existing y part of the current velocity.
 			v.y = rigidbody.velocity.y;
 			rigidbody.velocity = v;
+
+			if(v.magnitude < 0.001) {
+				v *= 0;
+				moving = false;
+			}
+			else {
+				moving = true;
+			}
 		}
 	}
 	

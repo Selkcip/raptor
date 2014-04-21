@@ -40,9 +40,9 @@ public class Alarm : MonoBehaviour {
 		GameObject gridObject = GameObject.Find("CA Grid");
 		if(gridObject != null) {
 			ShipGrid grid = gridObject.GetComponent<ShipGrid>();
-			ShipGridCell cell = grid.GetPos(transform.position);
+			//ShipGridCell cell = grid.GetPos(transform.position);
 
-			grid.AddFluid(transform.position, "noise", -100, 0.01f, 0.01f);
+			grid.AddFluid(transform.position, "noise", -1000, 1f, 0.01f);
 		}
 
 		Invoke("SoundAlarm", 1);

@@ -3,7 +3,7 @@ using System.Collections;
 using Holoville.HOTween;
 
 public class Notoriety {
-	public static float kill = 10;
+	public static float kill = 2000;
 	public static float hack = 5;
 	public static float steal = 1;
 }
@@ -11,12 +11,25 @@ public class Notoriety {
 public class RaptorInteraction : MonoBehaviour {
 	public Texture2D crosshair;
 	public Texture2D noiseIndicator;
-	public float maxHealth = 10;	//the number of times you can get hit
-	public float attack = 20f;
+	public PainIndicator painIndicator;
 
-	public Enemy eatTarget;
+	//Raptor Stats
+	public static float maxHealth = 100f;
+	public static float attack = 20f;
+	public static float stealthTime = 180f; //time in seconds
+
+	public Transform eatTarget;
+
+	public static bool defusing = false;
+
+	private bool climbing = false;
+	public Transform raptorArms;
+	Quaternion armRotation;
+	Quaternion defaultRotation;
 
 	//sound stuff
+	public float noiseLifeTime = 0.5f;
+	public float noiseFlowRate = 0.9f;
 	public float walkNoiseLevel = 1;
 	public float walkNoiseFalloff = 0.25f;
 	public float runNoiseLevel = 5;
@@ -40,14 +53,17 @@ public class RaptorInteraction : MonoBehaviour {
 	static int crouchIdleState = Animator.StringToHash("Base Layer.crouching_Idle");
 
 	private bool prevGrounded = true;
+	public bool isMoving = false;
+	public bool isRunning = false;
 
 	private bool chainPounce = true;
 	private bool isPouncing = false;
 	private int pounceCoolDown = 3;
 
-	private bool isSlashing = false;
-
-	private bool isCrouching = false;
+	public bool isSlashing = false;
+	public bool isCrouching = false;
+	public float lightLevel = 0;
+	public float maxLightLevel = 10;
 
 	//sound stuff
 	bool eatSoundPlaying = false;
@@ -66,8 +82,25 @@ public class RaptorInteraction : MonoBehaviour {
 
 	//Collection data
 	public static float mapAmountAcquired = 0;
-	public static int money = 0;
-	public static float notoriety;
+	public static int money = 100000;
+	public static float _notoriety = 0f;//Notoriety should increase by 2000 for killing a guy;
+	public static float notorietyStep = 2000;
+	public static int keyCount = 0;
+
+	public static float notoriety {
+		get { return _notoriety; }
+		set { 
+			_notoriety = value;
+			print("+"+value+" Notoriety");
+		}
+	}
+
+	public Transform inventory;
+
+	//Pause
+	GameObject pauseMenu;
+	GameObject hudObject;
+	public bool paused = false;
 
 	// Use this for initialization
 	void Start() {
@@ -76,15 +109,32 @@ public class RaptorInteraction : MonoBehaviour {
 		hud = gameObject.GetComponent<RaptorHUD>();
 		arms = gameObject.GetComponentInChildren<Animator>();
 		health = maxHealth;
+
+		//pauseMenu = GameObject.Find("Pause Menu");
+		//pauseMenu.SetActive(false);
+
+		hudObject = GameObject.Find("HUD");
+
+		defaultRotation = raptorArms.localRotation;
 	}
 
 	// Update is called once per frame
 	void Update() {
 		Animation();
 		if(health > 0) {
+			isMoving = fpc.moving;
+			isRunning = fpc.running;
+
 			Controls();
 			HUD();
 			MakeNoise();
+			CheckGrid();
+
+			EdgeDetectEffectNormals edge = Camera.main.GetComponent<EdgeDetectEffectNormals>();
+			if(edge != null) {
+				edge.enabled = true;// heatRenderer.enabled;
+				edge.edgesOnly = Mathf.Lerp(edge.edgesOnly, Mathf.Max(0, Mathf.Min(1, 1 - lightLevel / maxLightLevel)), 0.1f);
+			}
 
 			//prevents the player from getting stuck when pouncing next to a wall
 			if(hud.stamina <= 0f) {
@@ -103,6 +153,8 @@ public class RaptorInteraction : MonoBehaviour {
 				SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/dying2"), SoundManager.SoundType.Sfx);
 			}
 		}
+
+		Climb();
 	}
 
 	void HUD() {
@@ -158,8 +210,24 @@ public class RaptorInteraction : MonoBehaviour {
 				prevGrounded = false;
 			}
 
-			ShipGrid.AddFluidI(transform.position, "noise", noiseLevel, noiseFalloff, 0.01f);
+			ShipGrid.AddFluidI(transform.position, "noise", noiseLevel, noiseLifeTime, noiseFlowRate);
 			//ShipGrid.AddFluidI(transform.position, "noise", 0, noiseFalloff, 0.01f);
+		}
+	}
+
+	void CheckGrid() {
+		ShipGridCell cell = ShipGrid.GetPosI(transform.position);
+
+		ShipGridFluid cellLight;
+		cell.fluids.TryGetValue("light", out cellLight);
+		float newLight = cellLight != null ? cellLight.level : 0;
+		//lightLevel += (newLight - lightLevel) * 0.1f;
+		lightLevel = Mathf.Lerp(lightLevel, newLight, 0.75f);
+
+		ShipGridFluid damage;
+		cell.fluids.TryGetValue("damage", out damage);
+		if(damage != null && damage.level > 1f) {
+			Hurt(new Damage(damage.level, transform.position));
 		}
 	}
 
@@ -180,49 +248,91 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void Controls() {
-		if(Input.GetMouseButton(0)) {
-			Slash();
-		}
-		else if(Input.GetMouseButtonDown(1)) {
-			Pounce();
-		}
+		/*if(Input.GetKeyDown(KeyCode.Escape)) {
+			Time.timeScale = 0;
+			pauseMenu.SetActive(true);
+			hudObject.SetActive(false);
+			toggleRotator(false);
+			paused = true;
+			LockMouse.lockMouse = false;
+		}*/
 
-		if(Input.GetKeyDown(KeyCode.LeftControl)) {
-			isCrouching = !isCrouching;
-			Crouch(isCrouching);
-		}
-
-		if(Input.GetKey(KeyCode.E)) {
-			RaycastHit hit;
-			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2)) {
-				hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+		if(!paused) {
+			if(Input.GetKey(KeyCode.U)) {
+				print(fpc.grounded);
 			}
 
-			if (eatTarget != null){
-				eatTarget.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+			if(Input.GetMouseButton(0)) {
+				Slash();
 			}
-			else {
+			else if(Input.GetMouseButtonDown(1)) {
+				Pounce();
+			}
+
+			if(Input.GetKeyDown(KeyCode.LeftControl)) {
+				isCrouching = !isCrouching;
+				Crouch(isCrouching);
+			}
+
+			if(Input.GetKey(KeyCode.E)) {
+				RaycastHit hit;
+				int mask = ~(1 << LayerMask.NameToLayer("Enemy"));
+				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2, mask)) {
+					hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+					if(hit.transform.tag != "trap") {
+						defusing = false;
+					}
+				}
+				else {
+					defusing = false;
+				}
+				if(eatTarget != null) {
+					eatTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+				}
+				else {
+					toggleRotator(true);
+					rigidbody.freezeRotation = false;
+					rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+					arms.SetBool("isEating", false);
+					eatSoundPlaying = false;
+				}
+			}
+			//animation stuff
+			else if(Input.GetKeyUp(KeyCode.E)) {
+				//eating stuff
+				eatTarget = null;
 				toggleRotator(true);
 				rigidbody.freezeRotation = false;
 				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 				arms.SetBool("isEating", false);
 				eatSoundPlaying = false;
+
+				//defusing mines
+				defusing = false;
+			}
+		
+			//Stop climbing
+			if(Input.GetKey(KeyCode.Space) && climbing) {
+				climbing = false;
+				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 			}
 		}
-		//animation stuff
-		else if(Input.GetKeyUp(KeyCode.E)) {
-			eatTarget = null;
-			toggleRotator(true);
-			rigidbody.freezeRotation = false;
-			rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-			arms.SetBool("isEating", false);
-			eatSoundPlaying = false;
-		}
-
-		if(Input.GetKeyUp(KeyCode.F)) {
-			EdgeDetectEffectNormals edge = Camera.main.GetComponent<EdgeDetectEffectNormals>();
-			if(edge != null) {
-				edge.enabled = !edge.enabled;// heatRenderer.enabled;
+		
+		if(Input.GetKeyUp(KeyCode.R)) {
+			if(inventory.childCount > 0) {
+				foreach(Transform child in inventory) {
+					Collectible collectible = child.GetComponent<Collectible>();
+					if(collectible != null && collectible.droppable && !collectible.keyCard) {
+						child.parent = null;
+						child.position = Camera.main.transform.TransformPoint(0, 0, 1);
+						RaycastHit hit;
+						if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 1)) {
+							child.position = hit.point;
+						}
+						child.gameObject.active = true;
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -257,11 +367,11 @@ public class RaptorInteraction : MonoBehaviour {
 					//do damage
 					if(isPouncing) {
 						//hit.transform.root.GetComponent<Enemy>().Hurt(1000);
-						hit.transform.SendMessageUpwards("Hurt", 1000, SendMessageOptions.DontRequireReceiver);
+						hit.transform.SendMessageUpwards("Hurt", new Damage(1000, transform.position), SendMessageOptions.DontRequireReceiver);
 					}
 					else {
 						//hit.transform.root.GetComponent<Enemy>().Hurt(attack);
-						hit.transform.SendMessageUpwards("Hurt", attack, SendMessageOptions.DontRequireReceiver);					
+						hit.transform.SendMessageUpwards("Hurt", new Damage(attack, transform.position), SendMessageOptions.DontRequireReceiver);					
 					}
 					bloodSpurt.Play();
 				}
@@ -304,16 +414,17 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void Pounce() {
-		if(hud.stamina == 1.0f && !isPouncing && fpc.grounded) {
+		if(hud.stamina == 1.0f && !isPouncing && (fpc.grounded || climbing)) {
+			rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+			climbing = false;
+
 			chainPounce = false;
 			isPouncing = true;
-			fpc.enabled = false;
 			fpc.grounded = false;
-			rigidbody.drag = 1;
-			//rigidbody.AddForce(transform.forward * 15f, ForceMode.Impulse);
-			//rigidbody.AddForce(transform.up * 5.5f, ForceMode.Impulse);
-			rigidbody.AddForce(Camera.main.transform.forward * 15f, ForceMode.Impulse);
-			rigidbody.AddForce(Camera.main.transform.up * 5.5f, ForceMode.Impulse);
+			rigidbody.velocity *= 0;
+			rigidbody.velocity += Camera.main.transform.forward * 15f;
+			//rigidbody.velocity += Camera.main.transform.up * 5.5f;
+			rigidbody.velocity += transform.up * 5.5f; //This is always up so the player can pounce straight up
 			SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/slash2"), SoundManager.SoundType.Sfx);
 		}
 	}
@@ -322,12 +433,24 @@ public class RaptorInteraction : MonoBehaviour {
 		if(isPouncing) {
 			isPouncing = false;
 			rigidbody.drag = 0;
-			fpc.enabled = true;
+			//fpc.enabled = true;
+
 			//Chain pouncing
 			if(other.gameObject.tag == "enemy") {
 				//other.transform.root.GetComponent<Enemy>().KnockOut(knockOutTime);
 				other.transform.SendMessageUpwards("KnockOut", knockOutTime, SendMessageOptions.DontRequireReceiver);
 				chainPounce = true;
+			}
+			//else if(other.transform.tag == "room") {
+			else if(other.rigidbody == null) {
+				RaycastHit hit;
+				//check if the raptor is facing the wall
+				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 0.5f)) {
+					climbing = true;
+					armRotation = raptorArms.rotation;//Camera.main.transform.rotation;
+					rigidbody.constraints = RigidbodyConstraints.FreezePosition;
+
+				}
 			}
 		}
 	}
@@ -372,6 +495,31 @@ public class RaptorInteraction : MonoBehaviour {
 		money += amount;
 	}
 
+	public void Collect(Collectible obj) {
+		if(inventory != null) {
+			obj.transform.parent = inventory;
+			obj.transform.localPosition *= 0;
+			obj.gameObject.active = false;
+			if(obj.keyCard) {
+				keyCount++;
+			}
+		}
+	}
+
+	public void UnlockDoor(RaptorDoor door) {
+		/*int cardCount = 0;
+		foreach(Transform child in inventory) {
+			Collectible collectible = child.GetComponent<Collectible>();
+			if(collectible != null && collectible.keyCard) {
+				cardCount++;
+			}
+		}*/
+
+		if(keyCount >= door.keyCardsToUnlock) {
+			door.LockDoor(false);
+		}
+	}
+
 	public void Eat(float amount) {
 		if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, 0.75f)) {
 			bloodSpurt.Play();
@@ -392,13 +540,42 @@ public class RaptorInteraction : MonoBehaviour {
 		}
 	}
 
-	public void Hurt(float damage) {
-		health -= 1;
-		hud.Deplete("health", 1.0f/maxHealth);
+	public void Hurt(Damage damage) {
+		health -= damage.amount;
+		hud.Deplete("health", damage.amount/maxHealth);
+
+		PainIndicator indicator = (PainIndicator)Instantiate(painIndicator);
+		indicator.transform.parent = Camera.main.transform;
+		indicator.transform.localPosition = new Vector3(0, 0, 1);
+		indicator.dir = Camera.main.transform.position-damage.pos;
+
+		//print(health);
 		SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
 	}
 
-	void toggleRotator(bool on){
+	public void SellCollectibles() {
+		if(inventory.childCount > 0) {
+			foreach(Transform child in inventory) {
+				Collectible collectible = child.GetComponent<Collectible>();
+				if(collectible != null && !collectible.keyCard) {
+					money += collectible.value;
+				}
+			}
+		}
+	}
+
+	void Climb() {
+		if(climbing) {
+			raptorArms.rotation = armRotation;
+			//Camera.main.GetComponent<SimpleMouseRotator>().rotationRange.x = 0f;
+		}
+		else {
+			raptorArms.localRotation = defaultRotation;
+			//Camera.main.GetComponent<SimpleMouseRotator>().rotationRange.x = 170f;
+		}
+	}
+
+	public void toggleRotator(bool on){
 		GetComponent<SimpleMouseRotator>().enabled = on;
 		Camera.main.GetComponent<SimpleMouseRotator>().enabled = on;
 	}
