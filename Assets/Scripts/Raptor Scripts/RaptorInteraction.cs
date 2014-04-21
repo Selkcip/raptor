@@ -81,8 +81,6 @@ public class RaptorInteraction : MonoBehaviour {
 	public static float notorietyStep = 2000;
 
 	//Pause
-	GameObject pauseMenu;
-	GameObject hudObject;
 	public bool paused = false;
 
 	// Use this for initialization
@@ -92,11 +90,6 @@ public class RaptorInteraction : MonoBehaviour {
 		hud = gameObject.GetComponent<RaptorHUD>();
 		arms = gameObject.GetComponentInChildren<Animator>();
 		health = maxHealth;
-
-		pauseMenu = GameObject.Find("Pause Menu");
-		pauseMenu.SetActive(false);
-
-		hudObject = GameObject.Find("HUD");
 
 		defaultRotation = raptorArms.localRotation;
 	}
@@ -112,7 +105,7 @@ public class RaptorInteraction : MonoBehaviour {
 			//prevents the player from getting stuck when pouncing next to a wall
 			if(hud.stamina <= 0f) {
 				isPouncing = false;
-				fpc.enabled = true;
+				//fpc.enabled = true;
 			}
 		}
 		else {
@@ -205,20 +198,8 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void Controls() {
-		if(Input.GetKeyDown(KeyCode.Escape)) {
-			Time.timeScale = 0;
-			pauseMenu.SetActive(true);
-			hudObject.SetActive(false);
-			toggleRotator(false);
-			paused = true;
-			LockMouse.lockMouse = false;
-		}
-
-		if(!paused) {
-			if(Input.GetKey(KeyCode.U)) {
-				print(fpc.grounded);
-			}
-
+		if(!Pause.paused) {
+			toggleRotator(true);
 			if(Input.GetMouseButton(0)) {
 				Slash();
 			}
@@ -281,6 +262,9 @@ public class RaptorInteraction : MonoBehaviour {
 				climbing = false;
 				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 			}
+		}
+		else {
+			toggleRotator(false);
 		}
 	}
 
@@ -380,7 +364,7 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision other) {
-		if(isPouncing) {
+		if(isPouncing || !fpc.grounded) {
 			isPouncing = false;
 			rigidbody.drag = 0;
 			//fpc.enabled = true;
