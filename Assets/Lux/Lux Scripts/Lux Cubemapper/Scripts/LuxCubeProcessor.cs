@@ -1033,8 +1033,7 @@ public class LuxCubeProcessor {
 		    }
 	    }
 	    CubeMap.Apply(false);
-    }
+	}
 
-
-}
 #endif
+}
