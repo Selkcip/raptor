@@ -14,12 +14,16 @@ public class EscapeShip : Triggerable {
 	
 	// Update is called once per frame
 	void Update () {
-		base.Update();
+		//base.Update();
 		if(isTriggered) {
 			warmUp += Time.deltaTime;
 			if(warmUp > warmUpTime) {
 				transform.position += transform.forward * speed;
 			}
 		}
+	}
+
+	void Use(GameObject user) {
+		isTriggered = true;
 	}
 }

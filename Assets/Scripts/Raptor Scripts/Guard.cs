@@ -175,7 +175,14 @@ public class Guard : PlanningNPC {
 		aShootPlayer.name = "shoot player";
 		planner.Add(aShootPlayer);
 
-		float patrolTimer = 0;
+		//Make wander into partol
+		aWander.name = "patrol";
+		aWander.output.Clear();
+		aWander.output = new PlanState() {
+			{ "enemySeen", true }
+		};
+
+		/*float patrolTimer = 0;
 		aPatrol = new PlanAction(
 			new PlanState() {
 				{ "enemySeen", false },
@@ -203,6 +210,9 @@ public class Guard : PlanningNPC {
 				agent.Raycast(transform.position+transform.forward, out hit);
 
 				if(hit.hit || patrolTimer >= patrolTime || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
+					//Vector3 randomDir = Random.insideUnitSphere * 10;
+					//NavMesh.SamplePosition(transform.position + randomDir, out hit, 10, 1);
+					//patrolPos = hit.position;// transform.position + transform.forward * 10;
 					patrolPos = transform.position + transform.forward * 10;
 					patrolTimer = 0;
 				}
@@ -213,7 +223,7 @@ public class Guard : PlanningNPC {
 				return false;
 			});
 		aPatrol.name = "patrol";
-		planner.Add(aPatrol);
+		planner.Add(aPatrol);*/
 	}
 	
 	// Update is called once per frame

@@ -20,7 +20,7 @@ public class PlanningNPC : MonoBehaviour {
 	public float lookTime = 1f;
 	public float inspectTime = 5f;
 	public float useTime = 5f;
-	public float patrolTime = 5f;
+	public float wanderTime = 5f;
 	public bool followsNoise = false;
 	public float curiousNoiseLevel = 1f;
 	public float alarmedNoiseLevel = 5f;
@@ -79,6 +79,7 @@ public class PlanningNPC : MonoBehaviour {
 	public Vector3 enemyPos;
 	public Transform useTarget;
 	public Vector3 noiseDir = new Vector3();
+	public Vector3 noisePos = new Vector3();
 	public float boredomLevel = 0;
 	public ShipGridItem mostInteresting;
 	public Vector3 leftHandPos;
@@ -138,14 +139,16 @@ public class PlanningNPC : MonoBehaviour {
 				{"knockedOut", true}
 			},
 			100);
-		goals.Add(gPassOut);
+		//goals.Add(gPassOut);
 
 		gWakeUp = new PlanGoal(
 			"wake up",
 			new PlanState() {
-				{"knockedOut", true}
+				{"sleeping", true},
+				//{"knockedOut", true}
 			},
 			new PlanState() {
+				{"sleeping", false},
 				{"knockedOut", false}
 			},
 			100);
@@ -247,7 +250,7 @@ public class PlanningNPC : MonoBehaviour {
 	}
 
 	//Actions
-	protected PlanAction aPassOut, aSleep, aWakeUp, aStand, aMoveToTarget, aWalk, aRun, aUseObject, aFindAlarm, aActivateAlarm, aFlee, aInspect, aFindInteresting, aFollowNoise, aChaseNoise, aEnableLight, aDisableLight;
+	protected PlanAction aPassOut, aSleep, aWakeUp, aStand, aMoveToTarget, aWalk, aRun, aUseObject, aFindAlarm, aActivateAlarm, aFlee, aInspect, aFindInteresting, aFollowNoise, aChaseNoise, aEnableLight, aDisableLight, aWander;
 	public virtual void InitActions() {
 		aPassOut = new PlanAction(
 			new PlanState() {
@@ -285,13 +288,15 @@ public class PlanningNPC : MonoBehaviour {
 			new PlanState() {
 				{ "sleeping", true },
 				{ "knockedOut", true },
-				{ "dead", false }
+				//{ "dead", false }
 			},
 			new PlanState() {
 				{ "sleeping", false }
 			},
 			delegate() {
-				sleepTime -= Time.deltaTime;
+				if(!dead) {
+					sleepTime -= Time.deltaTime;
+				}
 				//knockedOut = sleepTime <= 0;
 				return false;
 			});
@@ -639,6 +644,7 @@ public class PlanningNPC : MonoBehaviour {
 		aInspect.name = "inspect";
 		planner.Add(aInspect);
 
+		bool initNoise = true;
 		//Maybe these should do a short path search and choose a cell to move to using the nav mesh
 		aFollowNoise = new PlanAction(
 			new PlanState() {
@@ -654,8 +660,21 @@ public class PlanningNPC : MonoBehaviour {
 				{ "playerVisible", true }
 			},
 			delegate() {
-				Move(noiseDir);
-				curious = false;
+				agent.SetDestination(noisePos);
+
+				// update the agents posiiton 
+				agent.transform.position = transform.position;
+
+				NavMeshHit hit;
+				agent.Raycast(transform.position + transform.forward, out hit);
+
+				if(initNoise || hit.hit || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
+					noisePos = transform.position + noiseDir * 10;
+					initNoise = false;
+				}
+
+				// use the values to move the character
+				Move(agent.desiredVelocity);
 
 				return false;
 			});
@@ -676,8 +695,21 @@ public class PlanningNPC : MonoBehaviour {
 				{ "playerVisible", true }
 			},
 			delegate() {
-				Move(noiseDir);
-				curious = false;
+				agent.SetDestination(noisePos);
+
+				// update the agents posiiton 
+				agent.transform.position = transform.position;
+
+				NavMeshHit hit;
+				agent.Raycast(transform.position + transform.forward, out hit);
+
+				if(initNoise || hit.hit || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
+					noisePos = transform.position + noiseDir * 10;
+					initNoise = false;
+				}
+
+				// use the values to move the character
+				Move(agent.desiredVelocity);
 
 				return false;
 			});
@@ -722,11 +754,60 @@ public class PlanningNPC : MonoBehaviour {
 			});
 		aDisableLight.name = "disable light";
 		//planner.Add(aDisableLight);
+
+		float wanderTimer = wanderTime;
+		Vector3 wanderPos = new Vector3();
+		aWander = new PlanAction(
+			new PlanState() {
+				{ "enemySeen", false },
+				{ "enemyVisible", false },
+				{ "curious", false },
+				{ "alarmed", false },
+				{ "canInspect", false },
+				{ "alertShip", false },
+				{ "running", false },
+				{ "knockedOut", false },
+				{ "dead", false }
+			},
+			new PlanState() {
+				{ "canInspect", true }
+			},
+			delegate() {
+				wanderTimer += Time.deltaTime;
+
+				agent.SetDestination(wanderPos);
+
+				// update the agents posiiton 
+				agent.transform.position = transform.position;
+
+				NavMeshHit hit;
+				agent.Raycast(transform.position + transform.forward, out hit);
+
+				if(hit.hit || wanderTimer >= wanderTime || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
+					//Vector3 randomDir = Random.insideUnitSphere * 10;
+					//NavMesh.SamplePosition(transform.position + randomDir, out hit, 10, 1);
+					//patrolPos = hit.position;// transform.position + transform.forward * 10;
+					wanderPos = transform.position + transform.forward * 10;
+					wanderTimer = 0;
+				}
+
+				// use the values to move the character
+				Move(agent.desiredVelocity);
+
+				return false;
+			});
+		aWander.name = "wander";
+		planner.Add(aWander);
 	}
 
 	// Update is called once per frame
 	public virtual void Update() {
-		dead = health <= 0;
+		bool justDied = false;
+		if(!dead && health <= 0) {
+			dead = true;
+			justDied = true;
+			RaptorInteraction.notoriety += Notoriety.kill;
+		}
 		healthLow = health <= fleeHealth;
 		sleeping = dead || sleepTime > 0;
 		standing = !character.moving;
@@ -830,7 +911,7 @@ public class PlanningNPC : MonoBehaviour {
 				}
 			}
 			else {
-				if(mentionEnemyVisible) {
+				if(mentionEnemyVisible && player.health > 0) {
 					SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/wherediditgo"), SoundManager.SoundType.Dialogue, gameObject);
 					mentionEnemyVisible = false;
 				}
@@ -865,11 +946,11 @@ public class PlanningNPC : MonoBehaviour {
 						diff.x = neigh.x - cell.x;
 						diff.y = neigh.y - cell.y;
 						diff.z = neigh.z - cell.z;
-						noiseDir += diff * (noise.level - noiseLevel) * Mathf.Abs(noise.level);
+						noiseDir += (diff * (noise.level-noiseLevel)).normalized * Mathf.Abs(noise.level);
 					}
 				}
 				noiseDir.Normalize();
-				//Debug.DrawRay(transform.position, noiseDir, Color.blue);
+				Debug.DrawRay(transform.position, noiseDir, Color.blue);
 			}
 
 			ShipGridFluid cellLight;
@@ -1013,7 +1094,7 @@ public class PlanningNPC : MonoBehaviour {
 		if(inventory != null) {
 			obj.transform.parent = inventory;
 			obj.transform.localPosition *= 0;
-			obj.gameObject.active = false;
+			obj.gameObject.SetActive(false);
 		}
 	}
 
@@ -1028,8 +1109,9 @@ public class PlanningNPC : MonoBehaviour {
 				if(Physics.Raycast(transform.TransformPoint(0, 1, -1), -transform.forward, out hit, 1)) {
 					child.position = hit.point;
 				}
-				child.gameObject.active = true;
+				child.gameObject.SetActive(true);
 				//thief.SendMessageUpwards("Collect", collectible, SendMessageOptions.DontRequireReceiver);
+				RaptorInteraction.notoriety += Notoriety.steal*collectible.value;
 				break;
 			}
 		}

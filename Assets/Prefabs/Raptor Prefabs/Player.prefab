@@ -172,7 +172,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: -4.37113883e-08}
-  m_LocalPosition: {x: 0, y: 1, z: -1}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400000}
@@ -704,8 +704,8 @@ MonoBehaviour:
   mode: 3
   sensitivityDepth: 1
   sensitivityNormals: 1
-  lumThreshhold: .0299999993
-  edgeExp: 1
+  lumThreshhold: 2.04999995
+  edgeExp: .25
   sampleDist: 1
   edgesOnly: 1
   edgesOnlyBgColor: {r: 1, g: 0, b: 0, a: 1}

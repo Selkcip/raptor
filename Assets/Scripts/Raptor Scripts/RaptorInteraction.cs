@@ -3,7 +3,7 @@ using System.Collections;
 using Holoville.HOTween;
 
 public class Notoriety {
-	public static float kill = 10;
+	public static float kill = 2000;
 	public static float hack = 5;
 	public static float steal = 1;
 }
@@ -83,9 +83,17 @@ public class RaptorInteraction : MonoBehaviour {
 	//Collection data
 	public static float mapAmountAcquired = 0;
 	public static int money = 100000;
-	public static float notoriety = 0f;//Notoriety should increase by 2000 for killing a guy;
+	public static float _notoriety = 0f;//Notoriety should increase by 2000 for killing a guy;
 	public static float notorietyStep = 2000;
 	public static int keyCount = 0;
+
+	public static float notoriety {
+		get { return _notoriety; }
+		set { 
+			_notoriety = value;
+			print("+"+value+" Notoriety");
+		}
+	}
 
 	public Transform inventory;
 
@@ -213,7 +221,7 @@ public class RaptorInteraction : MonoBehaviour {
 		ShipGridFluid cellLight;
 		cell.fluids.TryGetValue("light", out cellLight);
 		float newLight = cellLight != null ? cellLight.level : 0;
-		lightLevel += (newLight - lightLevel) * 0.1f;
+		//lightLevel += (newLight - lightLevel) * 0.1f;
 		lightLevel = Mathf.Lerp(lightLevel, newLight, 0.75f);
 
 		ShipGridFluid damage;
