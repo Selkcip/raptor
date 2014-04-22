@@ -31,6 +31,7 @@ public class PlanningNPC : MonoBehaviour {
 	public Weapon weapon;
 	public Transform weaponAnchor;
 	public Transform inventory;
+	public Transform head;
 	public int money = 0;
 	public float sleepTime = 0;
 
@@ -873,7 +874,7 @@ public class PlanningNPC : MonoBehaviour {
 						Vector3 enemyDiff = enemyHead.position - (transform.position + new Vector3(0, 1, 0));
 						enemyDiff.Normalize();
 
-						if(Vector3.Dot(transform.forward, enemyDiff) >= 1.0f - (curFov / 2.0f) / 90.0f) {
+						if(Vector3.Dot(head.forward, enemyDiff) >= 1.0f - (curFov / 2.0f) / 90.0f) {
 							RaycastHit hit;
 							if(Physics.Raycast(transform.position + new Vector3(0, 1, 0), enemyDiff, out hit, curViewDis)) {
 								if(hit.collider.tag == "Player" || (hit.collider.transform.parent != null && hit.collider.transform.parent.tag == "Player")) {

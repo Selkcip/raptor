@@ -2881,7 +2881,7 @@ MonoBehaviour:
   lookTime: 1
   inspectTime: 1
   useTime: 1
-  patrolTime: 5
+  wanderTime: 5
   followsNoise: 1
   curiousNoiseLevel: 1
   alarmedNoiseLevel: 5
@@ -2892,6 +2892,7 @@ MonoBehaviour:
   weapon: {fileID: 0}
   weaponAnchor: {fileID: 0}
   inventory: {fileID: 400084}
+  head: {fileID: 400010}
   money: 0
   sleepTime: 0
   enemyVisibility: 1
@@ -2926,6 +2927,7 @@ MonoBehaviour:
   enemyPos: {x: 0, y: 0, z: 0}
   useTarget: {fileID: 0}
   noiseDir: {x: 0, y: 0, z: 0}
+  noisePos: {x: 0, y: 0, z: 0}
   boredomLevel: 0
   mostInteresting: {fileID: 0}
   leftHandPos: {x: 0, y: 0, z: 0}

@@ -27,6 +27,9 @@ public class RaptorInteraction : MonoBehaviour {
 	Quaternion armRotation;
 	Quaternion defaultRotation;
 
+	public float pounceSpeed = 10;
+	public float verticalPounceComponent = 0.1f;
+
 	//sound stuff
 	public float noiseLifeTime = 0.5f;
 	public float noiseFlowRate = 0.9f;
@@ -98,8 +101,6 @@ public class RaptorInteraction : MonoBehaviour {
 	public Transform inventory;
 
 	//Pause
-	GameObject pauseMenu;
-	GameObject hudObject;
 	public bool paused = false;
 
 	// Use this for initialization
@@ -109,11 +110,6 @@ public class RaptorInteraction : MonoBehaviour {
 		hud = gameObject.GetComponent<RaptorHUD>();
 		arms = gameObject.GetComponentInChildren<Animator>();
 		health = maxHealth;
-
-		//pauseMenu = GameObject.Find("Pause Menu");
-		//pauseMenu.SetActive(false);
-
-		hudObject = GameObject.Find("HUD");
 
 		defaultRotation = raptorArms.localRotation;
 	}
@@ -139,12 +135,13 @@ public class RaptorInteraction : MonoBehaviour {
 			//prevents the player from getting stuck when pouncing next to a wall
 			if(hud.stamina <= 0f) {
 				isPouncing = false;
-				fpc.enabled = true;
+				//fpc.enabled = true;
 			}
 		}
 		else {
 			//Die
 			fpc.enabled = false;
+			rigidbody.isKinematic = false;
 			rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
 			toggleRotator(false);
 			arms.SetBool("isDead", true);
@@ -248,20 +245,8 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void Controls() {
-		/*if(Input.GetKeyDown(KeyCode.Escape)) {
-			Time.timeScale = 0;
-			pauseMenu.SetActive(true);
-			hudObject.SetActive(false);
-			toggleRotator(false);
-			paused = true;
-			LockMouse.lockMouse = false;
-		}*/
-
-		if(!paused) {
-			if(Input.GetKey(KeyCode.U)) {
-				print(fpc.grounded);
-			}
-
+		if(!Pause.paused) {
+			toggleRotator(true);
 			if(Input.GetMouseButton(0)) {
 				Slash();
 			}
@@ -315,9 +300,13 @@ public class RaptorInteraction : MonoBehaviour {
 			if(Input.GetKey(KeyCode.Space) && climbing) {
 				climbing = false;
 				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+				rigidbody.isKinematic = false;
+				fpc.enabled = true;
 			}
 		}
-		
+		else {
+			toggleRotator(false);
+		}
 		if(Input.GetKeyUp(KeyCode.R)) {
 			if(inventory.childCount > 0) {
 				foreach(Transform child in inventory) {
@@ -416,21 +405,24 @@ public class RaptorInteraction : MonoBehaviour {
 	void Pounce() {
 		if(hud.stamina == 1.0f && !isPouncing && (fpc.grounded || climbing)) {
 			rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+			rigidbody.isKinematic = false;
+			fpc.enabled = true;
 			climbing = false;
 
 			chainPounce = false;
 			isPouncing = true;
 			fpc.grounded = false;
 			rigidbody.velocity *= 0;
-			rigidbody.velocity += Camera.main.transform.forward * 15f;
-			//rigidbody.velocity += Camera.main.transform.up * 5.5f;
-			rigidbody.velocity += transform.up * 5.5f; //This is always up so the player can pounce straight up
+			float forwardpounce = pounceSpeed * (1 - verticalPounceComponent);
+			float verticalPounce = pounceSpeed * verticalPounceComponent;
+			rigidbody.velocity += Camera.main.transform.forward * forwardpounce;
+			rigidbody.velocity += transform.up * verticalPounce;
 			SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/slash2"), SoundManager.SoundType.Sfx);
 		}
 	}
 
 	void OnCollisionEnter(Collision other) {
-		if(isPouncing) {
+		if(isPouncing || !fpc.grounded) {
 			isPouncing = false;
 			rigidbody.drag = 0;
 			//fpc.enabled = true;
@@ -449,7 +441,8 @@ public class RaptorInteraction : MonoBehaviour {
 					climbing = true;
 					armRotation = raptorArms.rotation;//Camera.main.transform.rotation;
 					rigidbody.constraints = RigidbodyConstraints.FreezePosition;
-
+					fpc.enabled = false;
+					rigidbody.isKinematic = true;
 				}
 			}
 		}

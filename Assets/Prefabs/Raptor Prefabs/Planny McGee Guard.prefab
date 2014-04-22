@@ -1474,7 +1474,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100014}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 24.2099781, y: 0, z: -19.4943657}
+  m_LocalPosition: {x: 25, y: 0, z: -27}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400084}
@@ -3256,7 +3256,7 @@ MonoBehaviour:
   lookTime: 1
   inspectTime: 1
   useTime: 1
-  patrolTime: 5
+  wanderTime: 5
   followsNoise: 1
   curiousNoiseLevel: 1
   alarmedNoiseLevel: 5
@@ -3267,6 +3267,7 @@ MonoBehaviour:
   weapon: {fileID: 11400012}
   weaponAnchor: {fileID: 400132}
   inventory: {fileID: 400152}
+  head: {fileID: 400080}
   money: 0
   sleepTime: 0
   enemyVisibility: 1
@@ -3301,6 +3302,7 @@ MonoBehaviour:
   enemyPos: {x: 0, y: 0, z: 0}
   useTarget: {fileID: 0}
   noiseDir: {x: 0, y: 0, z: 0}
+  noisePos: {x: 0, y: 0, z: 0}
   boredomLevel: 0
   mostInteresting: {fileID: 0}
   leftHandPos: {x: 0, y: 0, z: 0}

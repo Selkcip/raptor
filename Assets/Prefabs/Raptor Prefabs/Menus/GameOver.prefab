@@ -32,6 +32,7 @@ GameObject:
   - 114: {fileID: 11400012}
   - 114: {fileID: 11400010}
   - 54: {fileID: 5400000}
+  - 114: {fileID: 11400048}
   m_Layer: 9
   m_Name: GameOver
   m_TagString: Untagged
@@ -964,7 +965,7 @@ MonoBehaviour:
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 0}
   mFont: {fileID: 11400000, guid: ac44b8a25154a9d40a172ab5851e0986, type: 2}
-  mText: You fucked up
+  mText: 'You''re dead! '
   mFontSize: 20
   mFontStyle: 0
   mEncoding: 1
@@ -1461,6 +1462,18 @@ MonoBehaviour:
   mMaxLineHeight: 0
   mLineWidth: 0
   mMultiline: 1
+--- !u!114 &11400048
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfa47534da01a244b95498c35dee269a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameOver: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

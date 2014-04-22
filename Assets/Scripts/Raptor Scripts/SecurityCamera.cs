@@ -66,6 +66,7 @@ public class SecurityCamera : MonoBehaviour {
 		}
 
 		LookForEnemy();
+		LookForDeadBodies();
 
 		Debug.DrawRay(transform.position, transform.forward, Color.magenta);
 	}
@@ -118,6 +119,23 @@ public class SecurityCamera : MonoBehaviour {
 			if(mentionEnemyVisible) {
 				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/wherediditgo"), SoundManager.SoundType.Dialogue, gameObject);
 				mentionEnemyVisible = false;
+			}
+		}
+	}
+
+	void LookForDeadBodies() {
+		RaycastHit hit;
+		Physics.Raycast(transform.position, transform.forward, out hit, curViewDis);
+		Debug.DrawLine(transform.position, hit.point);
+		List<ShipGridCell> region = ShipGrid.GetRegionI(new Bounds(hit.point, new Vector3(2,2,2)));
+		foreach(ShipGridCell cell in region) {
+			foreach(ShipGridItem item in cell.contents) {
+				PlanningNPC npc = item.GetComponent<PlanningNPC>();
+				if(npc != null) {
+					if(npc.dead) {
+						Alarm.ActivateAlarms();
+					}
+				}
 			}
 		}
 	}

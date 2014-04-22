@@ -99,7 +99,7 @@ public class SimpleMouseRotator : MonoBehaviour {
 		// update the actual gameobject's rotation
 		transform.localRotation = originalRotation * Quaternion.Euler( -followAngles.x, followAngles.y, 0 );
 
-		if(rigidbody != null) {
+		if(rigidbody != null && !rigidbody.isKinematic) {
 			rigidbody.angularVelocity *= 0;
 			rigidbody.rotation = transform.localRotation;
 		}

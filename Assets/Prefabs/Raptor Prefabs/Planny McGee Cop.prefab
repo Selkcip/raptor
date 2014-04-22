@@ -3432,6 +3432,7 @@ MonoBehaviour:
   weapon: {fileID: 11400002}
   weaponAnchor: {fileID: 400018}
   inventory: {fileID: 400154}
+  head: {fileID: 400070}
   money: 0
   sleepTime: 0
   enemyVisibility: 1

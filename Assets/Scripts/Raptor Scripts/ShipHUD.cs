@@ -13,6 +13,8 @@ public class ShipHUD : MonoBehaviour {
 		notoriety = GameObject.Find("NotorietyLabel").GetComponent<UILabel>();
 		money = GameObject.Find("MoneyLabel").GetComponent<UILabel>();
 		map = GameObject.Find("MapLabel").GetComponent<UILabel>();
+
+		LockMouse.lockMouse = false;
 	}
 	
 	// Update is called once per frame
