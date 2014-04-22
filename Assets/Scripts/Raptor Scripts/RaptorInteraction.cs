@@ -134,7 +134,7 @@ public class RaptorInteraction : MonoBehaviour {
 
 			//prevents the player from getting stuck when pouncing next to a wall
 			if(hud.stamina <= 0f) {
-				isPouncing = false;
+				//isPouncing = false;
 				//fpc.enabled = true;
 			}
 		}
@@ -247,19 +247,19 @@ public class RaptorInteraction : MonoBehaviour {
 	void Controls() {
 		if(!Pause.paused) {
 			toggleRotator(true);
-			if(Input.GetMouseButton(0)) {
+			if(RebindableInput.GetKey("Slash")) {
 				Slash();
 			}
-			else if(Input.GetMouseButtonDown(1)) {
+			else if(RebindableInput.GetKeyDown("Pounce")) {
 				Pounce();
 			}
 
-			if(Input.GetKeyDown(KeyCode.LeftControl)) {
+			if(RebindableInput.GetKeyDown("Crouch")) {
 				isCrouching = !isCrouching;
 				Crouch(isCrouching);
 			}
 
-			if(Input.GetKey(KeyCode.E)) {
+			if(RebindableInput.GetKey("Use")) {
 				RaycastHit hit;
 				int mask = ~(1 << LayerMask.NameToLayer("Enemy"));
 				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2, mask)) {
@@ -283,7 +283,7 @@ public class RaptorInteraction : MonoBehaviour {
 				}
 			}
 			//animation stuff
-			else if(Input.GetKeyUp(KeyCode.E)) {
+			else if(RebindableInput.GetKeyUp("Use")) {
 				//eating stuff
 				eatTarget = null;
 				toggleRotator(true);
@@ -297,7 +297,7 @@ public class RaptorInteraction : MonoBehaviour {
 			}
 		
 			//Stop climbing
-			if(Input.GetKey(KeyCode.Space) && climbing) {
+			if(RebindableInput.GetKeyDown("Jump") && climbing) {
 				climbing = false;
 				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 				rigidbody.isKinematic = false;
@@ -307,7 +307,7 @@ public class RaptorInteraction : MonoBehaviour {
 		else {
 			toggleRotator(false);
 		}
-		if(Input.GetKeyUp(KeyCode.R)) {
+		if(RebindableInput.GetKeyDown("Drop")) {
 			if(inventory.childCount > 0) {
 				foreach(Transform child in inventory) {
 					Collectible collectible = child.GetComponent<Collectible>();
@@ -315,7 +315,8 @@ public class RaptorInteraction : MonoBehaviour {
 						child.parent = null;
 						child.position = Camera.main.transform.TransformPoint(0, 0, 1);
 						RaycastHit hit;
-						if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 1)) {
+						int mask = ~(1 << LayerMask.NameToLayer("Enemy"));
+						if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 1, mask)) {
 							child.position = hit.point;
 						}
 						child.gameObject.active = true;
@@ -422,8 +423,8 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision other) {
-		if(isPouncing || !fpc.grounded) {
-			isPouncing = false;
+		if(isPouncing){// || !fpc.grounded) {
+			//isPouncing = false;
 			rigidbody.drag = 0;
 			//fpc.enabled = true;
 
@@ -432,17 +433,22 @@ public class RaptorInteraction : MonoBehaviour {
 				//other.transform.root.GetComponent<Enemy>().KnockOut(knockOutTime);
 				other.transform.SendMessageUpwards("KnockOut", knockOutTime, SendMessageOptions.DontRequireReceiver);
 				chainPounce = true;
+				isPouncing = false;
 			}
 			//else if(other.transform.tag == "room") {
 			else if(other.rigidbody == null) {
 				RaycastHit hit;
+				int mask = ~(1 << LayerMask.NameToLayer("Enemy"));
 				//check if the raptor is facing the wall
-				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 0.5f)) {
-					climbing = true;
-					armRotation = raptorArms.rotation;//Camera.main.transform.rotation;
-					rigidbody.constraints = RigidbodyConstraints.FreezePosition;
-					fpc.enabled = false;
-					rigidbody.isKinematic = true;
+				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 0.5f, mask)) {
+					//if(hit.collider.gameObject == other.gameObject) {
+						climbing = true;
+						armRotation = raptorArms.rotation;//Camera.main.transform.rotation;
+						rigidbody.constraints = RigidbodyConstraints.FreezePosition;
+						fpc.enabled = false;
+						rigidbody.isKinematic = true;
+						isPouncing = false;
+					//}
 				}
 			}
 		}
@@ -558,6 +564,7 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void Climb() {
+		isPouncing = fpc.grounded ? false : isPouncing;
 		if(climbing) {
 			raptorArms.rotation = armRotation;
 			//Camera.main.GetComponent<SimpleMouseRotator>().rotationRange.x = 0f;

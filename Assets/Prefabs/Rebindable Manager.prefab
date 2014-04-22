@@ -57,12 +57,14 @@ MonoBehaviour:
     input: 304
   - inputName: Crouch
     input: 306
-  - inputName: Pick Up
+  - inputName: Use
     input: 101
-  - inputName: Action
-    input: 323
-  - inputName: RebindMenu
+  - inputName: Drop
     input: 114
+  - inputName: Slash
+    input: 323
+  - inputName: Pounce
+    input: 324
   defaultRebindableAxes:
   - axisName: Vertical
     axisPosName: Forward
