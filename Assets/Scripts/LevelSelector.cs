@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 // attach this to the player's ship object
 public class LevelSelector : MonoBehaviour {
@@ -10,6 +11,8 @@ public class LevelSelector : MonoBehaviour {
 	public int maxShips;
 	public GameObject policeShip;
 	public GameObject cargoShip;
+	public DeliveryShip deliveryShip;
+	public float deliveryShipSpawnDis = 10;
 
     public Vector2 debrisRadius;
     public Vector2 debrisDepth; // min/max depth of debris
@@ -22,6 +25,8 @@ public class LevelSelector : MonoBehaviour {
 
     ArrayList debris; // stationary background space debris
 
+	public static List<Upgrade> upgrades = new List<Upgrade>();
+
 	// Use this for initialization
     void Start()
     {
@@ -29,6 +34,13 @@ public class LevelSelector : MonoBehaviour {
         debris = new ArrayList();
         isPlayerSpotted = false;
         lastDetectedLocation = transform.position;
+
+		if(upgrades.Count > 0) {
+			Vector3 pos = Random.insideUnitCircle.normalized * deliveryShipSpawnDis;
+			DeliveryShip ship = (DeliveryShip)Instantiate(deliveryShip, pos, Random.rotation);
+			ship.upgrade = upgrades[0];
+			upgrades.Remove(ship.upgrade);
+		}
 	}
 
 	public void Load(){
