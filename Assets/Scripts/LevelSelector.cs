@@ -13,6 +13,9 @@ public class LevelSelector : MonoBehaviour {
 	public GameObject cargoShip;
 	public DeliveryShip deliveryShip;
 	public float deliveryShipSpawnDis = 10;
+	public Texture2D deliveryShipIndicator;
+
+	public List<CollectibleUpgrade> upgradPrefabs = new List<CollectibleUpgrade>();
 
     public Vector2 debrisRadius;
     public Vector2 debrisDepth; // min/max depth of debris
@@ -25,8 +28,6 @@ public class LevelSelector : MonoBehaviour {
 
     ArrayList debris; // stationary background space debris
 
-	public static List<Upgrade> upgrades = new List<Upgrade>();
-
 	// Use this for initialization
     void Start()
     {
@@ -35,11 +36,16 @@ public class LevelSelector : MonoBehaviour {
         isPlayerSpotted = false;
         lastDetectedLocation = transform.position;
 
-		if(upgrades.Count > 0) {
+		foreach(CollectibleUpgrade upgrade in upgradPrefabs) {
+			UpgradeSpawner.upgrades.Add(upgrade);
+		}
+
+		if(UpgradeSpawner.upgrades.Count > 0) {
 			Vector3 pos = Random.insideUnitCircle.normalized * deliveryShipSpawnDis;
-			DeliveryShip ship = (DeliveryShip)Instantiate(deliveryShip, pos, Random.rotation);
-			ship.upgrade = upgrades[0];
-			upgrades.Remove(ship.upgrade);
+			DeliveryShip ship = (DeliveryShip)Instantiate(deliveryShip, pos, Quaternion.identity);
+			Indicator indicator = Indicator.New(deliveryShipIndicator, ship.transform.position);
+			indicator.target = ship.transform;
+			indicator.tint = Color.green;
 		}
 	}
 
@@ -119,7 +125,7 @@ public class LevelSelector : MonoBehaviour {
                 }
             }
             newDerbs.Clear();
-            print(newDerbs.Count);
+            //print(newDerbs.Count);
             foreach (GameObject derb in toBeAdded) {
                 newDerbs.Add(derb);
                 debris.Add(derb);

@@ -25,7 +25,7 @@ public class SecurityCamera : MonoBehaviour {
 
 	//Tweening things
 	private bool tweening = false;
-	private Transform player;
+	public RaptorInteraction player;
 	private Vector3 startingRotation;
 
 	private float rotationRange = 45f;//if you change this, you have to change the handle's rotation
@@ -35,7 +35,7 @@ public class SecurityCamera : MonoBehaviour {
 	void Start() {
 		if(RaptorInteraction.notoriety < notorietyToSpawn) Destroy(gameObject);
 
-		player = GameObject.Find("Player").transform;
+		player = GameObject.FindObjectOfType<RaptorInteraction>();
 		startingRotation = transform.localEulerAngles;
 
 		curFov = fov;
@@ -53,7 +53,7 @@ public class SecurityCamera : MonoBehaviour {
 			if(canRotate) {
 				HOTween.Kill(transform);
 				tweening = false;
-				transform.LookAt(player.position);
+				transform.LookAt(player.transform.position);
 			}
 			Alarm.ActivateAlarms();
 		}
@@ -73,7 +73,7 @@ public class SecurityCamera : MonoBehaviour {
 
 	void LookForEnemy() {
 		enemyVisible = false;
-		RaptorInteraction player = GameObject.Find("Player").GetComponent<RaptorInteraction>();
+		//RaptorInteraction player = GameObject.Find("Player").GetComponent<RaptorInteraction>();
 		if(player != null && player.health > 0) {
 			Transform enemyHead = Camera.main.transform;
 			if(enemyHead != null) {

@@ -11,7 +11,8 @@ public class Notoriety {
 public class RaptorInteraction : MonoBehaviour {
 	public Texture2D crosshair;
 	public Texture2D noiseIndicator;
-	public PainIndicator painIndicator;
+	public Texture2D painIndicator;
+	//public PainIndicator painIndicator;
 
 	//Raptor Stats
 	public static float maxHealth = 100f;
@@ -89,6 +90,8 @@ public class RaptorInteraction : MonoBehaviour {
 	public static float _notoriety = 0f;//Notoriety should increase by 2000 for killing a guy;
 	public static float notorietyStep = 2000;
 	public static int keyCount = 0;
+
+	public static bool cutscene = false;
 
 	public static float notoriety {
 		get { return _notoriety; }
@@ -461,18 +464,16 @@ public class RaptorInteraction : MonoBehaviour {
 		else {
 			GUI.color = Color.white;
 		}
-		if(!ShipDoor.escaping) {
-			float x = (Screen.width / 2) - (crosshair.width / 6);
-			float y = (Screen.height / 2) - (crosshair.height / 6);
-			GUI.DrawTexture(new Rect(x, y, crosshair.width / 3, crosshair.height / 3), crosshair);
+		float x = (Screen.width / 2) - (crosshair.width / 6);
+		float y = (Screen.height / 2) - (crosshair.height / 6);
+		GUI.DrawTexture(new Rect(x, y, crosshair.width / 3, crosshair.height / 3), crosshair);
 
-			float soundScale = noiseLevel / runNoiseLevel;
-			soundScale += soundScale > 0 ? 1 : 0;
-			x = (Screen.width / 2) - (noiseIndicator.width / 6) * soundScale;
-			y = (Screen.height / 2) - (noiseIndicator.height / 6) * soundScale;
+		float soundScale = noiseLevel / runNoiseLevel;
+		soundScale += soundScale > 0 ? 1 : 0;
+		x = (Screen.width / 2) - (noiseIndicator.width / 6) * soundScale;
+		y = (Screen.height / 2) - (noiseIndicator.height / 6) * soundScale;
 
-			GUI.DrawTexture(new Rect(x, y, noiseIndicator.width / 3 * soundScale, noiseIndicator.height / 3 * soundScale), noiseIndicator);
-		}
+		GUI.DrawTexture(new Rect(x, y, noiseIndicator.width / 3 * soundScale, noiseIndicator.height / 3 * soundScale), noiseIndicator);
 	}
 
 	bool InAttackRange() {
@@ -543,10 +544,14 @@ public class RaptorInteraction : MonoBehaviour {
 		health -= damage.amount;
 		hud.Deplete("health", damage.amount/maxHealth);
 
-		PainIndicator indicator = (PainIndicator)Instantiate(painIndicator);
+		/*PainIndicator indicator = (PainIndicator)Instantiate(painIndicator);
 		indicator.transform.parent = Camera.main.transform;
 		indicator.transform.localPosition = new Vector3(0, 0, 1);
-		indicator.dir = Camera.main.transform.position-damage.pos;
+		indicator.dir = Camera.main.transform.position-damage.pos;*/
+
+		Indicator indicator = Indicator.New(painIndicator, damage.pos);
+		indicator.tint = Color.red;
+		indicator.dontDestroy = false;
 
 		//print(health);
 		SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
@@ -559,8 +564,14 @@ public class RaptorInteraction : MonoBehaviour {
 				if(collectible != null && !collectible.keyCard) {
 					money += collectible.value;
 				}
+
+				CollectibleUpgrade upgrade = child.GetComponent<CollectibleUpgrade>();
+				if(upgrade != null) {
+					upgrade.Apply(this);
+				}
 			}
 		}
+		keyCount = 0;
 	}
 
 	void Climb() {

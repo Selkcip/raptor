@@ -36,4 +36,10 @@ public class TaggedTriggerable : Triggerable {
 			isTriggered = true;
 		}
 	}
+
+	void OnTriggerEnter2D(Collider2D other) {
+		if(tags.Count <= 0 || tags.Contains(other.tag) || (other.transform.parent != null && tags.Contains(other.transform.parent.tag))) {
+			isTriggered = true;
+		}
+	}
 }

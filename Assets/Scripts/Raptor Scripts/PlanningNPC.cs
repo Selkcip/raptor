@@ -859,7 +859,7 @@ public class PlanningNPC : MonoBehaviour {
 	protected void LookForEnemy() {
 		enemyVisible = false;
 		if(!knockedOut) {
-			if(player != null && player.health > 0) {
+			if(player.active && player != null && player.health > 0) {
 				Transform enemyHead = Camera.main.transform;
 				if(enemyHead != null) {
 					enemyVisibility = 1;
@@ -959,7 +959,7 @@ public class PlanningNPC : MonoBehaviour {
 			float newLight = cellLight != null ? cellLight.level : 0;
 			lightLevel += (newLight - lightLevel) * 0.1f;
 			if(oldLightLevel >= minLightLevel && lightLevel < minLightLevel) {
-				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/icantseeanything"), SoundManager.SoundType.Dialogue, gameObject);
+				//SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/icantseeanything"), SoundManager.SoundType.Dialogue, gameObject);
 				oldLightLevel = lightLevel;
 			}
 			else if(lightLevel >= maxLightLevel) {
