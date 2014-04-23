@@ -13,6 +13,7 @@ public class RaptorInteraction : MonoBehaviour {
 	public Texture2D noiseIndicator;
 
 	//Raptor Stats
+	public static string name = "Regina";
 	public static float maxHealth = 100f;
 	public static float attack = 20f;
 	public static float stealthTime = 180f; //time in seconds
