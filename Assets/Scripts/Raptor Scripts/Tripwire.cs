@@ -8,12 +8,16 @@ public class Tripwire : Triggerable {
 	public bool hacked = false;
 	public bool explosive = true;
 
+	public float notorietyToSpawn = 10000;
+
 	public Transform emitter1;
 	public Transform emitter2;
 	public Transform laser;
 
 	// Use this for initialization
 	void Start() {
+		if(RaptorInteraction.notoriety < notorietyToSpawn) Destroy(gameObject);
+
 		//Adjusts the length of the laser to fit between the two things
 		float distance = Vector3.Distance(emitter1.position, emitter2.position);
 		float currentSize = laser.renderer.bounds.size.y;
@@ -38,7 +42,7 @@ public class Tripwire : Triggerable {
 	}
 
 	void Explosion(Transform other, float damageValue) {
-		other.transform.SendMessageUpwards("Hurt", damageValue, SendMessageOptions.DontRequireReceiver);
+		other.transform.SendMessageUpwards("Hurt", new Damage(damageValue, transform.position), SendMessageOptions.DontRequireReceiver);
 		ShipGrid.AddFluidI(transform.position, "pressure", 200f, 1f, 0.01f);
 		hacked = true;
 		laser.renderer.enabled = false;

@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class BlackHole : MonoBehaviour {
+public class BlackHole : Triggerable {
 
 	public float force = -10;
-	public float falloff = 0.5f;
+	public float forceLifeTime = 0.01f;
+	public float forceFlowRate = 0.9f;
 	public new bool active = false;
 
 	// Use this for initialization
@@ -14,8 +15,13 @@ public class BlackHole : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update() {
+		base.Update();
 		if(active) {
-			ShipGrid.AddFluidI(transform.position, "pressure", force, falloff, 0.01f);
+			ShipGrid.AddFluidI(transform.position, "pressure", force, forceLifeTime, forceFlowRate);
 		}
+	}
+
+	void Activate(bool triggered) {
+		active = triggered;
 	}
 }

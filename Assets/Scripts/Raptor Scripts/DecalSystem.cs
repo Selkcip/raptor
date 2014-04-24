@@ -144,9 +144,13 @@ public class DecalSystem : MonoBehaviour {
 					Matrix4x4 l_MeshToWorldMatrix = collider.renderer.transform.localToWorldMatrix;
 
 					// Add the mesh data to the decals mesh, cut and offset it.
-					m_DecalsMesh.Add(l_Mesh, l_WorldToMeshMatrix, l_MeshToWorldMatrix);
-					m_DecalsMeshCutter.CutDecalsPlanes(m_DecalsMesh);
-					m_DecalsMesh.OffsetActiveProjectorVertices();
+					//hi guise
+					//i am eriq
+					if(l_Mesh.isReadable) {
+						m_DecalsMesh.Add(l_Mesh, l_WorldToMeshMatrix, l_MeshToWorldMatrix);
+						m_DecalsMeshCutter.CutDecalsPlanes(m_DecalsMesh);
+						m_DecalsMesh.OffsetActiveProjectorVertices();
+					}
 
 					// The changes are only present in the decals mesh at the moment. We have
 					// to pass them to the decals instance to visualize them.

@@ -8,7 +8,10 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: Skin
   m_Shader: {fileID: 4, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: []
+  m_ShaderKeywords:
+  - DIFFCUBE_OFF
+  - SPECCUBE_OFF
+  - LUX_AO_OFF
   m_CustomRenderQueue: -1
   m_SavedProperties:
     serializedVersion: 2

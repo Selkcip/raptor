@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class Triggerable : MonoBehaviour {
 
+	public bool activateOnStateChange = false;
 	public bool isTriggered = false;
 	public bool or;
 	private bool result;
@@ -35,9 +36,13 @@ public class Triggerable : MonoBehaviour {
 	
 		if (triggerCount > 0 && result != isTriggered){
 			isTriggered = result;
-			//gameObject.SendMessage("activate", isTriggered, SendMessageOptions.DontRequireReceiver);
+			if(activateOnStateChange) {
+				gameObject.SendMessage("Activate", isTriggered, SendMessageOptions.DontRequireReceiver);
+			}
 		}
-	
-		gameObject.SendMessage("activate", isTriggered, SendMessageOptions.DontRequireReceiver);
+
+		if(!activateOnStateChange) {
+			gameObject.SendMessage("Activate", isTriggered, SendMessageOptions.DontRequireReceiver);
+		}
 	}
 }

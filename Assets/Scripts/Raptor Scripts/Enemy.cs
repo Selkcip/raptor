@@ -868,8 +868,8 @@ public class Enemy : MonoBehaviour {
 		}
 	}
 
-	public void Hurt(float damage) {
-		health -= damage;
+	public void Hurt(Damage damage) {
+		health -= damage.amount;
 	}
 
 	public void TakeMoney(int amount) {

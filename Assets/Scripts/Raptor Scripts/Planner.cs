@@ -110,11 +110,13 @@ public class PlanAction {
 	public PlanState output;
 	public StateUpdate Update;
 	public string name = "action";
+	public int additionalCost;
 
-	public PlanAction(PlanState input, PlanState output, StateUpdate update) {
+	public PlanAction(PlanState input, PlanState output, StateUpdate update, int cost = 0) {
 		this.input = input;
 		this.output = output;
 		this.Update = update;
+		this.additionalCost = cost;
 	}
 }
 
@@ -188,7 +190,7 @@ public class Planner {
 							temp = action.output.Transform(temp);
 
 						//Debug.Log((action != null ? action.name : "null") + " " + ((first.parent != null && first.parent.action != null) ? first.parent.action.name : "null"));
-							int cost = first.cost + output.Diff(action.output);
+							int cost = first.cost + output.Diff(action.output) + action.additionalCost;
 							PlanListItem newItem = new PlanListItem(temp, action, cost, first);
 							//Debug.Log((first.action != null ? first.action.name : "null")+" > "+action.name+" "+temp.ToString()+" cost = "+cost);
 

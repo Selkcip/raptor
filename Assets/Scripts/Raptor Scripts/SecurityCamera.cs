@@ -9,6 +9,7 @@ public class SecurityCamera : MonoBehaviour {
 	public float fov = 45f;
 	public float viewDis = 10f;
 	public float noticeTime = 2;
+	public float notorietyToSpawn = 10000;
 
 	float curFov = 0;
 	float curViewDis = 0;
@@ -24,7 +25,7 @@ public class SecurityCamera : MonoBehaviour {
 
 	//Tweening things
 	private bool tweening = false;
-	private Transform player;
+	public RaptorInteraction player;
 	private Vector3 startingRotation;
 
 	private float rotationRange = 45f;//if you change this, you have to change the handle's rotation
@@ -32,7 +33,9 @@ public class SecurityCamera : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
-		player = GameObject.Find("Player").transform;
+		if(RaptorInteraction.notoriety < notorietyToSpawn) Destroy(gameObject);
+
+		player = GameObject.FindObjectOfType<RaptorInteraction>();
 		startingRotation = transform.localEulerAngles;
 
 		curFov = fov;
@@ -50,7 +53,7 @@ public class SecurityCamera : MonoBehaviour {
 			if(canRotate) {
 				HOTween.Kill(transform);
 				tweening = false;
-				transform.LookAt(player.position);
+				transform.LookAt(player.transform.position);
 			}
 			Alarm.ActivateAlarms();
 		}
@@ -63,13 +66,14 @@ public class SecurityCamera : MonoBehaviour {
 		}
 
 		LookForEnemy();
+		LookForDeadBodies();
 
 		Debug.DrawRay(transform.position, transform.forward, Color.magenta);
 	}
 
 	void LookForEnemy() {
 		enemyVisible = false;
-		RaptorInteraction player = GameObject.Find("Player").GetComponent<RaptorInteraction>();
+		//RaptorInteraction player = GameObject.Find("Player").GetComponent<RaptorInteraction>();
 		if(player != null && player.health > 0) {
 			Transform enemyHead = Camera.main.transform;
 			if(enemyHead != null) {
@@ -115,6 +119,23 @@ public class SecurityCamera : MonoBehaviour {
 			if(mentionEnemyVisible) {
 				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/wherediditgo"), SoundManager.SoundType.Dialogue, gameObject);
 				mentionEnemyVisible = false;
+			}
+		}
+	}
+
+	void LookForDeadBodies() {
+		RaycastHit hit;
+		Physics.Raycast(transform.position, transform.forward, out hit, curViewDis);
+		Debug.DrawLine(transform.position, hit.point);
+		List<ShipGridCell> region = ShipGrid.GetRegionI(new Bounds(hit.point, new Vector3(2,2,2)));
+		foreach(ShipGridCell cell in region) {
+			foreach(ShipGridItem item in cell.contents) {
+				PlanningNPC npc = item.GetComponent<PlanningNPC>();
+				if(npc != null) {
+					if(npc.dead) {
+						Alarm.ActivateAlarms();
+					}
+				}
 			}
 		}
 	}

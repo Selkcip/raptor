@@ -3,12 +3,13 @@ using System.Collections;
 
 public class Guard : PlanningNPC {
 
-	public float punchDamage = 0.5f;
+	public float punchDamage = 5;
 	public float punchDistance = 2;
 	public float punchCoolDown = 1;
 
 	public bool playerDead = false;
 	public bool nearEnemy = false;
+	public bool facingEnemy = false;
 	public bool canPunch = false;
 	public bool canShoot = false;
 
@@ -36,39 +37,14 @@ public class Guard : PlanningNPC {
 		goals.Add(gKillPlayer);
 	}
 
-	PlanAction aFindPlayer, aChasePlayer, aPunchPlayer, aCoolPunch, aShootPlayer, aPatrol;
+	PlanAction aFindPlayer, aChasePlayer, aPunchPlayer, aCoolPunch, aShootPlayer, aPatrol, aFacePlayer;
 	public override void InitActions() {
 		base.InitActions();
-
-		aFindPlayer = new PlanAction(
-			new PlanState() {
-				{ "enemySeen", true },
-				{ "enemyVisible", false },
-				{ "running", true },
-				{ "knockedOut", false },
-				{ "dead", false }
-			},
-			new PlanState() {
-				{ "playerVisible", true }
-			},
-			delegate() {
-				Vector3 moveDir = enemyPos-transform.position;
-				if(moveDir.magnitude > targetChangeTolerance) {
-					Move(moveDir, enemyPos);
-				}
-				else {
-					enemySeen = false;
-				}
-
-				return false;
-			});
-		aFindPlayer.name = "find player";
-		//planner.Add(aFindPlayer);
 
 		aChasePlayer = new PlanAction(
 			new PlanState() {
 				{ "enemySeen", true },
-				//{ "enemyVisible", true },
+				//{ "enemyVisible", false },
 				{ "nearEnemy", false },
 				{ "running", true },
 				{ "knockedOut", false },
@@ -87,7 +63,9 @@ public class Guard : PlanningNPC {
 				// update the agents posiiton 
 				agent.transform.position = transform.position;
 
-				if((enemyPos-transform.position).magnitude <= targetChangeTolerance){
+				//print(agent.remainingDistance);
+
+				if(agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
 					enemySeen = false;
 				}
 
@@ -104,7 +82,8 @@ public class Guard : PlanningNPC {
 				{ "enemySeen", true },
 				{ "enemyVisible", true },
 				{ "nearEnemy", true },
-				{ "standing", true },
+				{ "facingEnemy", true },
+				//{ "standing", true },
 				{ "canPunch", true },
 				{ "knockedOut", false },
 				{ "dead", false }
@@ -113,7 +92,7 @@ public class Guard : PlanningNPC {
 				{ "playerDead", true }
 			},
 			delegate() {
-				player.Hurt(punchDamage);
+				player.Hurt(new Damage(punchDamage, transform.position));
 				punchTime = punchCoolDown;
 
 				return false;
@@ -138,10 +117,37 @@ public class Guard : PlanningNPC {
 		aCoolPunch.name = "cool punch";
 		planner.Add(aCoolPunch);
 
+		aFacePlayer = new PlanAction(
+			new PlanState() {
+				//{ "enemySeen", true },
+				{ "enemyVisible", true },
+				//{ "standing", true },
+				{ "facingEnemy", false },
+				{ "knockedOut", false },
+				{ "dead", false }
+			},
+			new PlanState() {
+				{ "facingEnemy", true },
+				{ "enemySeen", true }
+			},
+			delegate() {
+				Vector3 targetDir = (enemyPos - transform.position).normalized;
+
+				Move(Vector3.zero, enemyPos);
+
+				//facingEnemy = Vector3.Dot(targetDir, transform.forward) >= 0.9f;
+
+				return false;
+			});
+		aFacePlayer.name = "face player";
+		planner.Add(aFacePlayer);
+
 		aShootPlayer = new PlanAction(
 			new PlanState() {
 				{ "enemySeen", true },
 				{ "enemyVisible", true },
+				{ "nearEnemy", false },
+				{ "facingEnemy", true },
 				{ "canShoot", true },
 				{ "standing", true },
 				{ "knockedOut", false },
@@ -151,7 +157,7 @@ public class Guard : PlanningNPC {
 				{ "playerDead", true }
 			},
 			delegate() {
-				//Vector3 targetDir = (enemyPos - transform.position).normalized;
+				Vector3 targetDir = (enemyPos - transform.position).normalized;
 
 				Move(Vector3.zero, enemyPos);
 
@@ -169,11 +175,22 @@ public class Guard : PlanningNPC {
 		aShootPlayer.name = "shoot player";
 		planner.Add(aShootPlayer);
 
-		float patrolTimer = 0;
+		//Make wander into partol
+		aWander.name = "patrol";
+		aWander.output.Clear();
+		aWander.output = new PlanState() {
+			{ "enemySeen", true }
+		};
+
+		/*float patrolTimer = 0;
 		aPatrol = new PlanAction(
 			new PlanState() {
 				{ "enemySeen", false },
 				{ "enemyVisible", false },
+				{ "curious", false },
+				{ "alarmed", false },
+				{ "canInspect", false },
+				{ "alertShip", false },
 				{ "running", false },
 				{ "knockedOut", false },
 				{ "dead", false }
@@ -192,7 +209,10 @@ public class Guard : PlanningNPC {
 				NavMeshHit hit;
 				agent.Raycast(transform.position+transform.forward, out hit);
 
-				if(hit.hit || patrolTimer >= patrolTime || (patrolPos - transform.position).magnitude <= targetChangeTolerance) {
+				if(hit.hit || patrolTimer >= patrolTime || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
+					//Vector3 randomDir = Random.insideUnitSphere * 10;
+					//NavMesh.SamplePosition(transform.position + randomDir, out hit, 10, 1);
+					//patrolPos = hit.position;// transform.position + transform.forward * 10;
 					patrolPos = transform.position + transform.forward * 10;
 					patrolTimer = 0;
 				}
@@ -203,7 +223,7 @@ public class Guard : PlanningNPC {
 				return false;
 			});
 		aPatrol.name = "patrol";
-		planner.Add(aPatrol);
+		planner.Add(aPatrol);*/
 	}
 	
 	// Update is called once per frame
@@ -212,6 +232,9 @@ public class Guard : PlanningNPC {
 		playerDead = player.health <= 0;
 		canPunch = punchTime <= 0;
 		nearEnemy = (enemyPos - transform.position).magnitude <= punchDistance;
+		Vector3 enemyDiff = enemyPos - transform.position;
+		enemyDiff.y *= 0;
+		facingEnemy = Vector3.Dot(enemyDiff.normalized, transform.forward) >= 0.9f;
 		canShoot = weapon != null && weapon.hasAmmo;
 
 		//This should be last in most cases

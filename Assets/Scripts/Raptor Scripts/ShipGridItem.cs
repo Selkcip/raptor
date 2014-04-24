@@ -16,6 +16,7 @@ public class ShipGridItem : MonoBehaviour {
 	public virtual void Update() {
 		ShipGridCell newCell = ShipGrid.GetPosI(transform.position);
 		if(newCell != null && newCell != cell) {
+			if(cell != null) cell.RemoveItem(this);
 			cell = newCell;
 			cell.AddItem(this);
 		}
