@@ -138,8 +138,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d11a35819a0f8246968b702e235ddbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  despawnRadius: 80
-  spawnRadius: 60
+  despawnRadius: 200
+  spawnRadius: 120
   maxShips: 20
   policeShip: {fileID: 100000, guid: 8678207e8b4258a41a3537ec5d1ed997, type: 2}
   cargoShip: {fileID: 100000, guid: 4c444abae610f574ca1002d38bf4f218, type: 2}

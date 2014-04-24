@@ -35,7 +35,7 @@ public class LevelSelector : MonoBehaviour {
         isPlayerSpotted = false;
         lastDetectedLocation = transform.position;
 
-        CargoLane cargoLane = new CargoLane(new Vector2(10, 0), new Vector2(1, 1), new Vector2(10, 15), 10, new Vector2(11, 12));
+        CargoLane cargoLane = new CargoLane(new Vector2(25, 0), new Vector2(1, 1), new Vector2(10, 15), 10, new Vector2(11, 12));
         features.Add(cargoLane);
 	}
 
@@ -48,7 +48,6 @@ public class LevelSelector : MonoBehaviour {
 	void Update() {
         UpdateShips();
 
-        UpdateBackground();
         foreach (SpaceyFeature feature in features) { 
             switch(feature.type) {
                 case FeatureType.CargoLane:
@@ -58,6 +57,8 @@ public class LevelSelector : MonoBehaviour {
                 // at the bottom of the script add an enum type to FeatureType, 
                 // a class implementing SpaceyFeature, and an update function for it
             }
+
+        UpdateBackground();
         }
 	}
 
@@ -177,21 +178,33 @@ public class LevelSelector : MonoBehaviour {
         distance = (Vector2)transform.position - lane.location;
         if (distance.magnitude < spawnRadius) { 
             // get a spawn location
-            float spawnWidth = Random.value * lane.width - lane.width * 2;
-            float spawnDistance = Mathf.Sqrt(Mathf.Pow(spawnRadius, 2) - Mathf.Pow(distance.magnitude + spawnWidth, 2));
-            Vector2 spawnOrigin = lane.location - lane.direction.normalized * spawnDistance;
+            float spawnWidth = Random.value * lane.width - lane.width / 2;
+            float spawnDistance = Mathf.Sqrt(Mathf.Pow(spawnRadius, 2) - Mathf.Pow(distance.magnitude, 2));
+            Vector2 spawnOriginBack = lane.location - lane.direction.normalized * spawnDistance;
+            spawnOriginBack += (Vector2)(Quaternion.Euler(new Vector3(0, 0, 90)) * lane.direction.normalized) * spawnWidth;
+            Vector2 spawnOriginFront = lane.location + lane.direction.normalized * spawnDistance;
+            spawnOriginFront += (Vector2)(Quaternion.Euler(new Vector3(0, 0, 90)) * lane.direction.normalized) * spawnWidth;
 
             // check if it is not near an already spawned cargoship, then spawn
-            bool spawn = true;
-            foreach (GameObject ship in cargoShips)
-                if (Vector2.Distance(ship.transform.position, spawnOrigin) < lane.nextSpawnDistance) {
-                    spawn = false; 
-                    break;
-                }
+            bool spawnBack = true;
+            bool spawnFront = true;
+            foreach (GameObject ship in cargoShips) {
+                if (Vector2.Distance(ship.transform.position, spawnOriginBack) < lane.nextSpawnDistance)
+                    spawnBack = false;
+                if (Vector2.Distance(ship.transform.position, spawnOriginFront) < lane.nextSpawnDistance)
+                    spawnFront = false;
+            }
 
-            if (spawn) { 
-                GameObject newShip = (GameObject)Instantiate(cargoShip, spawnOrigin, Quaternion.FromToRotation(Vector2.up, lane.direction));
-                newShip.rigidbody2D.velocity = (Vector2)newShip.transform.up * (Random.value * lane.initialSpeed.x + (lane.initialSpeed.y - lane.initialSpeed.x));
+            if (spawnBack) { 
+                GameObject newShip = (GameObject)Instantiate(cargoShip, spawnOriginBack, Quaternion.FromToRotation(Vector2.up, lane.direction));
+                newShip.rigidbody2D.velocity = (Vector2)newShip.transform.up * (lane.initialSpeed.x + Random.value * (lane.initialSpeed.y - lane.initialSpeed.x));
+                cargoShips.Add(newShip);
+                lane.CalculateNextSpawnDistance();
+            }
+            else if (spawnFront)
+            {
+                GameObject newShip = (GameObject)Instantiate(cargoShip, spawnOriginFront, Quaternion.FromToRotation(Vector2.up, lane.direction));
+                newShip.rigidbody2D.velocity = (Vector2)newShip.transform.up * (lane.initialSpeed.x + Random.value * (lane.initialSpeed.y - lane.initialSpeed.x));
                 cargoShips.Add(newShip);
                 lane.CalculateNextSpawnDistance();
             }
