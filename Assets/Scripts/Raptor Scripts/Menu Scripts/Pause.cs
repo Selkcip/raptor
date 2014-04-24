@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Pause : MonoBehaviour {
 	private GameObject hud;
-	private RaptorInteraction player;
 	private Transform pausePanel;
 	private GameOver gameOver;
 
@@ -16,7 +15,6 @@ public class Pause : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		hud = GameObject.Find("HUD");
-		player = GameObject.Find("Player").GetComponent<RaptorInteraction>();
 
 		notoriety = GameObject.Find("Notoriety").GetComponent<UILabel>();
 		money = GameObject.Find("Money").GetComponent<UILabel>();
@@ -44,7 +42,9 @@ public class Pause : MonoBehaviour {
 	public void PauseMenu() {
 		Time.timeScale = 0;
 		pausePanel.gameObject.SetActive(true);
-		hud.SetActive(false);
+		if(hud != null) {
+			hud.SetActive(false);
+		}
 		paused = true;
 		LockMouse.lockMouse = false;
 
@@ -55,7 +55,9 @@ public class Pause : MonoBehaviour {
 
 	public void Unpause() {
 		Time.timeScale = 1;
-		hud.SetActive(true);
+		if(hud != null) {
+			hud.SetActive(true);
+		}
 		LockMouse.lockMouse = true;
 		paused = false;
 		pausePanel.gameObject.SetActive(false);
