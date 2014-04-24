@@ -3,7 +3,9 @@ using System.Collections;
 
 public class SpaceCowboyUpgrade : CollectibleUpgrade {
 
+	public SpaceCowboy spaceCowboyPrefab;
+
 	public override void Apply(RaptorInteraction player) {
-		//Give the player a space cowboy
+		PlayerShipController.AddConsumable(spaceCowboyPrefab);
 	}
 }

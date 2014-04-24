@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SpaceCowboy : MonoBehaviour {
+public class SpaceCowboy : ConsumableUpgrade {
 	public float fuseTime = 18;
 	public float speed = 1;
 	public SpaceCowboyExplosion explosionPrefab;

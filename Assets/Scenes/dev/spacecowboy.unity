@@ -133,7 +133,7 @@ GameObject:
   - 95: {fileID: 253428893}
   - 114: {fileID: 253428892}
   - 61: {fileID: 253428891}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: PlayerShip
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -259,7 +259,7 @@ MonoBehaviour:
   deliveryShipIndicator: {fileID: 2800000, guid: 039029b80919b75469427191d7a33680,
     type: 3}
   upgradPrefabs:
-  - {fileID: 11400000, guid: d9d13d5cedff4994a8b62fdb3149a7d0, type: 2}
+  - {fileID: 11400000, guid: 578c839441c8e1841ad307b3ffc3f879, type: 2}
   debrisRadius: {x: 25, y: 100}
   debrisDepth: {x: 25, y: 40}
   debrisObject: {fileID: 100000, guid: d387d7ab0af08e54fa48bc238551db2a, type: 2}
@@ -600,7 +600,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1200151387}
   - 114: {fileID: 1200151386}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SceneTransition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -692,8 +692,12 @@ Prefab:
     - target: {fileID: 11400002, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
       propertyPath: upgradPrefabs.Array.data[0]
       value: 
-      objectReference: {fileID: 11400000, guid: d9d13d5cedff4994a8b62fdb3149a7d0,
+      objectReference: {fileID: 11400000, guid: 578c839441c8e1841ad307b3ffc3f879,
         type: 2}
+    - target: {fileID: 100000, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
   m_RootGameObject: {fileID: 253428885}

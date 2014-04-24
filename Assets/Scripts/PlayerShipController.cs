@@ -1,5 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System;
+
+public class UpgradeCount {
+	public string type;
+	public ConsumableUpgrade upgrade;
+	public int count = 0;
+
+	public UpgradeCount(ConsumableUpgrade upgrade) {
+		this.upgrade = upgrade;
+	}
+}
 
 public class PlayerShipController : MonoBehaviour {
 
@@ -20,6 +32,20 @@ public class PlayerShipController : MonoBehaviour {
     public float bulletSpeed, reloadTime;
 
 	public LevelSelector levelSelector;
+
+	public static float damage = 10;
+	public static List<UpgradeCount> consumables = new List<UpgradeCount>();
+	public static int currentConsumable = 0;
+	public static void AddConsumable(ConsumableUpgrade upgrade) {
+		UpgradeCount count = consumables.Find(delegate(UpgradeCount cur) {
+			return cur.upgrade = upgrade;
+		});
+		if(count == null) {
+			count = new UpgradeCount(upgrade);
+			consumables.Add(count);
+		}
+		count.count++;
+	}
 
 	// Use this for initialization
 	void Start() {
@@ -110,6 +136,20 @@ public class PlayerShipController : MonoBehaviour {
 
 			if (cloakCharge > 1)
 				cloakCharge = 1;
+
+			currentConsumable = Mathf.Max(0, Mathf.Min(consumables.Count - 1, currentConsumable));
+			if(Input.GetKeyDown(KeyCode.E)) {
+				if(consumables.Count > 0) {
+					UpgradeCount count = consumables[currentConsumable];
+					if(count.count > 0) {
+						Instantiate(count.upgrade, transform.position, transform.rotation);
+						count.count--;
+						if(count.count <= 0) {
+							consumables.Remove(count);
+						}
+					}
+				}
+			}
 		}
 
 		if (reload > 0)
