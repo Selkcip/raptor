@@ -14,7 +14,6 @@ public class FileButton : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		filePath = Application.dataPath + "\\" + fileName + ".xml";
-		fileWindow.SetActive(false);
 	}
 
 	void OnClick() {
@@ -30,12 +29,12 @@ public class FileButton : MonoBehaviour {
 		GameSaver.LoadGame(fileName);
 
 		print(RaptorInteraction.name);
-
+		fileWindow.SetActive(true);
 		//update the window
 		fileWindow.SendMessage("UpdateWindow", SendMessageOptions.DontRequireReceiver);
 		//loadButton.GetComponent<LoadButtonMain>().fileName = fileName;
 		LoadButtonMain.fileName = fileName;
 		deleteButton.GetComponent<DeleteButtonMain>().fileName = fileName;
-		fileWindow.SetActive(true);
+		//fileWindow.SetActive(true);
 	}
 }

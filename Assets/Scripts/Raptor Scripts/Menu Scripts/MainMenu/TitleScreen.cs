@@ -11,7 +11,6 @@ public class TitleScreen : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		mainMenu.SetActive(false);
 		gameObject.AddComponent<SaveLoad>();
 	}
 	

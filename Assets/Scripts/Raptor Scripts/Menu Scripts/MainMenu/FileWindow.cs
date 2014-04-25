@@ -24,11 +24,12 @@ public class FileWindow : MonoBehaviour {
 
 		money = GameObject.Find("Money").GetComponent<UILabel>();
 		money.text = "Money: $" + RaptorInteraction.money;
+		transform.parent.gameObject.SetActive(false);
+		gameObject.SetActive(false);
 	}
 
 	//Updates labels
 	void UpdateWindow () {
-		nameInput.isSelected = true;
 		nameInput.value = RaptorInteraction.name;
 		name.text = RaptorInteraction.name;
 		map.text = "Map Completion: " + RaptorInteraction.mapAmountAcquired + "%";
