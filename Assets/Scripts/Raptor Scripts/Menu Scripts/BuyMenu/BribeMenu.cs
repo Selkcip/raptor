@@ -43,6 +43,5 @@ public class BribeMenu : MonoBehaviour {
 	void Confirm() {
 		RaptorInteraction.money = money;
 		RaptorInteraction.notoriety = notoriety;
-		RaptorInteraction.notoriety = 2000;
 	}
 }
