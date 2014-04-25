@@ -7,6 +7,10 @@ public class TriggerableLight : Triggerable {
 
 	public string room = "ship";
 
+	void OnLevelLoaded() {
+		lights.Clear();
+	}
+
 	void Start () {
 		activateOnStateChange = true;
 		lights.Add(this);

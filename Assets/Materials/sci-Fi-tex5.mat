@@ -8,7 +8,10 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: sci-Fi-tex5
   m_Shader: {fileID: 4800000, guid: 3ad0c2f3204d7814d924acd61b4aafe8, type: 3}
-  m_ShaderKeywords: []
+  m_ShaderKeywords:
+  - DIFFCUBE_OFF
+  - SPECCUBE_OFF
+  - LUX_AO_OFF
   m_CustomRenderQueue: -1
   m_SavedProperties:
     serializedVersion: 2
@@ -25,13 +28,6 @@ Material:
           name: _BumpMap
         second:
           m_Texture: {fileID: 2800000, guid: a688bf6c6d0c0934b9ec6afc53152989, type: 3}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _ParallaxMap
-        second:
-          m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -58,6 +54,13 @@ Material:
       data:
         first:
           name: _AO
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _ParallaxMap
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}

@@ -7,11 +7,9 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/DemoShip.unity
-  - enabled: 0
-    path: Assets/Scenes/shiptest.unity
-  - enabled: 1
-    path: Assets/Scenes/dev/spacecowboy.unity
   - enabled: 1
     path: Assets/Scenes/DeliveryShip.unity
   - enabled: 1
-    path: Assets/Scenes/cargoship.unity
+    path: Assets/Scenes/Space.unity
+  - enabled: 1
+    path: Assets/Scenes/CargoShip.unity

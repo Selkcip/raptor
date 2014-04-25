@@ -98,6 +98,8 @@ public class BuyMenu : MonoBehaviour {
 				itemLabel.text = itemLabel.text + upgrade.name + " " + upgrade.level + "\n";
 				statusLabel.text = statusLabel.text + "Processing\n";
 
+				UpgradeSpawner.upgrades.Add(Resources.Load<CollectibleUpgrade>("Prefabs/Upgrades/" + upgrade.name));
+
 				//Raise prices
 				upgrade.level++;
 				if(upgrade.level < 4) {

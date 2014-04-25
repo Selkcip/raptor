@@ -33,6 +33,7 @@ public class LevelSelector : MonoBehaviour {
 
     ArrayList cargoShips; // list of active cargo ships
 	ArrayList policeShips; // list of active police ships in the scene
+	public static bool coastIsClear = true;
 
     ArrayList debris; // stationary background space debris
 
@@ -125,6 +126,8 @@ public class LevelSelector : MonoBehaviour {
 			policeShips.Remove(ship);
 			Destroy(ship);
 		}
+
+		coastIsClear = policeShips.Count <= 0;
 
         // update cargo ships
         toBeRemoved.Clear();
