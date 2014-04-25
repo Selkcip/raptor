@@ -21,6 +21,7 @@ public class OptionsMenu : MonoBehaviour {
 	//Audio
 	public GameObject musicSlider;
 	public GameObject sfxSlider;
+	public GameObject dialogueSlider;
 
 	// Use this for initialization
 	void Start () {
@@ -66,7 +67,7 @@ public class OptionsMenu : MonoBehaviour {
 		GrapicsToggles.SSAOQuality = ssao.items.IndexOf(ssao.value) - 1;
 
 		//Glow
-		GrapicsToggles.GlowQuality = glow.items.IndexOf(glow.value) - 1;
+		GrapicsToggles.GlowQuality = glow.items.IndexOf(glow.value) + 1;
 
 		//Tilt Shift
 		if(tiltShift.items.IndexOf(tiltShift.value) == 0) {
@@ -80,5 +81,6 @@ public class OptionsMenu : MonoBehaviour {
 	void AudioUpdate() {
 		SoundManager.musicVolume = musicSlider.GetComponent<UISlider>().value;
 		SoundManager.sfxVolume = sfxSlider.GetComponent<UISlider>().value;
+		SoundManager.dialogueVolume = dialogueSlider.GetComponent<UISlider>().value;
 	}
 }

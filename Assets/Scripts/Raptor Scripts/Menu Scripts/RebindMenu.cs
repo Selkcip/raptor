@@ -13,8 +13,23 @@ public class RebindMenu : MonoBehaviour {
 	bool rebindingAxNe = false;
 	string objToRebind = "";
 
+	private static RebindMenu s_instance = null;
+
+	public static RebindMenu instance {
+		get {
+			if(s_instance == null) {
+				GameObject go = new GameObject("RebindMenu");
+				s_instance = go.AddComponent<RebindMenu>();
+			}
+			return s_instance;
+		}
+	}
+
+
+
 	// Use this for initialization
 	void Start () {
+		rebindableManager = GameObject.Find("Rebindable Manager").GetComponent<RebindableData>();
 		rebindKeys = rebindableManager.GetCurrentKeys();
 		rebindAxes = rebindableManager.GetCurrentAxes();
 	}
@@ -70,29 +85,29 @@ public class RebindMenu : MonoBehaviour {
 		}
 	}
 
-	void RebindKey(string inputName) {
+	public void RebindKey(string inputName) {
 		rebinding = true;
 		objToRebind = inputName;
 	}
 
-	void RebindAxisPos(string axisName) {
+	public void RebindAxisPos(string axisName) {
 		rebinding = true;
 		rebindingAxPo = true;
 		objToRebind = axisName;
 	}
 
-	void RebindAxisNeg(string axisName) {
+	public void RebindAxisNeg(string axisName) {
 		rebinding = true;
 		rebindingAxNe = true;
 		objToRebind = axisName;
 	}
 
-	void SaveBindings() {
+	public void SaveBindings() {
 		rebindableManager.SaveKeys();
 		rebindableManager.SaveAxes();
 	}
 
-	void LoadDefaults() {
+	public void LoadDefaults() {
 		rebindableManager.ActivateDefaultKeys();
 		rebindableManager.ActivateDefaultAxes();
 		rebindKeys = rebindableManager.GetCurrentKeys();
