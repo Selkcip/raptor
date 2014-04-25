@@ -8,11 +8,14 @@ public class PoliceShip : MonoBehaviour {
 	public float detectionRange;
 	public float fireAngle;
     public float maxSpeed;
+    public float maxSearchTime; // max time spent searching for player
 
 	public GameObject bullet;
 	public float bulletSpeed;
-	float reload = 0;
 	public float reloadTime;
+	float reload = 0;
+
+    public float searchTimer;
 
 	GameObject player;
 
@@ -20,18 +23,25 @@ public class PoliceShip : MonoBehaviour {
 	void Start()
 	{
 		player = GameObject.Find("PlayerShip");
+        searchTimer = maxSearchTime;
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
 
-		interceptPlayer();
+		InterceptPlayer();
 		//gameObject.renderer.material.color = Color.green;
 
 		if (reload > 0) {
 			reload -= Time.deltaTime;
 		}
+
+        // if the player is spotted reset search timer
+        if (IsPlayerSpotted())
+            searchTimer = maxSearchTime;
+        else
+            searchTimer -= Time.deltaTime;
 
         Vector2 force = new Vector2(0, baseForce);
         force = Quaternion.Euler(transform.eulerAngles) * force;
@@ -41,17 +51,20 @@ public class PoliceShip : MonoBehaviour {
             rigidbody2D.velocity = rigidbody2D.velocity.normalized * maxSpeed;
 	}
 
-	public bool isPlayerSpotted() {
-		Vector3 targetDirection = player.transform.position - transform.position;
-		float distance = targetDirection.magnitude;
+	public bool IsPlayerSpotted() {
+		float distance = Vector3.Distance(player.transform.position, transform.position);
 		return !player.GetComponent<PlayerShipController>().isCloaked && distance <= detectionRange;
 	}
+
+    // set destination away
+    void LeaveArea() { }
+
     // head to latest known player position, fire if spotted
-	void interceptPlayer() {
+	void InterceptPlayer() {
 		// get direction of intercept, 
 		// Vector3 targetDirection = player.transform.position - transform.position;
         Vector3 targetDirection = player.GetComponent<LevelSelector>().lastDetectedLocation - transform.position;
-		targetDirection += (Vector3)(player.rigidbody2D.velocity - rigidbody2D.velocity) * targetDirection.magnitude / bulletSpeed ;
+		targetDirection += (Vector3)(player.rigidbody2D.velocity - rigidbody2D.velocity) * targetDirection.magnitude / bulletSpeed;
 
         Debug.DrawRay(transform.position, targetDirection);
 		float diffAngle = Vector2.Angle(transform.up, targetDirection); // angle between target direction and current
@@ -72,9 +85,8 @@ public class PoliceShip : MonoBehaviour {
 			transform.eulerAngles += new Vector3(0, 0, Mathf.Min(diffAngle, turnRate * Time.deltaTime)); // rotate left
 		else
 			transform.eulerAngles -= new Vector3(0, 0, Mathf.Min(diffAngle, turnRate * Time.deltaTime)); // rotate right
-
-        // shoot if the player is spotted
-		if (diffAngle < fireAngle && isPlayerSpotted())
+        
+        if (diffAngle < fireAngle && IsPlayerSpotted())
 			Shoot();
 	}
 

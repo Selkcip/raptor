@@ -10,7 +10,11 @@ public class LevelSelector : MonoBehaviour {
 
 	public int maxShips;
 	public GameObject policeShip;
+    public float policeSpawnProximity;
+    public float notorietyPerShip;
+
 	public GameObject cargoShip;
+
 	public DeliveryShip deliveryShip;
 	public float deliveryShipSpawnDis = 10;
 	public Texture2D deliveryShipIndicator;
@@ -23,6 +27,7 @@ public class LevelSelector : MonoBehaviour {
 
     public bool isPlayerSpotted;
     public Vector3 lastDetectedLocation;
+    bool leave = false;
 
     ArrayList features; // list of spawned space features
 
@@ -56,7 +61,22 @@ public class LevelSelector : MonoBehaviour {
 			indicator.target = ship.transform;
 			indicator.tint = Color.green;
 		}
+
+        SpawnPolice();
 	}
+
+    public void SpawnPolice() {
+        if (RaptorHUD.pTime < RaptorHUD.maxPTime) { 
+            //spawn police
+            Vector2 spawnLocation = Random.insideUnitCircle * RaptorHUD.pTime * policeShip.GetComponent<PoliceShip>().maxSpeed;
+            for (float i = 0; i < RaptorInteraction.notoriety; i += notorietyPerShip) {
+                GameObject ship = (GameObject)Instantiate(policeShip, spawnLocation, Quaternion.identity);
+                ship.GetComponent<PoliceShip>().searchTimer = RaptorHUD.pTime + ship.GetComponent<PoliceShip>().maxSearchTime;
+                policeShips.Add(ship);
+                spawnLocation += Random.insideUnitCircle * policeSpawnProximity;
+            }
+        }
+    }
 
 	public void Load(){
 		print("Loading");
@@ -84,11 +104,20 @@ public class LevelSelector : MonoBehaviour {
     void UpdateShips() {
         isPlayerSpotted = false;
 		ArrayList toBeRemoved = new ArrayList();
+
+        // update police ships
 		foreach (GameObject ship in policeShips) {
-            if (Vector3.Distance(transform.position, ship.transform.position) > despawnRadius)
-                toBeRemoved.Add(ship);
-            else if (ship.GetComponent<PoliceShip>().isPlayerSpotted()) {
+            if (ship.GetComponent<PoliceShip>().searchTimer <= 0) {
+                if (!leave) {
+                    leave = true;
+                    lastDetectedLocation = Random.insideUnitCircle * despawnRadius;
+                }
+                if (Vector3.Distance(transform.position, ship.transform.position) > despawnRadius)
+                    toBeRemoved.Add(ship);
+            }
+            else if (ship.GetComponent<PoliceShip>().IsPlayerSpotted()) {
                 isPlayerSpotted = true;
+                leave = false;
                 lastDetectedLocation = transform.position;
             }
 		}
@@ -97,6 +126,7 @@ public class LevelSelector : MonoBehaviour {
 			Destroy(ship);
 		}
 
+        // update cargo ships
         toBeRemoved.Clear();
         foreach (GameObject ship in cargoShips)
         {
