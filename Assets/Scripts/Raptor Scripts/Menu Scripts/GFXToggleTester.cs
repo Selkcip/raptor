@@ -54,5 +54,14 @@ public class GFXToggleTester : MonoBehaviour {
 				GrapicsToggles.AAQuality = 0;
 			}
 		}
+
+		if(Input.GetKeyDown(KeyCode.Alpha6)) {
+			if(GrapicsToggles.GlowQuality >= 0) {
+				GrapicsToggles.GlowQuality = -1;
+			}
+			else {
+				GrapicsToggles.GlowQuality = 1;
+			}
+		}
 	}
 }

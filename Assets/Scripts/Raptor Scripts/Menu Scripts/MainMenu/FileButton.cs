@@ -18,14 +18,18 @@ public class FileButton : MonoBehaviour {
 	}
 
 	void OnClick() {
-		if(File.Exists(filePath)) {
+		/*if(File.Exists(filePath)) {
 			//load the file
 			SaveLoad.instance.LoadData(fileName);
 		}
 		else {
 			//save new file
 			SaveLoad.instance.SaveData(fileName, true);
-		}
+		}*/
+
+		GameSaver.LoadGame(fileName);
+
+		print(RaptorInteraction.name);
 
 		//update the window
 		fileWindow.SendMessage("UpdateWindow", SendMessageOptions.DontRequireReceiver);

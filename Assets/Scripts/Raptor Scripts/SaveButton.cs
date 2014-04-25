@@ -5,6 +5,7 @@ public class SaveButton : MonoBehaviour {
 	//disable when chased
 
 	void OnClick() {
-		SaveLoad.instance.SaveData(LoadButtonMain.fileName, false);
+		//SaveLoad.instance.SaveData(LoadButtonMain.fileName, false);
+		GameSaver.SaveGame(LoadButtonMain.fileName);
 	}
 }

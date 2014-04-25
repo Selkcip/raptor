@@ -16,7 +16,7 @@ public class GameSaver : MonoBehaviour {
 		foreach(string pair in pairs) {
 			string[] keyValue = pair.Split(new char[] { '=' });
 			if(keyValue.Length > 1) {
-				values.Add(keyValue[0], keyValue[1]);
+				values.Add(keyValue[0], WWW.UnEscapeURL(keyValue[1]));
 			}
 			else {
 				print(saveName + " save might be corrupt.");
@@ -35,9 +35,13 @@ public class GameSaver : MonoBehaviour {
 			else {
 				saveString += ",";
 			}
-			saveString += pair.Key + "=" + pair.Value;
+			saveString += pair.Key + "=" + WWW.EscapeURL(pair.Value);
 		}
 		PlayerPrefs.SetString(saveName, saveString);
+	}
+
+	public static void Delete(string saveName) {
+		PlayerPrefs.DeleteKey(saveName);
 	}
 
 	public static void SetValue(string key, string value) {
@@ -93,35 +97,114 @@ public class GameSaver : MonoBehaviour {
 		if(currentSave.Count <= 0) {
 			CreateGame(saveName);
 		}
-		float notoriety, map;
+
+		string name, level;
+		float notoriety, map, health, attack, stealth;
 		int money;
-		string name;
+		int ssrQ, tiltQ, glowQ, aaQ, ssaoQ, bloomQ;
+		GetValue("name", out name);
+		GetValue("level", out level);
 		GetValue("notoriety", out notoriety);
 		GetValue("map", out map);
 		GetValue("money", out money);
-		GetValue("name", out name);
+		GetValue("health", out health);
+		GetValue("attack", out attack);
+		GetValue("stealth", out stealth);
 
-		print(notoriety + " " + map + " " + money + " " + name);
+		print(notoriety + ", " + map + ", " + money + ", " + name + ", " + level);
 
+		RaptorInteraction.name = name;
+		RaptorInteraction.level = level;
 		RaptorInteraction.notoriety = notoriety;
 		RaptorInteraction.mapAmountAcquired = map;
 		RaptorInteraction.money = money;
-		RaptorInteraction.name = name;
+		RaptorInteraction.maxHealth = health;
+		RaptorInteraction.attack = attack;
+		RaptorInteraction.stealthTime = stealth;
+
+		GetValue("ssrQ", out ssrQ);
+		GetValue("tiltQ", out tiltQ);
+		GetValue("glowQ", out glowQ);
+		GetValue("aaQ", out aaQ);
+		GetValue("ssaoQ", out ssaoQ);
+		GetValue("bloomQ", out bloomQ);
+
+		GrapicsToggles.SSRQuality = ssrQ;
+		GrapicsToggles.TiltShiftQuality = tiltQ;
+		GrapicsToggles.GlowQuality = glowQ;
+		GrapicsToggles.AAQuality = aaQ;
+		GrapicsToggles.SSAOQuality = ssaoQ;
+		GrapicsToggles.BloomQuality = bloomQ;
+
+		string consumablesString;
+		GetValue("consumables", out consumablesString);
+		if(consumablesString != null && consumablesString != "") {
+			print(consumablesString);
+			string[] consumables = consumablesString.Split(new char[]{'+'});
+			foreach(string conString in consumables) {
+				string[] consumable = conString.Split(new char[] { ':' });
+				if(consumable.Length > 1) {
+					int consumCount = 0;
+					int.TryParse(consumable[1], out consumCount);
+					UpgradeCount count = new UpgradeCount(Resources.Load<ConsumableUpgrade>("Prefabs/Upgrades/" + consumable[0]));
+					count.count = consumCount;
+					PlayerShipController.consumables.Add(count);
+				}
+			}
+		}
 	}
 
 	public static void CreateGame(string saveName) {
+		print("creating save");
+		SetValue("name", "Click to enter name here");
+		SetValue("level", RaptorInteraction.defaultLevel);
 		SetValue("notoriety", 0f);
 		SetValue("money", 0);
 		SetValue("map", 0f);
-		SetValue("name", "Click to enter name here");
+		SetValue("health", RaptorInteraction.defaultMaxHealth);
+		SetValue("attack", RaptorInteraction.defaultAttack);
+		SetValue("stealth", RaptorInteraction.defaultStealthTime);
+
+		SetValue("ssrQ", GrapicsToggles.SSRQuality);
+		SetValue("tiltQ", GrapicsToggles.TiltShiftQuality);
+		SetValue("glowQ", GrapicsToggles.GlowQuality);
+		SetValue("aaQ", GrapicsToggles.AAQuality);
+		SetValue("ssaoQ", GrapicsToggles.SSAOQuality);
+		SetValue("bloomQ", GrapicsToggles.BloomQuality);
+
 		Save(saveName, currentSave);
 	}
 
 	public static void SaveGame(string saveName) {
+		SetValue("name", RaptorInteraction.name);
+		SetValue("level", RaptorInteraction.level);
 		SetValue("notoriety", RaptorInteraction.notoriety);
 		SetValue("money", RaptorInteraction.money);
 		SetValue("map", RaptorInteraction.mapAmountAcquired);
-		SetValue("name", RaptorInteraction.name);
+		SetValue("health", RaptorInteraction.maxHealth);
+		SetValue("attack", RaptorInteraction.attack);
+		SetValue("stealth", RaptorInteraction.stealthTime);
+
+		SetValue("ssrQ", GrapicsToggles.SSRQuality);
+		SetValue("tiltQ", GrapicsToggles.TiltShiftQuality);
+		SetValue("glowQ", GrapicsToggles.GlowQuality);
+		SetValue("aaQ", GrapicsToggles.AAQuality);
+		SetValue("ssaoQ", GrapicsToggles.SSAOQuality);
+		SetValue("bloomQ", GrapicsToggles.BloomQuality);
+
+		string consumables = "";
+		bool first = true;
+		foreach(UpgradeCount count in PlayerShipController.consumables) {
+			if(first){
+				first = false;
+			}else{
+				consumables += "+";
+			}
+			consumables += count.upgrade.name + ":" + count.count;
+		}
+		//print(consumables);
+		SetValue("consumables", consumables);
+
 		Save(saveName, currentSave);
 	}
 }

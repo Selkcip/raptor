@@ -3,198 +3,131 @@ using System.Collections;
 
 public class GrapicsToggles : MonoBehaviour {
 
+	static int	_SSRQuality = -1;
+	static int	_TiltShiftQuality = 1;
+	static int _GlowQuality = 1;
+	static int _AAQuality = 4;
+	static int _SSAOQuality = 1;
+	static int _BloomQuality = 2;
+
 	public static int SSRQuality {
 		get {
-			ScreenSpaceReflections effect = Camera.main.GetComponent<ScreenSpaceReflections>();
-			if(effect != null && effect.enabled) {
-				return effect.m_Downsampling;
-			}
-			return -1;
+			return _SSRQuality;
 		}
 		set {
-			ScreenSpaceReflections effect = Camera.main.GetComponent<ScreenSpaceReflections>();
-			if(effect != null) {
-				if(value > 0) {
-					effect.enabled = true;
-					effect.m_Downsampling = value;
-				}
-				else {
-					effect.enabled = false;
-				}
-			}
+			_SSRQuality = value;
 		}
 	}
 
 	public static int TiltShiftQuality {
 		get {
-			TiltShiftHdr effect = Camera.main.GetComponent<TiltShiftHdr>();
-			if(effect != null && effect.enabled) {
-				return (int)effect.quality;
-			}
-			return -1;
+			return _TiltShiftQuality;
 		}
 		set {
-			TiltShiftHdr effect = Camera.main.GetComponent<TiltShiftHdr>();
-			if(effect != null) {
-				if(value >= 0) {
-					effect.enabled = true;
-					effect.quality = (TiltShiftHdr.TiltShiftQuality)value;
-				}
-				else {
-					effect.enabled = false;
-				}
-			}
+			_TiltShiftQuality = value;
 		}
 	}
 
 	public static int GlowQuality {
 		get {
-			Glow11.Glow11 effect = Camera.main.GetComponent<Glow11.Glow11>();
-			if(effect != null && effect.enabled) {
-				return (int)effect.rerenderResolution;
-			}
-			return -1;
+			return _GlowQuality;
 		}
 		set {
-			Glow11.Glow11 effect = Camera.main.GetComponent<Glow11.Glow11>();
-			if(effect != null) {
-				if(value >= 0) {
-					effect.enabled = true;
-					effect.rerenderResolution = (Glow11.Resolution)value;
-				}
-				else {
-					effect.enabled = false;
-				}
-			}
+			_GlowQuality = value;
 		}
 	}
 
 	public static int AAQuality {
 		get {
-			AntialiasingAsPostEffect effect = Camera.main.GetComponent<AntialiasingAsPostEffect>();
-			if(effect != null && effect.enabled) {
-				return (int)effect.mode;
-			}
-			return -1;
+			return _AAQuality;
 		}
 		set {
-			AntialiasingAsPostEffect effect = Camera.main.GetComponent<AntialiasingAsPostEffect>();
-			if(effect != null) {
-				if(value >= 0) {
-					effect.enabled = true;
-					effect.mode = (AAMode)value;
-				}
-				else {
-					effect.enabled = false;
-				}
-			}
+			_AAQuality = value;
 		}
 	}
 
 	public static int SSAOQuality {
 		get {
-			SSAOEffect effect = Camera.main.GetComponent<SSAOEffect>();
-			if(effect != null && effect.enabled) {
-				return (int)effect.m_SampleCount;
-			}
-			return -1;
+			return _SSAOQuality;
 		}
 		set {
-			SSAOEffect effect = Camera.main.GetComponent<SSAOEffect>();
-			if(effect != null) {
-				if(value >= 0) {
-					effect.enabled = true;
-					effect.m_SampleCount = (SSAOEffect.SSAOSamples)value;
-				}
-				else {
-					effect.enabled = false;
-				}
-			}
+			_SSAOQuality = value;
 		}
 	}
 
 	public static int BloomQuality {
 		get {
-			Bloom effect = Camera.main.GetComponent<Bloom>();
-			if(effect != null && effect.enabled) {
-				return (int)effect.quality;
-			}
-			return -1;
+			return _BloomQuality;
 		}
 		set {
-			Bloom effect = Camera.main.GetComponent<Bloom>();
-			if(effect != null) {
-				if(value >= 0) {
-					effect.enabled = true;
-					effect.quality = (Bloom.BloomQuality)value;
-				}
-				else {
-					effect.enabled = false;
-				}
+			_BloomQuality = value;
+		}
+	}
+
+	void Update() {
+		ScreenSpaceReflections ssr = Camera.main.GetComponent<ScreenSpaceReflections>();
+		if(ssr != null) {
+			if(_SSRQuality < 1) {
+				ssr.enabled = false;
+			}
+			else {
+				ssr.enabled = true;
+				ssr.m_Downsampling = _SSRQuality;
+			}
+		}
+
+		TiltShiftHdr tilt = Camera.main.GetComponent<TiltShiftHdr>();
+		if(tilt != null) {
+			if(_TiltShiftQuality < 0) {
+				tilt.enabled = false;
+			}
+			else {
+				tilt.enabled = true;
+				tilt.quality = (TiltShiftHdr.TiltShiftQuality)_TiltShiftQuality;
+			}
+		}
+
+		Glow11.Glow11 glow = Camera.main.GetComponent<Glow11.Glow11>();
+		if(glow != null) {
+			if(_GlowQuality < 1) {
+				glow.enabled = false;
+			}
+			else {
+				glow.enabled = true;
+				glow.rerenderResolution = (Glow11.Resolution)_GlowQuality;
+			}
+		}
+
+		AntialiasingAsPostEffect aa = Camera.main.GetComponent<AntialiasingAsPostEffect>();
+		if(aa != null) {
+			if(_AAQuality < 0) {
+				aa.enabled = false;
+			}
+			else {
+				aa.enabled = true;
+			}
+		}
+
+		SSAOEffect ssao = Camera.main.GetComponent<SSAOEffect>();
+		if(ssao != null) {
+			if(_SSAOQuality < 0) {
+				ssao.enabled = false;
+			}
+			else {
+				ssao.enabled = true;
+				ssao.m_SampleCount = (SSAOEffect.SSAOSamples)_SSAOQuality;
+			}
+		}
+
+		Bloom bloom = Camera.main.GetComponent<Bloom>();
+		if(bloom != null) {
+			if(_BloomQuality < 0) {
+				bloom.enabled = false;
+			}
+			else {
+				bloom.enabled = true;
+				bloom.quality = (Bloom.BloomQuality)_BloomQuality;
 			}
 		}
 	}
-
-	/*static bool enableTiltShift {
-		get {
-			TiltShiftHdr effect = Camera.main.GetComponent<TiltShiftHdr>();
-			if(effect != null) {
-				return effect.enabled;
-			}
-			return false;
-		}
-		set {
-			TiltShiftHdr effect = Camera.main.GetComponent<TiltShiftHdr>();
-			if(effect != null) {
-				effect.enabled = value;
-			}
-		}
-	}
-
-	static void ToggleSSR(bool enabled, float quality = 1) {
-		ScreenSpaceReflections effect = Camera.main.GetComponent<ScreenSpaceReflections>();
-		effect.m_Downsampling = (int)Mathf.Lerp(4, 1, quality);
-		if(effect != null) {
-			effect.enabled = enabled;
-		}
-	}
-
-	static void ToggleTiltShift(bool enabled, TiltShiftHdr.TiltShiftQuality quality = TiltShiftHdr.TiltShiftQuality.Normal) {
-		TiltShiftHdr effect = Camera.main.GetComponent<TiltShiftHdr>();
-		effect.quality = quality;
-		if(effect != null) {
-			effect.enabled = enabled;
-		}
-	}
-
-	static void ToggleGlow(bool enabled, Glow11.Resolution quality = Glow11.Resolution.Full) {
-		Glow11.Glow11 effect = Camera.main.GetComponent<Glow11.Glow11>();
-		effect.rerenderResolution = quality;
-		if(effect != null) {
-			effect.enabled = enabled;
-		}
-	}
-
-	static void ToggleAA(bool enabled, float quality = 1) {
-		AntialiasingAsPostEffect effect = Camera.main.GetComponent<AntialiasingAsPostEffect>();
-		if(effect != null) {
-			effect.enabled = enabled;
-		}
-	}
-
-	static void ToggleSSAO(bool enabled, SSAOEffect.SSAOSamples quality = SSAOEffect.SSAOSamples.Medium) {
-		SSAOEffect effect = Camera.main.GetComponent<SSAOEffect>();
-		effect.m_SampleCount = quality;
-		if(effect != null) {
-			effect.enabled = enabled;
-		}
-	}
-
-	static void ToggleBloom(bool enabled, Bloom.BloomQuality quality = Bloom.BloomQuality.High) {
-		Bloom effect = Camera.main.GetComponent<Bloom>();
-		effect.quality = quality;
-		if(effect != null) {
-			effect.enabled = enabled;
-		}
-	}*/
 }

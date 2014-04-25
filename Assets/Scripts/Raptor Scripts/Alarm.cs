@@ -17,6 +17,10 @@ public class Alarm : MonoBehaviour {
 		}
 	}
 
+	void OnLevelWasLoaded() {
+		alarms.Clear();
+	}
+
 	// Use this for initialization
 	void Start() {
 		alarms.Add(this);

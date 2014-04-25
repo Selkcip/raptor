@@ -16,9 +16,16 @@ public class RaptorInteraction : MonoBehaviour {
 
 	//Raptor Stats
 	public static string name = "Regina";
+	public static string level = "DemoShip";
 	public static float maxHealth = 100f;
 	public static float attack = 20f;
 	public static float stealthTime = 180f; //time in seconds
+
+	//Defaults
+	public static string defaultLevel = "DemoShip";
+	public static float defaultMaxHealth = 100f;
+	public static float defaultAttack = 20f;
+	public static float defaultStealthTime = 180f; //time in seconds
 
 	public Transform eatTarget;
 
