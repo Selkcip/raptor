@@ -104,13 +104,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fb3b928ef9fefe4b8a2086bb69e094d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseForce: 0
   maxRotateAngle: 0
-  detectionRange: 0
-  fireAngle: 0
-  bullet: {fileID: 0}
-  bulletSpeed: 0
-  reloadTime: 0
+  detectionRange: 20
+  bullet: {fileID: 100000, guid: e70b81815de3a2340873cd1bcd9e02e4, type: 2}
+  bulletSpeed: 25
+  reloadTime: 3
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

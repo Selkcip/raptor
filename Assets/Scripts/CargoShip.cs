@@ -2,10 +2,8 @@
 using System.Collections;
 
 public class CargoShip : MonoBehaviour {
-	public float baseForce;
     public float maxRotateAngle;
     public float detectionRange;
-	public float fireAngle;
 
     public GameObject bullet;
     public float bulletSpeed;
