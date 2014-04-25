@@ -707,6 +707,10 @@ public class UIPopupList : UIWidgetContainer
 			{
 				UILabel lbl = labels[i];
 				BoxCollider bc = NGUITools.AddWidgetCollider(lbl.gameObject);
+				
+				//I added this
+				bc.isTrigger = false;
+
 				bcCenter.z = bc.center.z;
 				bc.center = bcCenter;
 				bc.size = bcSize;
