@@ -14,7 +14,8 @@ public class LoadButtonMain : MonoBehaviour {
 
 	void OnClick() {
 		RaptorInteraction.name = name.text;
-		SaveLoad.instance.SaveData(fileName, false);
-		Application.LoadLevel("shiptest");
+		//SaveLoad.instance.SaveData(fileName, false);
+		GameSaver.SaveGame(fileName);
+		Application.LoadLevel(RaptorInteraction.level);
 	}
 }

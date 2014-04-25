@@ -109,6 +109,8 @@ public class SceneTransition : Triggerable {
 			}
 
 			if(transitionTime > transitionDelay && sceneLoad != null) {
+				RaptorInteraction.level = targetScene;
+				GameSaver.SaveGame("Save1");
 				sceneLoad.allowSceneActivation = true;
 			}
 		}
