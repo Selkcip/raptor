@@ -11,6 +11,7 @@ public class Pause : MonoBehaviour {
 	private UILabel map;
 
 	public static bool paused;
+	public GameObject optionsWindow;
 
 	// Use this for initialization
 	void Start () {
@@ -61,6 +62,7 @@ public class Pause : MonoBehaviour {
 		LockMouse.lockMouse = true;
 		paused = false;
 		pausePanel.gameObject.SetActive(false);
+		optionsWindow.SetActive(false);
 	}
 
 }

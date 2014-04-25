@@ -118,6 +118,7 @@ GameObject:
   - 114: {fileID: 11400026}
   - 114: {fileID: 11400024}
   - 114: {fileID: 11400022}
+  - 114: {fileID: 11400062}
   m_Layer: 9
   m_Name: Button - Continue
   m_TagString: Untagged
@@ -365,6 +366,7 @@ GameObject:
   - 114: {fileID: 11400058}
   - 114: {fileID: 11400056}
   - 114: {fileID: 11400054}
+  - 114: {fileID: 11400064}
   m_Layer: 9
   m_Name: Button - MainMenu
   m_TagString: Untagged
@@ -379,7 +381,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -297.548401, y: -478.018188, z: 213.233582}
+  m_LocalPosition: {x: -256.000214, y: -478.018188, z: 4.52008963}
   m_LocalScale: {x: 1.90491402, y: 1.90491402, z: 1.90491402}
   m_Children:
   - {fileID: 400016}
@@ -403,8 +405,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
-  m_LocalRotation: {x: 0, y: .0871560052, z: 0, w: .99619472}
-  m_LocalPosition: {x: -.00430853339, y: .0583333336, z: .000759712537}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.00430853339, y: .0583333336, z: 0}
   m_LocalScale: {x: .00145833346, y: .00145833334, z: .00145833322}
   m_Children: []
   m_Father: {fileID: 400014}
@@ -415,7 +417,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_LocalRotation: {x: 0, y: -2.96889127e-08, z: 0, w: 1}
-  m_LocalPosition: {x: -254.733521, y: 222.366318, z: -15.5076933}
+  m_LocalPosition: {x: -254.733521, y: 222.366318, z: 0}
   m_LocalScale: {x: 11.0425653, y: 11.0425634, z: 11.0425663}
   m_Children: []
   m_Father: {fileID: 400024}
@@ -450,7 +452,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100012}
   m_LocalRotation: {x: 0, y: -3.71111462e-08, z: 0, w: 1}
-  m_LocalPosition: {x: -247.292053, y: -120.490829, z: -57.7138481}
+  m_LocalPosition: {x: -247.292053, y: -120.490829, z: 0}
   m_LocalScale: {x: 1.90491426, y: 1.90491426, z: 1.9049145}
   m_Children:
   - {fileID: 400010}
@@ -461,7 +463,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100014}
-  m_LocalRotation: {x: 0, y: -.0871560052, z: 0, w: .99619472}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -263, y: -42, z: 0}
   m_LocalScale: {x: 685.714294, y: 685.714294, z: 685.714355}
   m_Children:
@@ -537,7 +539,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100026}
-  m_LocalRotation: {x: 0, y: .0871560052, z: 0, w: .99619472}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: -0, z: 0}
   m_LocalScale: {x: .00145833346, y: .00145833334, z: .00145833322}
   m_Children: []
@@ -548,7 +550,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100028}
-  m_LocalRotation: {x: 0, y: .0871560052, z: 0, w: .996194661}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 136, y: 0, z: 0}
   m_LocalScale: {x: .525000036, y: .524999976, z: .524999976}
   m_Children:
@@ -560,8 +562,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100030}
-  m_LocalRotation: {x: 0, y: .0871560052, z: 0, w: .99619472}
-  m_LocalPosition: {x: .00287235528, y: 1.00625014, z: -.000506478653}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .00287235528, y: 1.00625014, z: 0}
   m_LocalScale: {x: .00145833346, y: .00145833334, z: .00145833322}
   m_Children:
   - {fileID: 400008}
@@ -630,7 +632,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100042}
   m_LocalRotation: {x: 0, y: -3.71111462e-08, z: 0, w: 1}
-  m_LocalPosition: {x: -252.895874, y: -306.589569, z: -40.0026894}
+  m_LocalPosition: {x: -252.895874, y: -306.589569, z: 0}
   m_LocalScale: {x: 1.90491426, y: 1.90491426, z: 1.9049145}
   m_Children:
   - {fileID: 400036}
@@ -701,7 +703,7 @@ BoxCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 199.999985, y: 50, z: 0}
@@ -713,7 +715,7 @@ BoxCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100012}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 199.999985, y: 50, z: 0}
@@ -737,7 +739,7 @@ BoxCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100042}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 199.999985, y: 50, z: 0}
@@ -928,7 +930,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3010
+  startingRenderQueue: 3005
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
@@ -1431,7 +1433,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3009
+  startingRenderQueue: 3004
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 0, w: 0}
@@ -1803,6 +1805,29 @@ MonoBehaviour:
   trigger: 0
   volume: 1
   pitch: 1
+--- !u!114 &11400062
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fbcdb49263226d4b941685fe4abba39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneName: shiptest
+--- !u!114 &11400064
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 884906ba6f505e1459e9a61a72cd701d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
