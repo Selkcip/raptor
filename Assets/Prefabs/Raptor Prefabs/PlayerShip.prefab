@@ -140,6 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cefa8e365f7c23a408b0ffff8955a377, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  painIndicator: {fileID: 2800000, guid: 039029b80919b75469427191d7a33680, type: 3}
   forwardForce: 5
   reverseForce: 5
   sideForce: 2
@@ -150,7 +151,7 @@ MonoBehaviour:
   cloakTime: 10
   cloakRechargeTime: 2
   cloakLerpTime: 2
-  maxHealth: 1000
+  maxHealth: 50
   bullet: {fileID: 100000, guid: 4bb294f50fb7ab5448d3f72277d85aa0, type: 2}
   bulletSpeed: 25
   reloadTime: .5
@@ -178,6 +179,7 @@ MonoBehaviour:
   deliveryShipIndicator: {fileID: 2800000, guid: 039029b80919b75469427191d7a33680,
     type: 3}
   upgradPrefabs: []
+  upgradeSpawned: 0
   debrisRadius: {x: 25, y: 100}
   debrisDepth: {x: 25, y: 40}
   debrisObject: {fileID: 100000, guid: d387d7ab0af08e54fa48bc238551db2a, type: 2}

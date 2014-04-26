@@ -10,6 +10,8 @@ public class CargoShip : MonoBehaviour {
 	float reload = 0;
 	public float reloadTime;
 
+	public float health = 100;
+
 	GameObject player;
 
 	// Use this for initialization
@@ -19,12 +21,14 @@ public class CargoShip : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update() {
-		if (isPlayerSpotted()) {
-			Shoot();
-		}
+		if(player != null) {
+			if(isPlayerSpotted()) {
+				Shoot();
+			}
 
-		if (reload > 0) {
-			reload -= Time.deltaTime;
+			if(reload > 0) {
+				reload -= Time.deltaTime;
+			}
 		}
 	}
 
@@ -43,6 +47,7 @@ public class CargoShip : MonoBehaviour {
             //Debug.DrawRay(transform.position, targetDirection);
 
 			GameObject shot = (GameObject)Instantiate(bullet, transform.position, Quaternion.FromToRotation(Vector3.up, targetDirection));
+			shot.layer = LayerMask.NameToLayer("Enemy");
 			shot.rigidbody2D.velocity = rigidbody2D.velocity + (Vector2)(shot.transform.up * bulletSpeed);
 			reload = reloadTime;
 		}
@@ -51,4 +56,8 @@ public class CargoShip : MonoBehaviour {
     void OnCollisionEnter2D(Collision2D col) { 
         // detect if hit by a shot
     }
+
+	public void Hurt(Damage damage) {
+		health -= damage.amount;
+	}
 }

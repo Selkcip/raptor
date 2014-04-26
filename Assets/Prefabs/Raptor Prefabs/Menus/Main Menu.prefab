@@ -5908,6 +5908,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fileName: 
+  fileWindow: {fileID: 100020}
 --- !u!114 &11400022
 MonoBehaviour:
   m_ObjectHideFlags: 1

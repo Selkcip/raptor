@@ -53,7 +53,7 @@ public class Cop : Guard {
 				// update the agents posiiton 
 				agent.transform.position = transform.position;
 
-				if((room.position - transform.position).magnitude <= targetChangeTolerance) {
+				if(agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
 					roomChecked = true;
 				}
 

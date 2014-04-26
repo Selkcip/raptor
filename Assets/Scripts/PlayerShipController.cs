@@ -15,6 +15,8 @@ public class UpgradeCount {
 
 public class PlayerShipController : MonoBehaviour {
 
+	public Texture2D painIndicator;
+
     public float forwardForce, reverseForce, sideForce;
 	public float turnRate; // deg/s
     public float maxSpeed;
@@ -166,12 +168,13 @@ public class PlayerShipController : MonoBehaviour {
 		if (reload <= 0)
 		{
 			GameObject shot = (GameObject)Instantiate(bullet, transform.position + transform.up, Quaternion.Euler(transform.eulerAngles));
+			shot.layer = LayerMask.NameToLayer("Player");
 			shot.rigidbody2D.velocity = rigidbody2D.velocity + (Vector2)(transform.up * bulletSpeed);
 			reload = reloadTime;
 		}
 	}
 
-    void OnCollisionEnter2D(Collision2D col) {
+    /*void OnCollisionEnter2D(Collision2D col) {
         // detect if player is hit with a shot
 		if (col.gameObject.tag == "bullet") {
 			Destroy(col.gameObject);
@@ -196,5 +199,21 @@ public class PlayerShipController : MonoBehaviour {
 				}
 			}
         }
-    }
+    }*/
+
+	public void Hurt(Damage damage) {
+		health -= damage.amount;
+		print(health);
+
+		if(health <= 0) {
+			gameObject.SetActive(false);
+		}
+
+		Indicator indicator = Indicator.New(painIndicator, damage.pos);
+		indicator.tint = Color.red;
+		indicator.dontDestroy = false;
+
+		//print(health);
+		//SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
+	}
 }

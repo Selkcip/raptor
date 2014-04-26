@@ -5,6 +5,8 @@ public class DeliveryShip : MonoBehaviour {
 	public float speed = 1;
 	public TaggedTriggerable dock;
 
+	public float health = 100;
+
 	Transform playerShip;
 
 	// Use this for initialization
@@ -19,5 +21,9 @@ public class DeliveryShip : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//rigidbody2D.AddForce(transform.up * speed);
+	}
+
+	public void Hurt(Damage damage) {
+		health -= damage.amount;
 	}
 }

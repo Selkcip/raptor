@@ -4,6 +4,7 @@ using System.Collections;
 public class DeleteButtonMain : MonoBehaviour {
 	[HideInInspector]
 	public string fileName;
+	public GameObject fileWindow;
 
 	private UILabel name;
 
@@ -15,6 +16,11 @@ public class DeleteButtonMain : MonoBehaviour {
 
 	void OnClick() {
 		//SaveLoad.instance.DeleteData(fileName);
+		fileWindow.SetActive(true);
+		//update the window
+		fileWindow.SendMessage("UpdateWindow", SendMessageOptions.DontRequireReceiver);
+		//loadButton.GetComponent<LoadButtonMain>().fileName = fileName;
+		LoadButtonMain.fileName = fileName;
 		GameSaver.Delete(fileName);
 	}
 }

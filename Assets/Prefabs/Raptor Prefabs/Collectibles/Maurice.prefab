@@ -355,8 +355,9 @@ MonoBehaviour:
   interestLevel: 15
   carryable: 0
   useTarget: {fileID: 0}
+  droppable: 1
   keyCard: 0
-  value: 1
+  value: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

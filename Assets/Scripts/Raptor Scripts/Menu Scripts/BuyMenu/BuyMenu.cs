@@ -10,10 +10,12 @@ public class Upgrade {
 	public UIToggle checkbox;
 	public string listing;
 	public string name;
+	public string prefabName;
 
-	public Upgrade(int p, string label, string box) {
+	public Upgrade(int p, string label, string box, string prefabName) {
 		price = p;
 		name = label;
+		this.prefabName = prefabName;
 
 		priceLabel = GameObject.Find(label).GetComponent<UILabel>();
 		checkbox = GameObject.Find(box).GetComponent<UIToggle>();
@@ -52,10 +54,10 @@ public class BuyMenu : MonoBehaviour {
 
 		buyButton = GameObject.Find("Button - Buy").GetComponent<UIButton>();
 
-		upgrades.Add(new Upgrade(2000, "Health", "Health Buy"));
-		upgrades.Add(new Upgrade(2000, "Attack", "Attack Buy"));
-		upgrades.Add(new Upgrade(2000, "Stealth", "Stealth Buy"));
-		upgrades.Add(new Upgrade(999999, "Space Cowboy", "Space Cowboy Buy"));
+		upgrades.Add(new Upgrade(2000, "Health", "Health Buy", "Health Upgrade"));
+		upgrades.Add(new Upgrade(2000, "Attack", "Attack Buy", "Attack Upgrade"));
+		upgrades.Add(new Upgrade(2000, "Stealth", "Stealth Buy", "Stealth Upgrade"));
+		upgrades.Add(new Upgrade(999999, "Space Cowboy", "Space Cowboy Buy", "Space Cowboy Upgrade"));
 	}
 	
 	// Update is called once per frame
@@ -98,7 +100,7 @@ public class BuyMenu : MonoBehaviour {
 				itemLabel.text = itemLabel.text + upgrade.name + " " + upgrade.level + "\n";
 				statusLabel.text = statusLabel.text + "Processing\n";
 
-				UpgradeSpawner.upgrades.Add(Resources.Load<CollectibleUpgrade>("Prefabs/Upgrades/" + upgrade.name));
+				UpgradeSpawner.upgrades.Add(Resources.Load<CollectibleUpgrade>("Prefabs/Upgrades/" + upgrade.prefabName));
 
 				//Raise prices
 				upgrade.level++;

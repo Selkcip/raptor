@@ -20,6 +20,7 @@ public class LevelSelector : MonoBehaviour {
 	public Texture2D deliveryShipIndicator;
 
 	public List<CollectibleUpgrade> upgradPrefabs = new List<CollectibleUpgrade>();
+	public bool upgradeSpawned = false;
 
     public Vector2 debrisRadius;
     public Vector2 debrisDepth; // min/max depth of debris
@@ -54,15 +55,6 @@ public class LevelSelector : MonoBehaviour {
 			UpgradeSpawner.upgrades.Add(upgrade);
 		}
 
-
-		if(UpgradeSpawner.upgrades.Count > 0) {
-			Vector3 pos = Random.insideUnitCircle.normalized * deliveryShipSpawnDis;
-			DeliveryShip ship = (DeliveryShip)Instantiate(deliveryShip, pos, Quaternion.identity);
-			Indicator indicator = Indicator.New(deliveryShipIndicator, ship.transform.position);
-			indicator.target = ship.transform;
-			indicator.tint = Color.green;
-		}
-
         SpawnPolice();
 	}
 
@@ -86,6 +78,16 @@ public class LevelSelector : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update() {
+		//Spawn Upgrades
+		if(!upgradeSpawned && UpgradeSpawner.upgrades.Count > 0) {
+			Vector3 pos = Random.insideUnitCircle.normalized * deliveryShipSpawnDis;
+			DeliveryShip ship = (DeliveryShip)Instantiate(deliveryShip, pos, Quaternion.identity);
+			Indicator indicator = Indicator.New(deliveryShipIndicator, ship.transform.position);
+			indicator.target = ship.transform;
+			indicator.tint = Color.green;
+			upgradeSpawned = true;
+		}
+
         UpdateShips();
 
         foreach (SpaceyFeature feature in features) { 
@@ -113,7 +115,7 @@ public class LevelSelector : MonoBehaviour {
                     leave = true;
                     lastDetectedLocation = Random.insideUnitCircle * despawnRadius;
                 }
-                if (Vector3.Distance(transform.position, ship.transform.position) > despawnRadius)
+				if(Vector3.Distance(transform.position, ship.transform.position) > despawnRadius || ship.GetComponent<PoliceShip>().health <= 0)
                     toBeRemoved.Add(ship);
             }
             else if (ship.GetComponent<PoliceShip>().IsPlayerSpotted()) {
@@ -133,7 +135,7 @@ public class LevelSelector : MonoBehaviour {
         toBeRemoved.Clear();
         foreach (GameObject ship in cargoShips)
         {
-            if (Vector3.Distance(transform.position, ship.transform.position) > despawnRadius)
+			if(Vector3.Distance(transform.position, ship.transform.position) > despawnRadius || ship.GetComponent<CargoShip>().health <= 0)
                 toBeRemoved.Add(ship);
             else if (ship.GetComponent<CargoShip>().isPlayerSpotted())
             {

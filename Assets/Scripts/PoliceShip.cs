@@ -17,6 +17,8 @@ public class PoliceShip : MonoBehaviour {
 
     public float searchTimer;
 
+	public float health = 100;
+
 	GameObject player;
 
 	// Use this for initialization
@@ -29,19 +31,20 @@ public class PoliceShip : MonoBehaviour {
 	// Update is called once per frame
 	void Update()
 	{
+		if(player != null) {
+			InterceptPlayer();
+			//gameObject.renderer.material.color = Color.green;
 
-		InterceptPlayer();
-		//gameObject.renderer.material.color = Color.green;
+			if(reload > 0) {
+				reload -= Time.deltaTime;
+			}
 
-		if (reload > 0) {
-			reload -= Time.deltaTime;
+			// if the player is spotted reset search timer
+			if(IsPlayerSpotted())
+				searchTimer = maxSearchTime;
+			else
+				searchTimer -= Time.deltaTime;
 		}
-
-        // if the player is spotted reset search timer
-        if (IsPlayerSpotted())
-            searchTimer = maxSearchTime;
-        else
-            searchTimer -= Time.deltaTime;
 
         Vector2 force = new Vector2(0, baseForce);
         force = Quaternion.Euler(transform.eulerAngles) * force;
@@ -95,6 +98,7 @@ public class PoliceShip : MonoBehaviour {
 		if (reload <= 0)
 		{
 			GameObject shot = (GameObject)Instantiate(bullet, transform.position + transform.up, Quaternion.Euler(transform.eulerAngles));
+			shot.layer = LayerMask.NameToLayer("Enemy");
 			shot.rigidbody2D.velocity = rigidbody2D.velocity + (Vector2)(transform.up * bulletSpeed);
 			reload = reloadTime;
 		}
@@ -103,5 +107,9 @@ public class PoliceShip : MonoBehaviour {
 	void OnCollisionEnter2D(Collision2D col)
 	{
 		// detect if hit by a shot
+	}
+
+	public void Hurt(Damage damage) {
+		health -= damage.amount;
 	}
 }
