@@ -6289,6 +6289,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shipHUD: {fileID: 0}
+  buyMenu: {fileID: 0}
 --- !u!114 &11400186
 MonoBehaviour:
   m_ObjectHideFlags: 1
