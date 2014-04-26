@@ -2,7 +2,14 @@
 using System.Collections;
 
 public class SaveButton : MonoBehaviour {
-	//disable when chased
+	void Update() {
+		 if (!LevelSelector.coastIsClear) {
+			GetComponent<UIButton>().isEnabled = false;
+		}
+		 else if (!GetComponent<UIButton>().isEnabled){
+			 GetComponent<UIButton>().isEnabled = true;
+		 }
+	}
 
 	void OnClick() {
 		//SaveLoad.instance.SaveData(LoadButtonMain.fileName, false);

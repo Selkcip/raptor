@@ -26,7 +26,10 @@ public class PlayerShipController : MonoBehaviour {
 	//public Material cloaked, uncloaked;
 
 	public float maxHealth;
-	float reload, health;
+	float reload;
+
+	[HideInInspector]
+	public float health = 1000;
 	
     public GameObject bullet;
     public float bulletSpeed, reloadTime;

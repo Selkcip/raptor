@@ -116,6 +116,7 @@ public class RaptorInteraction : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
+		LevelSelector.coastIsClear = false;
 		ShipDoor.escaping = false;
 		fpc = gameObject.GetComponent<FirstPersonCharacter>();
 		hud = gameObject.GetComponent<RaptorHUD>();

@@ -3,9 +3,10 @@ using System.Collections;
 
 public class ShopButton : MonoBehaviour {
 	public GameObject buyMenu;
+	public GameObject shipHUD;
 
 	void OnClick() {
 		buyMenu.SetActive(true);
-		gameObject.transform.root.gameObject.SetActive(false);
+		shipHUD.gameObject.SetActive(false);
 	}
 }

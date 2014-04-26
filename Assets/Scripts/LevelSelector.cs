@@ -82,12 +82,12 @@ public class LevelSelector : MonoBehaviour {
 	public void Load(){
 		print("Loading");
 		Application.LoadLevel("cargoship");
+		coastIsClear = false;
 	}
 	
 	// Update is called once per frame
 	void Update() {
         UpdateShips();
-
         foreach (SpaceyFeature feature in features) { 
             switch(feature.type) {
                 case FeatureType.CargoLane:
@@ -108,18 +108,22 @@ public class LevelSelector : MonoBehaviour {
 
         // update police ships
 		foreach (GameObject ship in policeShips) {
+			//stop searching when time is 0
             if (ship.GetComponent<PoliceShip>().searchTimer <= 0) {
                 if (!leave) {
                     leave = true;
+					coastIsClear = true;
                     lastDetectedLocation = Random.insideUnitCircle * despawnRadius;
                 }
                 if (Vector3.Distance(transform.position, ship.transform.position) > despawnRadius)
                     toBeRemoved.Add(ship);
             }
+			//reset timer if spotted again
             else if (ship.GetComponent<PoliceShip>().IsPlayerSpotted()) {
                 isPlayerSpotted = true;
                 leave = false;
                 lastDetectedLocation = transform.position;
+				coastIsClear = false;
             }
 		}
 		foreach (GameObject ship in toBeRemoved) {
@@ -127,7 +131,7 @@ public class LevelSelector : MonoBehaviour {
 			Destroy(ship);
 		}
 
-		coastIsClear = policeShips.Count <= 0;
+		//coastIsClear = policeShips.Count <= 0;
 
         // update cargo ships
         toBeRemoved.Clear();

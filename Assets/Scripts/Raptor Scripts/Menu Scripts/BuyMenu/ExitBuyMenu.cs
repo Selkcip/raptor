@@ -3,9 +3,10 @@ using System.Collections;
 
 public class ExitBuyMenu : MonoBehaviour {
 	public GameObject shipHUD;
+	public GameObject buyMenu;
 
 	void OnClick() {
 		shipHUD.SetActive(true);
-		gameObject.transform.root.gameObject.SetActive(false);
+		buyMenu.gameObject.SetActive(false);
 	}
 }

@@ -16,6 +16,9 @@ public class Pause : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		hud = GameObject.Find("HUD");
+		if(hud == null) {
+			hud = GameObject.Find("Ship HUD");
+		}
 
 		notoriety = GameObject.Find("Notoriety").GetComponent<UILabel>();
 		money = GameObject.Find("Money").GetComponent<UILabel>();
