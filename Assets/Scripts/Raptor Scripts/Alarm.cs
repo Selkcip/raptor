@@ -17,8 +17,9 @@ public class Alarm : MonoBehaviour {
 		}
 	}
 
-	void OnLevelWasLoaded() {
+	void Awake() {
 		alarms.Clear();
+		activated = false;
 	}
 
 	// Use this for initialization
@@ -28,10 +29,6 @@ public class Alarm : MonoBehaviour {
 
 	public void Use(GameObject user) {
 		ActivateAlarms();
-	}
-
-	// Update is called once per frame
-	void Update() {
 	}
 
 	public void SoundAlarm() {

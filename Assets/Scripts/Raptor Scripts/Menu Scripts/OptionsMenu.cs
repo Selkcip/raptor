@@ -41,8 +41,8 @@ public class OptionsMenu : MonoBehaviour {
 	}
 
 	void GraphicsUpdate() {
-		Screen.SetResolution(resolutions[list.items.IndexOf(list.value)].width, resolutions[list.items.IndexOf(list.value)].height, fullScreenInput.GetComponent<UIToggle>().value);
-		Screen.fullScreen = fullScreenInput.GetComponent<UIToggle>().value;
+		//Screen.SetResolution(resolutions[list.items.IndexOf(list.value)].width, resolutions[list.items.IndexOf(list.value)].height, fullScreenInput.GetComponent<UIToggle>().value);
+		//Screen.fullScreen = fullScreenInput.GetComponent<UIToggle>().value;
 
 		//Reflections
 		if(reflections.GetComponent<UIToggle>().value) {

@@ -7,7 +7,7 @@ public class TriggerableLight : Triggerable {
 
 	public string room = "ship";
 
-	void OnLevelLoaded() {
+	void Awake() {
 		lights.Clear();
 	}
 

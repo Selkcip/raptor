@@ -11,7 +11,6 @@ public class TitleScreen : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		gameObject.AddComponent<SaveLoad>();
 	}
 	
 	// Update is called once per frame
