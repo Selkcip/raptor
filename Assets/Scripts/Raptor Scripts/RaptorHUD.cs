@@ -21,6 +21,7 @@ public class RaptorHUD : MonoBehaviour {
 
 	//police timer
 	public static float pTime = 180; //time in seconds before police come
+	public static float maxPTime = 180; //time in seconds before police come
 	const float pAdjust = 20000f;	//cap on notoriety's effect on the timer
 
 	// Use this for initialization
@@ -44,7 +45,7 @@ public class RaptorHUD : MonoBehaviour {
 
 		}
 
-		pTime = 180 - 170 * Mathf.Min(RaptorInteraction.notoriety / pAdjust, 1);
+		pTime = maxPTime - 170 * Mathf.Min(RaptorInteraction.notoriety / pAdjust, 1);
 	}
 
 	public void Deplete(string bar, float amount) {

@@ -10,10 +10,10 @@ public class DeliveryShip : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		playerShip = GameObject.Find("PlayerShip").transform;
-		SceneTransition transition = GameObject.FindObjectOfType<SceneTransition>();
+		/*SceneTransition transition = GameObject.FindObjectOfType<SceneTransition>();
 		if(transition != null) {
 			transition.triggerList.Add(dock);
-		}
+		}*/
 	}
 	
 	// Update is called once per frame
