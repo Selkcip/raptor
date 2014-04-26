@@ -51,15 +51,11 @@ public class LevelSelector : MonoBehaviour {
         CargoLane cargoLane = new CargoLane(new Vector2(25, 0), new Vector2(1, 1), new Vector2(10, 15), 10, new Vector2(11, 12));
         features.Add(cargoLane);
 
-		foreach(CollectibleUpgrade upgrade in upgradPrefabs) {
-			UpgradeSpawner.upgrades.Add(upgrade);
-		}
-
-        SpawnPolice();
+        //SpawnPolice();
 	}
 
     public void SpawnPolice() {
-        if (RaptorHUD.pTime < RaptorHUD.maxPTime) { 
+       if (RaptorHUD.pTime < RaptorHUD.maxPTime) {
             //spawn police
             Vector2 spawnLocation = Random.insideUnitCircle * RaptorHUD.pTime * policeShip.GetComponent<PoliceShip>().maxSpeed;
             for (float i = 0; i < RaptorInteraction.notoriety; i += notorietyPerShip) {
@@ -74,7 +70,7 @@ public class LevelSelector : MonoBehaviour {
 	public void Load(){
 		print("Loading");
 		Application.LoadLevel("cargoship");
-		coastIsClear = false;
+		//coastIsClear = false;
 	}
 	
 	// Update is called once per frame
@@ -108,13 +104,14 @@ public class LevelSelector : MonoBehaviour {
         isPlayerSpotted = false;
 		ArrayList toBeRemoved = new ArrayList();
 
+		coastIsClear = true;
         // update police ships
 		foreach (GameObject ship in policeShips) {
 			//stop searching when time is 0
             if (ship.GetComponent<PoliceShip>().searchTimer <= 0) {
                 if (!leave) {
                     leave = true;
-					coastIsClear = true;
+					//coastIsClear = true;
                     lastDetectedLocation = Random.insideUnitCircle * despawnRadius;
                 }
 				if(Vector3.Distance(transform.position, ship.transform.position) > despawnRadius || ship.GetComponent<PoliceShip>().health <= 0)

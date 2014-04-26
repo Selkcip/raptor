@@ -152,6 +152,7 @@ MonoBehaviour:
   cloakRechargeTime: 2
   cloakLerpTime: 2
   maxHealth: 50
+  health: 1000
   bullet: {fileID: 100000, guid: 4bb294f50fb7ab5448d3f72277d85aa0, type: 2}
   bulletSpeed: 25
   reloadTime: .5
@@ -172,7 +173,7 @@ MonoBehaviour:
   maxShips: 20
   policeShip: {fileID: 100000, guid: 8678207e8b4258a41a3537ec5d1ed997, type: 2}
   policeSpawnProximity: 0
-  notorietyPerShip: 0
+  notorietyPerShip: 2000
   cargoShip: {fileID: 100000, guid: 4c444abae610f574ca1002d38bf4f218, type: 2}
   deliveryShip: {fileID: 11400000, guid: 368257f2ff522c84ab2ea211d6d43f92, type: 2}
   deliveryShipSpawnDis: 10

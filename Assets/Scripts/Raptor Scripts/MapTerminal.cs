@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class MapTerminal : MonoBehaviour {
 
 	public float mapAvailable = 0.25f;
-	private float transferRate = 29;
+	public float transferRate = 29;
 	public float alarmCountDown = 30;
 	public bool hackable = true;
 	public bool hacked = false;

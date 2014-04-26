@@ -16,7 +16,8 @@ public class SpaceCowboyExplosion : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D col) {
 		if(col.gameObject.GetComponent<PlayerShipController>() == null) {
-			Destroy(col.gameObject);
+			//Destroy(col.gameObject);
+			col.transform.SendMessage("Hurt", new Damage(100000000, transform.position), SendMessageOptions.DontRequireReceiver);
 		}
 	}
 	

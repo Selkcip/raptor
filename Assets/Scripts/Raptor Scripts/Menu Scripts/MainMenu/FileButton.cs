@@ -28,7 +28,7 @@ public class FileButton : MonoBehaviour {
 
 		GameSaver.LoadGame(fileName);
 
-		print(RaptorInteraction.name);
+		//print(RaptorInteraction.name);
 		fileWindow.SetActive(true);
 		//update the window
 		fileWindow.SendMessage("UpdateWindow", SendMessageOptions.DontRequireReceiver);

@@ -11,7 +11,7 @@ public class MusicPlayer : MonoBehaviour {
 	void Awake () {
 		if(music.Count > 0){
 			SoundManager.musicVolume = volume;
-			SoundManager.instance.Play2DSound(music[0], SoundManager.SoundType.Music);
+			SoundManager.instance.Play2DSound(music[0], SoundManager.SoundType.Music, true);
 		}
 	}
 	

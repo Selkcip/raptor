@@ -6688,6 +6688,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapAvailable: .25
+  transferRate: 29
   alarmCountDown: 30
   hackable: 1
   hacked: 0

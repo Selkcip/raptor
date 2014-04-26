@@ -113,7 +113,8 @@ MonoBehaviour:
   bullet: {fileID: 100000, guid: e70b81815de3a2340873cd1bcd9e02e4, type: 2}
   bulletSpeed: 25
   reloadTime: 1
-  searchTimer: 0
+  searchTimer: 5
+  health: 100
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
