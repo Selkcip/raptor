@@ -596,7 +596,7 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	public void toggleRotator(bool on){
-		GetComponent<SimpleMouseRotator>().enabled = on;
-		Camera.main.GetComponent<SimpleMouseRotator>().enabled = on;
+		//GetComponent<SimpleMouseRotator>().enabled = on;
+		//Camera.main.GetComponent<SimpleMouseRotator>().enabled = on;
 	}
 }
