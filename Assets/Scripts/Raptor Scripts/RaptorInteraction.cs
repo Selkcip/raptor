@@ -64,6 +64,8 @@ public class RaptorInteraction : MonoBehaviour {
 	static int idleState = Animator.StringToHash("Base Layer.Idle");
 	static int crouchIdleState = Animator.StringToHash("Base Layer.crouching_Idle");
 
+	IKRaptor ikControl;
+
 	private bool prevGrounded = true;
 	public bool isMoving = false;
 	public bool isRunning = false;
@@ -121,6 +123,9 @@ public class RaptorInteraction : MonoBehaviour {
 		fpc = gameObject.GetComponent<FirstPersonCharacter>();
 		hud = gameObject.GetComponent<RaptorHUD>();
 		arms = gameObject.GetComponentInChildren<Animator>();
+
+		ikControl = GetComponent<IKRaptor>();
+
 		health = maxHealth;
 
 		defaultRotation = raptorArms.localRotation;
@@ -241,6 +246,12 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void Animation() {
+		ikControl.isMoving = isMoving && fpc.grounded;
+		ikControl.speed = (isMoving ? fpc.movingSpeed : new Vector3(0,0,1))/8;
+
+		ikControl.isPouncing = isPouncing;
+		ikControl.isClinging = climbing;
+
 		currentState = arms.GetCurrentAnimatorStateInfo(0);
 
 		if(currentState.nameHash == idleState || currentState.nameHash == crouchIdleState) {
@@ -250,10 +261,10 @@ public class RaptorInteraction : MonoBehaviour {
 		}
 
 		//Eating sound stuff
-		if(arms.GetBool("isEating") && !eatSoundPlaying) {
+		/*if(arms.GetBool("isEating") && !eatSoundPlaying) {
 			eatSoundPlaying = true;
 			SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/eating1"), SoundManager.SoundType.Sfx);
-		}
+		}*/
 	}
 
 	void Controls() {
@@ -340,7 +351,7 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void Slash() {
-		if(!isSlashing) {
+		if(!isSlashing && !ikControl.isSlashing) {
 			isSlashing = true;
 			//animation stuff
 			if(isCrouching) {
@@ -350,7 +361,7 @@ public class RaptorInteraction : MonoBehaviour {
 				}
 			}
 
-			int arm = Random.Range(0, 3);
+			/*int arm = Random.Range(0, 3);
 			if(arm == 0) {
 				arms.SetBool("leftArmSlash", true);
 				SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/slash1"), SoundManager.SoundType.Sfx);
@@ -362,9 +373,13 @@ public class RaptorInteraction : MonoBehaviour {
 			else {
 				arms.SetBool("bothSlash", true);
 				SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/slash2"), SoundManager.SoundType.Sfx);
-			}
+			}*/
 			//hit detection
+			Vector3 slashPos = Camera.main.transform.position + Camera.main.transform.forward * meleeRange;
+			Transform slashTarget = null;
 			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, meleeRange)) {
+				slashPos = hit.point;
+				slashTarget = hit.transform;
 				if(hit.transform.tag == "enemy") {
 					//do damage
 					if(isPouncing) {
@@ -378,6 +393,7 @@ public class RaptorInteraction : MonoBehaviour {
 					bloodSpurt.Play();
 				}
 			}
+			ikControl.Slash(slashPos + transform.up, slashTarget);
 			StartCoroutine("SlashCoolDown");
 		}
 	}
@@ -460,6 +476,11 @@ public class RaptorInteraction : MonoBehaviour {
 						fpc.enabled = false;
 						rigidbody.isKinematic = true;
 						isPouncing = false;
+						//print(hit.normal);
+						/*transform.rotation = Quaternion.LookRotation(-hit.normal);
+						Vector3 angles = transform.localEulerAngles;
+						angles.x -= 90;
+						transform.localEulerAngles = angles;*/
 					//}
 				}
 			}
@@ -585,18 +606,32 @@ public class RaptorInteraction : MonoBehaviour {
 
 	void Climb() {
 		isPouncing = fpc.grounded ? false : isPouncing;
-		if(climbing) {
+		/*if(climbing) {
 			raptorArms.rotation = armRotation;
 			//Camera.main.GetComponent<SimpleMouseRotator>().rotationRange.x = 0f;
 		}
 		else {
 			raptorArms.localRotation = defaultRotation;
 			//Camera.main.GetComponent<SimpleMouseRotator>().rotationRange.x = 170f;
-		}
+		}*/
+
 	}
 
 	public void toggleRotator(bool on){
 		//GetComponent<SimpleMouseRotator>().enabled = on;
 		//Camera.main.GetComponent<SimpleMouseRotator>().enabled = on;
+	}
+
+	void LateUpdate() {
+
+		// read input from mouse or mobile controls
+		float inputH = CrossPlatformInput.GetAxis("Mouse X");
+		transform.localEulerAngles = transform.localEulerAngles + new Vector3(0, inputH*2, 0);
+
+		if(rigidbody != null && !rigidbody.isKinematic) {
+			rigidbody.angularVelocity *= 0;
+			rigidbody.rotation = transform.rotation;
+		}
+
 	}
 }

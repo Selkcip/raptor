@@ -24,6 +24,7 @@ public class FirstPersonCharacter : MonoBehaviour
 	public bool grounded { get; set; }
 	public bool moving = false;
 	public bool running = false;
+	public Vector3 movingSpeed;
 	private Vector2 input;
 
     void Awake ()
@@ -92,6 +93,9 @@ public class FirstPersonCharacter : MonoBehaviour
 
 		// Get a vector which is desired move as a world-relative direction, including speeds
 		Vector3 desiredMove = transform.forward * input.y * speed + transform.right * input.x * strafeSpeed;
+
+		movingSpeed.x = input.x * strafeSpeed;
+		movingSpeed.z = input.y * speed;
 
 		// preserving current y velocity (for falling, gravity)
 		float yv = grounded && rigidbody.velocity.y > 0 ? 0 : rigidbody.velocity.y;
