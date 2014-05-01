@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class IKRaptor : MonoBehaviour {
+	public Transform rig;
 	public Transform handL;
 	public Transform handR;
 	public Transform footL;
@@ -12,14 +13,15 @@ public class IKRaptor : MonoBehaviour {
 	public Vector3 speed;
 	public float slashSpeed = 1;
 
-	public bool isMoving, isJumping, isPouncing, isClinging, isSlashing, isUsing, isHacking;
+	public bool isMoving, isJumping, isPouncing, isClinging, isSlashing, isUsing, isHacking, isCrouching;
+	public Vector3 clingNormal;
 
 	Animator anim;
 	bool setCling = false;
-	Vector3 rot = new Vector3();
-	Vector3 initHandL, initHandR, initFootL, initFootR;
-	Vector3 clingHandL, clingHandR, clingFootL, clingFootR;
-	Quaternion clingRot;
+	Vector3 walkRot = new Vector3();
+	Vector3 initHandL, initHandR, initFootL, initFootR, initRigPos;
+	Vector3 clingHandL, clingHandR, clingFootL, clingFootR, clingHandEulers;
+	Quaternion clingRot, initRigRot;
 
 	Vector3 slashPos;
 	Transform slashTarget;
@@ -29,7 +31,12 @@ public class IKRaptor : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		strafeStrideLength = strideLength * 0.5f;
+
 		anim = GetComponent<Animator>();
+
+		initRigPos = rig.localPosition;
+		initRigRot = rig.rotation;
+
 		initHandL = handL.localPosition;
 		initHandR = handR.localPosition;
 		initFootL = footL.localPosition;
@@ -75,43 +82,48 @@ public class IKRaptor : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		rot += speed;// transform.InverseTransformPoint(rigidbody.velocity);
+	void LateUpdate () {
+		walkRot += speed;// transform.InverseTransformPoint(rigidbody.velocity);
 		//rot.x *= 2;
-		Vector3 lRot = rot;
+		Vector3 lRot = walkRot;
 		lRot.x *= 2;
 		Vector3 rRot = lRot + Vector3.one * Mathf.PI;
+
+		handL.localRotation = Quaternion.identity;
+		handR.localRotation = Quaternion.identity;
+
+		rig.localPosition = Vector3.Lerp(rig.localPosition, Vector3.forward*(isCrouching ? 0 : 1), 0.01f);
 
 		if(isClinging) {
 			if(!setCling){
 				setCling = true;
-				/*Vector3 handCenter = transform.forward + transform.up;
-				handL.position = handCenter - transform.right;
-				handR.position = handCenter + transform.right;*/
 
-				clingHandL = transform.TransformPoint(new Vector3(initHandL.x, 1, 2));
-				clingHandR = transform.TransformPoint(new Vector3(initHandR.x, 1, 2));
+				clingHandL = transform.TransformPoint(initHandL) - clingNormal * 0.4f;
+				clingHandR = transform.TransformPoint(initHandR) - clingNormal * 0.4f;
 
 				clingFootL = transform.TransformPoint(new Vector3(initFootL.x, 0, 2));
 				clingFootR = transform.TransformPoint(new Vector3(initFootR.x, 0, 2));
 
-				clingRot = transform.rotation;
+				clingRot = Quaternion.LookRotation(-clingNormal);
 
-				/*Vector3 footCenter = transform.forward - transform.up;
-				footL.position = footCenter - transform.right;
-				footR.position = footCenter + transform.right;*/
+				float xz = Mathf.Sqrt(clingNormal.x * clingNormal.x + clingNormal.z * clingNormal.z);
+				float clingAng = Mathf.Atan2(xz, clingNormal.y) * Mathf.Rad2Deg;
+
+				clingHandEulers.x = Mathf.Max(-90, Mathf.Min(90, clingHandEulers.x-clingAng));
 			}
 
+			handL.localEulerAngles = clingHandEulers;
+			handR.localEulerAngles = clingHandEulers;
+
 			handL.position = clingHandL;
-			handL.rotation = clingRot;
 			handR.position = clingHandR;
-			handR.rotation = clingRot;
-			footL.position = clingFootL;
+			/*footL.position = clingFootL;
 			footL.rotation = clingRot;
 			footR.position = clingFootR;
-			footR.rotation = clingRot;
+			footR.rotation = clingRot;*/
 		}
 		else {
+			setCling = false;
 			if(isPouncing) {
 				//Vector3 footCenter = new Vector3(0,1,1);
 				footL.localPosition = new Vector3(initFootL.x, 0, 2);
@@ -139,18 +151,20 @@ public class IKRaptor : MonoBehaviour {
 				footR.localPosition = Vector3.Lerp(footR.localPosition, initFootR, 0.5f);
 			}
 
-			float PI2 = 2*Mathf.PI;
+			float PI2 = Mathf.PI;
 			if(isSlashing) {
 				slashRot += PI2* Time.deltaTime / slashSpeed;
 
+				float posRot = slashRot;
+				float rotRot = slashRot;
 				if(slashArm == 0 || slashArm == 2) {
-					handL.localPosition = Vector3.Lerp(initHandL, slashPos, Mathf.Sin(slashRot));
-					handL.localEulerAngles = new Vector3(Mathf.Min(45, -90 + Mathf.Sin(slashRot * 0.25f) * 180), 0, 0);
+					handL.localPosition = Vector3.Lerp(initHandL, slashPos - Vector3.right * 0.25f, Mathf.Sin(posRot));
+					handL.localEulerAngles = new Vector3(Mathf.Min(45, -90 + Mathf.Sin(rotRot) * 135), 0, Mathf.Min(45, -45 + Mathf.Sin(rotRot) * 135));
 				}
 
 				if(slashArm == 1 || slashArm == 2) {
-					handR.localPosition = Vector3.Lerp(initHandR, slashPos, Mathf.Sin(slashRot));
-					handR.localEulerAngles = new Vector3(Mathf.Min(45, -90 + Mathf.Sin(slashRot * 0.25f) * 180), 0, 0);
+					handR.localPosition = Vector3.Lerp(initHandR, slashPos + Vector3.right * 0.25f, Mathf.Sin(posRot));
+					handR.localEulerAngles = new Vector3(Mathf.Min(45, -90 + Mathf.Sin(rotRot) * 135), 0, -Mathf.Min(45, -45 + Mathf.Sin(rotRot) * 135));
 				}
 
 				if(slashRot > PI2) {

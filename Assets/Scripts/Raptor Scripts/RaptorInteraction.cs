@@ -284,7 +284,7 @@ public class RaptorInteraction : MonoBehaviour {
 
 			if(RebindableInput.GetKey("Use")) {
 				RaycastHit hit;
-				int mask = ~(1 << LayerMask.NameToLayer("Enemy"));
+				int mask = ~(1 << LayerMask.NameToLayer("Player"));
 				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2, mask)) {
 					hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 					if(hit.transform.tag != "trap") {
@@ -338,7 +338,7 @@ public class RaptorInteraction : MonoBehaviour {
 						child.parent = null;
 						child.position = Camera.main.transform.TransformPoint(0, 0, 1);
 						RaycastHit hit;
-						int mask = ~(1 << LayerMask.NameToLayer("Enemy"));
+						int mask = ~(1 << LayerMask.NameToLayer("Player"));
 						if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 1, mask)) {
 							child.position = hit.point;
 						}
@@ -428,7 +428,8 @@ public class RaptorInteraction : MonoBehaviour {
 			fpc.strafeSpeed = 3;
 			fpc.runSpeed = 8f;
 		}
-		arms.SetBool("isCrouching", crouching);
+		//arms.SetBool("isCrouching", crouching);
+		ikControl.isCrouching = crouching;
 	}
 
 	void Pounce() {
@@ -466,7 +467,7 @@ public class RaptorInteraction : MonoBehaviour {
 			//else if(other.transform.tag == "room") {
 			else if(other.rigidbody == null) {
 				RaycastHit hit;
-				int mask = ~(1 << LayerMask.NameToLayer("Enemy"));
+				int mask = ~(1 << LayerMask.NameToLayer("Player"));
 				//check if the raptor is facing the wall
 				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 0.5f, mask)) {
 					//if(hit.collider.gameObject == other.gameObject) {
@@ -477,6 +478,7 @@ public class RaptorInteraction : MonoBehaviour {
 						rigidbody.isKinematic = true;
 						isPouncing = false;
 						//print(hit.normal);
+						ikControl.clingNormal = hit.normal;
 						/*transform.rotation = Quaternion.LookRotation(-hit.normal);
 						Vector3 angles = transform.localEulerAngles;
 						angles.x -= 90;
@@ -622,7 +624,7 @@ public class RaptorInteraction : MonoBehaviour {
 		//Camera.main.GetComponent<SimpleMouseRotator>().enabled = on;
 	}
 
-	void LateUpdate() {
+	/*void LateUpdate() {
 
 		// read input from mouse or mobile controls
 		float inputH = CrossPlatformInput.GetAxis("Mouse X");
@@ -633,5 +635,5 @@ public class RaptorInteraction : MonoBehaviour {
 			rigidbody.rotation = transform.rotation;
 		}
 
-	}
+	}*/
 }
