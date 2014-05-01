@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Pause : MonoBehaviour {
+public class PauseTopDown : MonoBehaviour {
 	private GameObject hud;
 	private Transform pausePanel;
-	private GameOver gameOver;
+	private GameOverTopdown gameOver;
 
 	private UILabel name;
 	private UILabel notoriety;
@@ -15,7 +15,7 @@ public class Pause : MonoBehaviour {
 	public GameObject optionsWindow;
 
 	// Use this for initialization
-	void Start () {
+	void Start() {
 		hud = GameObject.Find("HUD");
 		if(hud == null) {
 			hud = GameObject.Find("Ship HUD");
@@ -29,12 +29,12 @@ public class Pause : MonoBehaviour {
 		pausePanel = transform.FindChild("Panel - Pause");
 		pausePanel.gameObject.SetActive(false);
 
-		gameOver = GameObject.Find("GameOver").GetComponent<GameOver>();
+		gameOver = GameObject.Find("GameOver").GetComponent<GameOverTopdown>();
 	}
-	
+
 	// Update is called once per frame
-	void Update () {
-		if(Input.GetKeyDown(KeyCode.Escape) && !gameOver.gameOver) {
+	void Update() {
+		if(Input.GetKeyDown(KeyCode.Escape) && !gameOver.gameOver && !BuyMenu.buying) {
 			if(!paused) {
 				PauseMenu();
 			}

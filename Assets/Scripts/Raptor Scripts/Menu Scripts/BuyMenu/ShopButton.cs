@@ -6,7 +6,9 @@ public class ShopButton : MonoBehaviour {
 	public GameObject shipHUD;
 
 	void OnClick() {
+		BuyMenu.buying = true;
 		buyMenu.SetActive(true);
+		Time.timeScale = 0;
 		shipHUD.gameObject.SetActive(false);
 	}
 }

@@ -23,7 +23,7 @@ public class PlayerShipController : MonoBehaviour {
 
     public bool isCloaked, isDead;
 	public float cloakTime, cloakRechargeTime, cloakLerpTime; // time full cloak lasts, time full recharge takes, time of cloak transition
-	float cloakCharge, cloakTrans = 0; // betw/ 0(empty) and 1(full)
+	public float cloakCharge, cloakTrans = 0; // betw/ 0(empty) and 1(full)
 
 	//public Material cloaked, uncloaked;
 
@@ -31,7 +31,7 @@ public class PlayerShipController : MonoBehaviour {
 	float reload;
 
 	[HideInInspector]
-	public float health = 1000;
+	public float health = 50;
 	
     public GameObject bullet;
     public float bulletSpeed, reloadTime;
@@ -105,7 +105,7 @@ public class PlayerShipController : MonoBehaviour {
 				{
 					isCloaked = false;
 				}
-				else //if (cloakCharge >= 1) 
+				else if (cloakCharge >= 1) 
 				{
 					isCloaked = true;
 				}
@@ -118,10 +118,10 @@ public class PlayerShipController : MonoBehaviour {
 			force = Quaternion.Euler(transform.eulerAngles) * force;
 			rigidbody2D.AddForce(force);
 
-			/*if (cloakCharge < 0 && isCloaked)
+			if (cloakCharge < 0 && isCloaked)
 			{
 				isCloaked = false;
-			}*/
+			}
 
 			if (cloakTrans > 1)
 				cloakTrans = 1;

@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GameOver : MonoBehaviour {
+public class GameOverTopdown : MonoBehaviour {
 
 	private GameObject hud;
-	private RaptorInteraction player;
+	private PlayerShipController player;
 	private GameObject playerShip;
 	private Transform gameOverPanel;
 
@@ -12,27 +12,24 @@ public class GameOver : MonoBehaviour {
 
 	public bool gameOver = false;
 	// Use this for initialization
-	void Start () {
-		hud = GameObject.Find("HUD");
+	void Start() {
+		hud = GameObject.Find("Ship HUD");
 
-		player = GameObject.Find("Player").GetComponent<RaptorInteraction>();
+		player = GameObject.Find("PlayerShip").GetComponent<PlayerShipController>();
 
 		gameOverPanel = transform.FindChild("Panel - GameOver");
 		gameOverPanel.gameObject.SetActive(false);
 	}
-	
+
 	// Update is called once per frame
-	void Update () {
+	void Update() {
 		if(player.health <= 0 && !gameOver) {
 			StartCoroutine("GameOverPanel", 5);
 		}
-		
 	}
 
 	IEnumerator GameOverPanel(int seconds) {
-
 		yield return new WaitForSeconds(seconds);
-		
 
 		Time.timeScale = 0;
 		gameOverPanel.gameObject.SetActive(true);
