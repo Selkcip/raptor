@@ -128,7 +128,7 @@ public class RaptorInteraction : MonoBehaviour {
 
 		health = maxHealth;
 
-		defaultRotation = raptorArms.localRotation;
+		//defaultRotation = raptorArms.localRotation;
 	}
 
 	// Update is called once per frame
@@ -472,7 +472,7 @@ public class RaptorInteraction : MonoBehaviour {
 				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 0.5f, mask)) {
 					//if(hit.collider.gameObject == other.gameObject) {
 						climbing = true;
-						armRotation = raptorArms.rotation;//Camera.main.transform.rotation;
+						//armRotation = raptorArms.rotation;//Camera.main.transform.rotation;
 						rigidbody.constraints = RigidbodyConstraints.FreezePosition;
 						fpc.enabled = false;
 						rigidbody.isKinematic = true;
