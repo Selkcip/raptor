@@ -80,6 +80,10 @@ public class IKRaptor : MonoBehaviour {
 			}
 		}
 	}
+
+	void Update() {
+		anim.SetBool("isCrouching", isCrouching);
+	}
 	
 	// Update is called once per frame
 	void LateUpdate () {
@@ -91,8 +95,6 @@ public class IKRaptor : MonoBehaviour {
 
 		handL.localRotation = Quaternion.identity;
 		handR.localRotation = Quaternion.identity;
-
-		rig.localPosition = Vector3.Lerp(rig.localPosition, Vector3.forward*(isCrouching ? 0 : 1), 0.01f);
 
 		if(isClinging) {
 			if(!setCling){
