@@ -16,6 +16,7 @@ ModelImporter:
     100020: Vent_Entrance
     100022: Wall_Slant
     100024: Wall_Slant_2
+    100026: Door
     400000: __Floor
     400002: Corner
     400004: Corner_Floor
@@ -29,6 +30,7 @@ ModelImporter:
     400020: Vent_Entrance
     400022: Wall_Slant
     400024: Wall_Slant_2
+    400026: Door
     2300000: __Floor
     2300002: Corner
     2300004: Corner_Floor
@@ -41,6 +43,7 @@ ModelImporter:
     2300018: Vent_Entrance
     2300020: Wall_Slant
     2300022: Wall_Slant_2
+    2300024: Door
     3300000: __Floor
     3300002: Corner
     3300004: Corner_Floor
@@ -53,6 +56,7 @@ ModelImporter:
     3300018: Vent_Entrance
     3300020: Wall_Slant
     3300022: Wall_Slant_2
+    3300024: Door
     4300000: __Floor
     4300002: T_Floor
     4300004: Corner_Floor
@@ -65,6 +69,7 @@ ModelImporter:
     4300018: Floor_Slant
     4300020: Vent_Entrance
     4300022: Doorway
+    4300024: Door
     7400000: Default Take
     9500000: //RootNode
   materials:
