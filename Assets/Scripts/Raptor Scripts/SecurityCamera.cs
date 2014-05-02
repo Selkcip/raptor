@@ -130,10 +130,12 @@ public class SecurityCamera : MonoBehaviour {
 		List<ShipGridCell> region = ShipGrid.GetRegionI(new Bounds(hit.point, new Vector3(2,2,2)));
 		foreach(ShipGridCell cell in region) {
 			foreach(ShipGridItem item in cell.contents) {
-				PlanningNPC npc = item.GetComponent<PlanningNPC>();
-				if(npc != null) {
-					if(npc.dead) {
-						Alarm.ActivateAlarms();
+				if(item != null) {
+					PlanningNPC npc = item.GetComponent<PlanningNPC>();
+					if(npc != null) {
+						if(npc.dead) {
+							Alarm.ActivateAlarms();
+						}
 					}
 				}
 			}

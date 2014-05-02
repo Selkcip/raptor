@@ -247,10 +247,11 @@ public class RaptorInteraction : MonoBehaviour {
 
 	void Animation() {
 		ikControl.isMoving = isMoving && fpc.grounded;
-		ikControl.speed = (isMoving ? fpc.movingSpeed : new Vector3(0,0,1))/8;
+		ikControl.speed = (isMoving ? fpc.movingSpeed : new Vector3(0,0,1));
 
 		ikControl.isPouncing = isPouncing;
 		ikControl.isClinging = climbing;
+		ikControl.isJumping = !fpc.grounded;
 
 		currentState = arms.GetCurrentAnimatorStateInfo(0);
 
@@ -286,7 +287,8 @@ public class RaptorInteraction : MonoBehaviour {
 				RaycastHit hit;
 				int mask = ~(1 << LayerMask.NameToLayer("Player"));
 				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2, mask)) {
-					hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+					//hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+					ikControl.UseObject(hit.point+Camera.main.transform.up, hit.transform);
 					if(hit.transform.tag != "trap") {
 						defusing = false;
 					}
@@ -301,7 +303,7 @@ public class RaptorInteraction : MonoBehaviour {
 					toggleRotator(true);
 					rigidbody.freezeRotation = false;
 					rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-					arms.SetBool("isEating", false);
+					//arms.SetBool("isEating", false);
 					eatSoundPlaying = false;
 				}
 			}
@@ -393,7 +395,7 @@ public class RaptorInteraction : MonoBehaviour {
 					bloodSpurt.Play();
 				}
 			}
-			ikControl.Slash(slashPos + transform.up, slashTarget);
+			ikControl.Slash(slashPos + transform.up*0.25f, slashTarget);
 			StartCoroutine("SlashCoolDown");
 		}
 	}
