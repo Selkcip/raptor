@@ -8,6 +8,6 @@ public class ContinueButton : MonoBehaviour {
 		//SaveLoad.instance.LoadData(LoadButtonMain.fileName);
 		GameSaver.LoadGame(LoadButtonMain.fileName);
 		Time.timeScale = 1;
-		Application.LoadLevel(sceneName);
+		Application.LoadLevel(RaptorInteraction.level);
 	}
 }

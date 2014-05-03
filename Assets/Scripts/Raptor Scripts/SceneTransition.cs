@@ -109,7 +109,7 @@ public class SceneTransition : Triggerable {
 			}
 
 			if(transitionTime > transitionDelay && sceneLoad != null) {
-				RaptorInteraction.level = targetScene;
+				RaptorInteraction.level = "Space"; //This is hard coded so that as soon as we transition, the player returns to space if they die
 				//GameSaver.SaveGame("Save1");
 				print("going to next level");
 				sceneLoad.allowSceneActivation = true;
