@@ -11,16 +11,17 @@ public class DeleteButtonMain : MonoBehaviour {
 	// Use this for initialization
 	void Start() {
 		name = GameObject.Find("Input Label").GetComponent<UILabel>();
-		RaptorInteraction.name = name.text;
 	}
 
 	void OnClick() {
 		//SaveLoad.instance.DeleteData(fileName);
 		fileWindow.SetActive(true);
 		//update the window
-		fileWindow.SendMessage("UpdateWindow", SendMessageOptions.DontRequireReceiver);
 		//loadButton.GetComponent<LoadButtonMain>().fileName = fileName;
+
 		LoadButtonMain.fileName = fileName;
 		GameSaver.Delete(fileName);
+		GameSaver.LoadGame(fileName);	
+		fileWindow.SendMessage("UpdateWindow", SendMessageOptions.DontRequireReceiver);
 	}
 }

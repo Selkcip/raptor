@@ -17,10 +17,10 @@ public class FileWindow : MonoBehaviour {
 		name.text = "Click to enter name here";
 
 		map = GameObject.Find("Map").GetComponent<UILabel>();
-		map.text = "Map Completion: " + RaptorInteraction.mapAmountAcquired + "%";
+		map.text = "Map Completion: " + (int)(RaptorInteraction.mapAmountAcquired * 100) + "%";
 
 		notoriety = GameObject.Find("Notoriety").GetComponent<UILabel>();
-		notoriety.text = "Notoriety: $" + RaptorInteraction.notoriety;
+		notoriety.text = "Notoriety: $" + (int)RaptorInteraction.notoriety;
 
 		money = GameObject.Find("Money").GetComponent<UILabel>();
 		money.text = "Money: $" + RaptorInteraction.money;
@@ -32,8 +32,8 @@ public class FileWindow : MonoBehaviour {
 	void UpdateWindow () {
 		nameInput.value = RaptorInteraction.name;
 		name.text = RaptorInteraction.name;
-		map.text = "Map Completion: " + RaptorInteraction.mapAmountAcquired + "%";
-		notoriety.text = "Notoriety: $" + RaptorInteraction.notoriety;
+		notoriety.text = "Notoriety: $" + (int)RaptorInteraction.notoriety;
 		money.text = "Money: $" + RaptorInteraction.money;
+		map.text = "Map Completion: " + (int)(RaptorInteraction.mapAmountAcquired * 100) + "%";
 	}
 }

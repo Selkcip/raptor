@@ -3,6 +3,8 @@ using System.Collections;
 
 public class CollectibleUpgrade : Collectible {
 
+	public string name;
+
 	// Use this for initialization
 	void Start () {
 		droppable = false;
