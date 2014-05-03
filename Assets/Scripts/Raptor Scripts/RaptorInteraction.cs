@@ -549,9 +549,10 @@ public class RaptorInteraction : MonoBehaviour {
 			}
 		}*/
 
-		if(keyCount >= door.keyCardsToUnlock) {
+		/*if(keyCount >= door.keyCardsToUnlock) {
 			door.LockDoor(false);
-		}
+		}*/
+		door.Unlock(keyCount);
 	}
 
 	public void Eat(float amount) {

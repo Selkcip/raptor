@@ -7,6 +7,7 @@ public class MapTerminal : MonoBehaviour {
 	public float mapAvailable = 0.25f;
 	public float transferRate = 29;
 	public float alarmCountDown = 30;
+	public float notorietyToLock = 10000;
 	public bool hackable = true;
 	public bool hacked = false;
 	public UISlider mapBar;
@@ -24,6 +25,11 @@ public class MapTerminal : MonoBehaviour {
 	void Start() {
 		transferRate = mapAvailable / alarmCountDown;
 		initMapAvailable = mapAvailable;
+
+		if(RaptorInteraction.notoriety >= notorietyToLock) {
+			alarmCountDown = 0;
+			alarmLabel.enabled = true;
+		}
 	}
 
 	public void Use(GameObject user) {

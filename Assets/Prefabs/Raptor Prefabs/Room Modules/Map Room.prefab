@@ -6690,6 +6690,7 @@ MonoBehaviour:
   mapAvailable: .25
   transferRate: 29
   alarmCountDown: 30
+  notorietyToLock: 10000
   hackable: 1
   hacked: 0
   mapBar: {fileID: 11400020}
@@ -7622,6 +7623,7 @@ MonoBehaviour:
   guardsCanUnlock: 1
   openOnTrigger: 1
   openOnTriggerable: 1
+  keysUsed: 0
   leftOpenDir: {x: -1.5, y: 0, z: 0}
   rightOpenDir: {x: 1.5, y: 0, z: 0}
   LeftDoor: {fileID: 400032}

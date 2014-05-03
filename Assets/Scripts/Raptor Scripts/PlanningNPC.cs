@@ -1090,7 +1090,10 @@ public class PlanningNPC : MonoBehaviour {
 	}
 
 	public void UnlockDoor(RaptorDoor door) {
-		door.OpenDoor(door.guardsCanUnlock);
+		if(door.guardsCanUnlock){
+			door.Unlock(door.keyCardsToUnlock);
+		}
+		//door.OpenDoor(door.guardsCanUnlock);
 	}
 
 	public void Collect(Collectible obj) {

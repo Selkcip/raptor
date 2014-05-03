@@ -10,6 +10,7 @@ public class RaptorDoor : Triggerable {
 	public bool guardsCanUnlock = true;
 	public bool openOnTrigger = true;
 	public bool openOnTriggerable = true;
+	public int keysUsed = 0;
 
 	public Vector3 leftOpenDir = new Vector3(-1.5f, 0, 0);
 	public Vector3 rightOpenDir = new Vector3(1.5f, 0, 0);
@@ -28,6 +29,13 @@ public class RaptorDoor : Triggerable {
 		isLocked = locked;
 		if(isOpen && locked) {
 			CloseDoor();
+		}
+	}
+
+	public void Unlock(int keyCount) {
+		keysUsed = keyCount;
+		if(keyCount >= keyCardsToUnlock) {
+			LockDoor(false);
 		}
 	}
 
