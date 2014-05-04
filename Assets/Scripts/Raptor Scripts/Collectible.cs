@@ -20,6 +20,12 @@ public class Collectible : ShipGridItem {
 		if(cell != null) {
 			cell.RemoveItem(this);
 		}
+
+		Rigidbody[] bodies = GetComponents<Rigidbody>();
+		foreach(Rigidbody body in bodies) {
+			body.velocity *= 0;
+		}
+
 		user.SendMessage("Collect", this, SendMessageOptions.DontRequireReceiver);
 	}
 }

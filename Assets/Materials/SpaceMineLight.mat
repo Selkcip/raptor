@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: AreaLight
-  m_Shader: {fileID: 4800000, guid: dabc98ae45c744f25bee62850e082c60, type: 3}
+  m_Name: SpaceMineLight
+  m_Shader: {fileID: 4800000, guid: e7190b4a23127409d99cac19f0efc82e, type: 3}
   m_ShaderKeywords:
   - GLOW11_GLOW_MAINCOLOR
   m_CustomRenderQueue: -1
@@ -23,14 +23,14 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _Illum
+          name: _GlowTex
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _GlowTex
+          name: _Illum
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
@@ -38,18 +38,26 @@ Material:
     m_Floats:
       data:
         first:
-          name: _EmissionLM
-        second: 0
+          name: _Shininess
+        second: .699999988
       data:
         first:
           name: _GlowStrength
-        second: 1
+        second: 10
+      data:
+        first:
+          name: _EmissionLM
+        second: 0
     m_Colors:
       data:
         first:
           name: _Color
+        second: {r: 1, g: 1, b: 1, a: .498039216}
+      data:
+        first:
+          name: _SpecColor
         second: {r: 1, g: 1, b: 1, a: 1}
       data:
         first:
           name: _GlowColor
-        second: {r: 1, g: 1, b: 1, a: 1}
+        second: {r: 1, g: 0, b: 0, a: 1}

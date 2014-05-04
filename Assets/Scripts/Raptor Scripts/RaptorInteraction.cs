@@ -338,11 +338,11 @@ public class RaptorInteraction : MonoBehaviour {
 					Collectible collectible = child.GetComponent<Collectible>();
 					if(collectible != null && collectible.droppable && !collectible.keyCard) {
 						child.parent = null;
-						child.position = Camera.main.transform.TransformPoint(0, 0, 1);
+						child.position = Camera.main.transform.position + Camera.main.transform.forward;// Camera.main.transform.TransformPoint(0, 0, 1);
 						RaycastHit hit;
 						int mask = ~(1 << LayerMask.NameToLayer("Player"));
 						if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 1, mask)) {
-							child.position = hit.point;
+							child.position = hit.point - Camera.main.transform.forward*0.01f;
 						}
 						child.gameObject.active = true;
 						break;

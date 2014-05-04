@@ -324,8 +324,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fuseTime: 17
-  speed: .100000001
+  sticky: 1
+  timerLight: {fileID: 0}
   explosionPrefab: {fileID: 11400000, guid: 20c302db9fb829e4b99ae97778221572, type: 2}
+  speed: .100000001
 --- !u!198 &19800000
 ParticleSystem:
   m_ObjectHideFlags: 1

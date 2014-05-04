@@ -237,6 +237,7 @@ public class IKRaptor : MonoBehaviour {
 			else if(isUsing) {
 				if(useTarget != null) {
 					useRot += 2 * Mathf.PI * Time.deltaTime / useTime;
+					useRot = Mathf.Min(2 * Mathf.PI, useRot);
 					float sin = Mathf.Sin(useRot);
 					//Vector3 usePos = transform.InverseTransformPoint(useTarget.position + Vector3.up*2);
 					if(useArm == 0) {

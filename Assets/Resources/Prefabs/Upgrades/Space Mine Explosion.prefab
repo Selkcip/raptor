@@ -14,7 +14,7 @@ GameObject:
   - 58: {fileID: 5800000}
   - 82: {fileID: 8200000}
   m_Layer: 0
-  m_Name: Space Cowboy Explosion
+  m_Name: Space Mine Explosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -139,9 +139,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf8acbaa6cc77fd41a2769ca0125b55b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  finalRadius: 100
-  lifeTime: 5
-  damage: 1e+08
+  finalRadius: 10
+  lifeTime: 2
+  damage: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
