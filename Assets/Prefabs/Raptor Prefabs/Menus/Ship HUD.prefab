@@ -614,6 +614,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a2a731c6ac0a541961c91f247800df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: {fileID: 0}
+  cloak: {fileID: 0}
+  spacecowboys: {fileID: 0}
 --- !u!114 &11400014
 MonoBehaviour:
   m_ObjectHideFlags: 1
