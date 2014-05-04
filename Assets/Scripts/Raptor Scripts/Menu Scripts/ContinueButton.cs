@@ -6,8 +6,9 @@ public class ContinueButton : MonoBehaviour {
 
 	void OnClick() {
 		//SaveLoad.instance.LoadData(LoadButtonMain.fileName);
+		string oldLevel = RaptorInteraction.level;
 		GameSaver.LoadGame(LoadButtonMain.fileName);
 		Time.timeScale = 1;
-		Application.LoadLevel(RaptorInteraction.level);
+		Application.LoadLevel(oldLevel);
 	}
 }
