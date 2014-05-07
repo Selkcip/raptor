@@ -31,6 +31,7 @@ public class SentryGun : MonoBehaviour {
 
 	//Shooting things
 	public float fireRate = 0.25f;
+	public Transform gun;
 	public Transform leftMuzzle;
 	public Transform rightMuzzle;
 	public GameObject projectile;
@@ -58,6 +59,7 @@ public class SentryGun : MonoBehaviour {
 			HOTween.Kill(transform);
 			tweening = false;
 			transform.LookAt(new Vector3(player.position.x, transform.position.y, player.position.z));
+			gun.LookAt(new Vector3(player.position.x, player.position.y, player.position.z));
 			Shoot();
 		}
 
@@ -132,7 +134,7 @@ public class SentryGun : MonoBehaviour {
 			return;
 		}
 		noticeTimer = 0f;
-		HOTween.To(transform, 5.0f, new TweenParms().Prop("rotation", new Vector3(0f, 0f, 0f), false).OnComplete(SearchRight));
+		HOTween.To(transform, 5.0f, new TweenParms().Prop("rotation", new Vector3(0f, 0f, 0f), true).OnComplete(SearchRight));
 	}
 
 	void SearchRight() {
