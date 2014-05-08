@@ -985,7 +985,7 @@ public class PlanningNPC : MonoBehaviour {
 	}
 
 	protected void Plan() {
-		if(plan.Count > 0) {
+		/*if(plan.Count > 0) {
 			//Carry out plan
 			PlanAction action = plan[0];
 			actionName = action.name;
@@ -1006,7 +1006,7 @@ public class PlanningNPC : MonoBehaviour {
 				}
 			}
 		}
-		else {
+		else {*/
 			actionName = "no action";
 			//Sort list of goals by priority
 			goals.Sort(delegate(PlanGoal a, PlanGoal b) {
@@ -1022,7 +1022,7 @@ public class PlanningNPC : MonoBehaviour {
 					break;
 				}
 			}
-		}
+		//}
 	}
 
 	protected void ClearPlan() {
