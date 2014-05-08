@@ -51,16 +51,16 @@ public class LevelSelector : MonoBehaviour {
         CargoLane cargoLane = new CargoLane(new Vector2(25, 0), new Vector2(1, 1), new Vector2(10, 15), 10, new Vector2(11, 12));
         features.Add(cargoLane);
 
-        //SpawnPolice();
+        SpawnPolice();
 	}
 
     public void SpawnPolice() {
-       if (RaptorHUD.pTime < RaptorHUD.maxPTime) {
+       if (Timer.pTime < Timer.maxPTime) {
             //spawn police
-            Vector2 spawnLocation = Random.insideUnitCircle * RaptorHUD.pTime * policeShip.GetComponent<PoliceShip>().maxSpeed;
+            Vector2 spawnLocation = Random.insideUnitCircle * Timer.pTime * policeShip.GetComponent<PoliceShip>().maxSpeed;
             for (float i = 0; i < RaptorInteraction.notoriety; i += notorietyPerShip) {
                 GameObject ship = (GameObject)Instantiate(policeShip, spawnLocation, Quaternion.identity);
-                ship.GetComponent<PoliceShip>().searchTimer = RaptorHUD.pTime + ship.GetComponent<PoliceShip>().maxSearchTime;
+                ship.GetComponent<PoliceShip>().searchTimer = Timer.pTime + ship.GetComponent<PoliceShip>().maxSearchTime;
                 policeShips.Add(ship);
                 spawnLocation += Random.insideUnitCircle * policeSpawnProximity;
             }

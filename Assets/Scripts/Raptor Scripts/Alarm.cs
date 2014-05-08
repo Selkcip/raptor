@@ -10,6 +10,7 @@ public class Alarm : MonoBehaviour {
 
 	public static void ActivateAlarms() {
 		if(!activated) {
+			Timer.inStealth = false; //starts police timer
 			activated = true;
 			foreach(Alarm alarm in alarms) {
 				alarm.SoundAlarm();

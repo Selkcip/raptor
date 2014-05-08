@@ -56,6 +56,9 @@ public class RaptorInteraction : MonoBehaviour {
 	[HideInInspector]
 	public float health;
 
+	[HideInInspector]
+	public float stamina = 1.0f; //value between 0 and 1;
+
 	private float noiseLevel;
 
 	//animation stuff
@@ -82,7 +85,6 @@ public class RaptorInteraction : MonoBehaviour {
 	bool dieSoundPlaying = false;
 
 	private FirstPersonCharacter fpc;
-	private RaptorHUD hud;
 
 	//Stuff for changing the color of the cursor
 	private RaycastHit inRange;
@@ -119,7 +121,6 @@ public class RaptorInteraction : MonoBehaviour {
 		LevelSelector.coastIsClear = false;
 		ShipDoor.escaping = false;
 		fpc = gameObject.GetComponent<FirstPersonCharacter>();
-		hud = gameObject.GetComponent<RaptorHUD>();
 		arms = gameObject.GetComponentInChildren<Animator>();
 		health = maxHealth;
 
@@ -143,12 +144,6 @@ public class RaptorInteraction : MonoBehaviour {
 				edge.enabled = true;// heatRenderer.enabled;
 				edge.edgesOnly = Mathf.Lerp(edge.edgesOnly, Mathf.Max(0, Mathf.Min(1, 1 - lightLevel / maxLightLevel)), 0.1f);
 			}
-
-			//prevents the player from getting stuck when pouncing next to a wall
-			if(hud.stamina <= 0f) {
-				//isPouncing = false;
-				//fpc.enabled = true;
-			}
 		}
 		else {
 			//Die
@@ -169,13 +164,15 @@ public class RaptorInteraction : MonoBehaviour {
 	void HUD() {
 		//Stamina updates
 		if(isPouncing) {
-			hud.Deplete("stamina", 1f * Time.deltaTime);
+			stamina -= Time.deltaTime;//hud.Deplete("stamina", 1f * Time.deltaTime);
+			stamina = Mathf.Max(stamina, 0f);
 		}
 		else if(chainPounce) {
-			hud.Regenerate("stamina", 2.0f * Time.deltaTime);
+			stamina = 1.0f;//hud.Regenerate("stamina", 2.0f * Time.deltaTime);
 		}
 		else {
-			hud.Regenerate("stamina", .66f * Time.deltaTime);
+			stamina += 0.66f * Time.deltaTime;//hud.Regenerate("stamina", .66f * Time.deltaTime);
+			stamina = Mathf.Min(stamina, 1.0f);
 		}
 	}
 
@@ -416,7 +413,8 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void Pounce() {
-		if(hud.stamina == 1.0f && !isPouncing && (fpc.grounded || climbing)) {
+		print(stamina == 1.0f && !isPouncing && (fpc.grounded || climbing));
+		if(stamina == 1.0f && !isPouncing && (fpc.grounded || climbing)) {
 			rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 			rigidbody.isKinematic = false;
 			fpc.enabled = true;
@@ -544,14 +542,12 @@ public class RaptorInteraction : MonoBehaviour {
 		}*/
 
 		if(health < maxHealth) {
-			health += 0.02f;
-			hud.health = health / maxHealth;
+			health += 0.075f;
 		}
 	}
 
 	public void Hurt(Damage damage) {
 		health -= damage.amount;
-		hud.Deplete("health", damage.amount/maxHealth);
 
 		/*PainIndicator indicator = (PainIndicator)Instantiate(painIndicator);
 		indicator.transform.parent = Camera.main.transform;

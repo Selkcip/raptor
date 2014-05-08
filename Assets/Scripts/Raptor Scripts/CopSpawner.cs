@@ -21,7 +21,7 @@ public class CopSpawner : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		spawnTime -= Time.deltaTime;
-		if(RaptorHUD.pTime <= 0) {
+		if(Timer.pTime <= 0) {
 			if(copPerRoom <= 0) {
 				copPerRoom = Mathf.Min(5, Mathf.Max(1, Mathf.FloorToInt(RaptorInteraction.notoriety / notorietyStep)));
 			}
