@@ -1078,7 +1078,9 @@ public class PlanningNPC : MonoBehaviour {
 
 	public void Hurt(Damage damage) {
 		health -= damage.amount;
-		SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/hurt"), SoundManager.SoundType.Dialogue, gameObject);
+		if(!knockedOut) {
+			SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/hurt"), SoundManager.SoundType.Dialogue, gameObject);
+		}
 		curFov = 360;
 		noticeTimer = noticeTime;
 	}
@@ -1088,7 +1090,10 @@ public class PlanningNPC : MonoBehaviour {
 	}
 
 	public void UnlockDoor(RaptorDoor door) {
-		door.OpenDoor(door.guardsCanUnlock);
+		if(door.guardsCanUnlock){
+			door.Unlock(door.keyCardsToUnlock);
+		}
+		//door.OpenDoor(door.guardsCanUnlock);
 	}
 
 	public void Collect(Collectible obj) {

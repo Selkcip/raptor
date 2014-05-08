@@ -151,12 +151,12 @@ public class LevelSelector : MonoBehaviour {
             Destroy(ship);
         }
 
-		/*while (policeShips.Count < maxShips) {
+		while (policeShips.Count < maxShips) {
 			Vector2 position = Random.insideUnitCircle.normalized * spawnRadius;
 			float rotation = Random.value * 360;
 			GameObject ship = (GameObject)Instantiate(policeShip, transform.position + (Vector3)position, Quaternion.Euler(new Vector3(0, 0, rotation)));
 			policeShips.Add(ship);
-		}*/
+		}
     }
 
     void UpdateBackground() {

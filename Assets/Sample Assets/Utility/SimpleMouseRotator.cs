@@ -21,6 +21,7 @@ public class SimpleMouseRotator : MonoBehaviour {
 	public bool autoZeroVerticalOnMobile = true;
 	public bool autoZeroHorizontalOnMobile = false;
 	public bool relative = true;
+	public bool swapAxes = false;
 	Vector3 targetAngles;
 	Vector3 followAngles;
 	Vector3 followVelocity;
@@ -46,6 +47,12 @@ public class SimpleMouseRotator : MonoBehaviour {
 		{
 			inputH = CrossPlatformInput.GetAxis("Mouse X");
 			inputV = CrossPlatformInput.GetAxis("Mouse Y") * (invert ? -1 : 1);
+
+			if(swapAxes) {
+				float temp = inputH;
+				inputH = inputV;
+				inputV = temp;
+			}
 
 			// wrap values to avoid springing quickly the wrong way from positive to negative
 			if (targetAngles.y > 180) { targetAngles.y -= 360; followAngles.y -= 360; }

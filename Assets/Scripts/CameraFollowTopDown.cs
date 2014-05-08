@@ -12,7 +12,7 @@ public class CameraFollowTopDown : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update() {
+	void LateUpdate() {
         transform.position = player.transform.position;
 
         transform.position += new Vector3(0, 0, -height);

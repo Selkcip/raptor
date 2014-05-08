@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Holoville.HOTween;
 
 public class Alarm : MonoBehaviour {
 
+	public Transform handle;
 	public static bool activated = false;
 
 	public static List<Alarm> alarms = new List<Alarm>();
@@ -30,6 +32,7 @@ public class Alarm : MonoBehaviour {
 
 	public void Use(GameObject user) {
 		ActivateAlarms();
+		HOTween.To(handle, 0.25f, new TweenParms().Prop("localPosition", new Vector3(0f, -0.25f, 0f), false));
 	}
 
 	public void SoundAlarm() {

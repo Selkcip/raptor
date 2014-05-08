@@ -67,6 +67,8 @@ public class RaptorInteraction : MonoBehaviour {
 	static int idleState = Animator.StringToHash("Base Layer.Idle");
 	static int crouchIdleState = Animator.StringToHash("Base Layer.crouching_Idle");
 
+	IKRaptor ikControl;
+
 	private bool prevGrounded = true;
 	public bool isMoving = false;
 	public bool isRunning = false;
@@ -122,9 +124,12 @@ public class RaptorInteraction : MonoBehaviour {
 		ShipDoor.escaping = false;
 		fpc = gameObject.GetComponent<FirstPersonCharacter>();
 		arms = gameObject.GetComponentInChildren<Animator>();
+
+		ikControl = GetComponent<IKRaptor>();
+
 		health = maxHealth;
 
-		defaultRotation = raptorArms.localRotation;
+		//defaultRotation = raptorArms.localRotation;
 	}
 
 	// Update is called once per frame
@@ -238,6 +243,13 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void Animation() {
+		ikControl.isMoving = isMoving && fpc.grounded;
+		ikControl.speed = (isMoving ? fpc.movingSpeed : new Vector3(0,0,1));
+
+		ikControl.isPouncing = isPouncing;
+		ikControl.isClinging = climbing;
+		ikControl.isJumping = !fpc.grounded;
+
 		currentState = arms.GetCurrentAnimatorStateInfo(0);
 
 		if(currentState.nameHash == idleState || currentState.nameHash == crouchIdleState) {
@@ -247,10 +259,10 @@ public class RaptorInteraction : MonoBehaviour {
 		}
 
 		//Eating sound stuff
-		if(arms.GetBool("isEating") && !eatSoundPlaying) {
+		/*if(arms.GetBool("isEating") && !eatSoundPlaying) {
 			eatSoundPlaying = true;
 			SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/eating1"), SoundManager.SoundType.Sfx);
-		}
+		}*/
 	}
 
 	void Controls() {
@@ -270,9 +282,10 @@ public class RaptorInteraction : MonoBehaviour {
 
 			if(RebindableInput.GetKey("Use")) {
 				RaycastHit hit;
-				int mask = ~(1 << LayerMask.NameToLayer("Enemy"));
+				int mask = ~(1 << LayerMask.NameToLayer("Player"));
 				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2, mask)) {
-					hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+					//hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+					ikControl.UseObject(hit.point+Camera.main.transform.up, hit.transform);
 					if(hit.transform.tag != "trap") {
 						defusing = false;
 					}
@@ -287,7 +300,7 @@ public class RaptorInteraction : MonoBehaviour {
 					toggleRotator(true);
 					rigidbody.freezeRotation = false;
 					rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-					arms.SetBool("isEating", false);
+					//arms.SetBool("isEating", false);
 					eatSoundPlaying = false;
 				}
 			}
@@ -322,11 +335,11 @@ public class RaptorInteraction : MonoBehaviour {
 					Collectible collectible = child.GetComponent<Collectible>();
 					if(collectible != null && collectible.droppable && !collectible.keyCard) {
 						child.parent = null;
-						child.position = Camera.main.transform.TransformPoint(0, 0, 1);
+						child.position = Camera.main.transform.position + Camera.main.transform.forward;// Camera.main.transform.TransformPoint(0, 0, 1);
 						RaycastHit hit;
-						int mask = ~(1 << LayerMask.NameToLayer("Enemy"));
+						int mask = ~(1 << LayerMask.NameToLayer("Player"));
 						if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 1, mask)) {
-							child.position = hit.point;
+							child.position = hit.point - Camera.main.transform.forward*0.01f;
 						}
 						child.gameObject.active = true;
 						break;
@@ -337,7 +350,7 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void Slash() {
-		if(!isSlashing && !climbing) {
+		if(!isSlashing && !climbing && !ikControl.isSlashing) {
 			isSlashing = true;
 			//animation stuff
 			if(isCrouching) {
@@ -347,7 +360,7 @@ public class RaptorInteraction : MonoBehaviour {
 				}
 			}
 
-			int arm = Random.Range(0, 3);
+			/*int arm = Random.Range(0, 3);
 			if(arm == 0) {
 				arms.SetBool("leftArmSlash", true);
 				SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/slash1"), SoundManager.SoundType.Sfx);
@@ -359,9 +372,13 @@ public class RaptorInteraction : MonoBehaviour {
 			else {
 				arms.SetBool("bothSlash", true);
 				SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/slash2"), SoundManager.SoundType.Sfx);
-			}
+			}*/
 			//hit detection
+			Vector3 slashPos = Camera.main.transform.position + Camera.main.transform.forward * meleeRange;
+			Transform slashTarget = null;
 			if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, meleeRange)) {
+				slashPos = hit.point;
+				slashTarget = hit.transform;
 				if(hit.transform.tag == "enemy") {
 					//do damage
 					if(isPouncing) {
@@ -375,6 +392,7 @@ public class RaptorInteraction : MonoBehaviour {
 					bloodSpurt.Play();
 				}
 			}
+			ikControl.Slash(slashPos + transform.up*0.25f, slashTarget);
 			StartCoroutine("SlashCoolDown");
 		}
 	}
@@ -409,7 +427,8 @@ public class RaptorInteraction : MonoBehaviour {
 			fpc.strafeSpeed = 3;
 			fpc.runSpeed = 8f;
 		}
-		arms.SetBool("isCrouching", crouching);
+		//arms.SetBool("isCrouching", crouching);
+		ikControl.isCrouching = crouching;
 	}
 
 	void Pounce() {
@@ -448,16 +467,22 @@ public class RaptorInteraction : MonoBehaviour {
 			//else if(other.transform.tag == "room") {
 			else if(other.rigidbody == null) {
 				RaycastHit hit;
-				int mask = ~(1 << LayerMask.NameToLayer("Enemy"));
+				int mask = ~(1 << LayerMask.NameToLayer("Player"));
 				//check if the raptor is facing the wall
 				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 0.5f, mask)) {
 					//if(hit.collider.gameObject == other.gameObject) {
 						climbing = true;
-						armRotation = raptorArms.rotation;//Camera.main.transform.rotation;
+						//armRotation = raptorArms.rotation;//Camera.main.transform.rotation;
 						rigidbody.constraints = RigidbodyConstraints.FreezePosition;
 						fpc.enabled = false;
 						rigidbody.isKinematic = true;
 						isPouncing = false;
+						//print(hit.normal);
+						ikControl.clingNormal = hit.normal;
+						/*transform.rotation = Quaternion.LookRotation(-hit.normal);
+						Vector3 angles = transform.localEulerAngles;
+						angles.x -= 90;
+						transform.localEulerAngles = angles;*/
 					//}
 				}
 			}
@@ -522,9 +547,10 @@ public class RaptorInteraction : MonoBehaviour {
 			}
 		}*/
 
-		if(keyCount >= door.keyCardsToUnlock) {
+		/*if(keyCount >= door.keyCardsToUnlock) {
 			door.LockDoor(false);
-		}
+		}*/
+		door.Unlock(keyCount);
 	}
 
 	public void Eat(float amount) {
@@ -581,18 +607,32 @@ public class RaptorInteraction : MonoBehaviour {
 
 	void Climb() {
 		isPouncing = fpc.grounded ? false : isPouncing;
-		if(climbing) {
+		/*if(climbing) {
 			raptorArms.rotation = armRotation;
 			//Camera.main.GetComponent<SimpleMouseRotator>().rotationRange.x = 0f;
 		}
 		else {
 			raptorArms.localRotation = defaultRotation;
 			//Camera.main.GetComponent<SimpleMouseRotator>().rotationRange.x = 170f;
-		}
+		}*/
+
 	}
 
 	public void toggleRotator(bool on){
-		GetComponent<SimpleMouseRotator>().enabled = on;
-		Camera.main.GetComponent<SimpleMouseRotator>().enabled = on;
+		//GetComponent<SimpleMouseRotator>().enabled = on;
+		//Camera.main.GetComponent<SimpleMouseRotator>().enabled = on;
 	}
+
+	/*void LateUpdate() {
+
+		// read input from mouse or mobile controls
+		float inputH = CrossPlatformInput.GetAxis("Mouse X");
+		transform.localEulerAngles = transform.localEulerAngles + new Vector3(0, inputH*2, 0);
+
+		if(rigidbody != null && !rigidbody.isKinematic) {
+			rigidbody.angularVelocity *= 0;
+			rigidbody.rotation = transform.rotation;
+		}
+
+	}*/
 }

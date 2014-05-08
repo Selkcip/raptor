@@ -42,7 +42,7 @@ Material:
       data:
         first:
           name: _Shininess
-        second: 1
+        second: .623991966
       data:
         first:
           name: _Parallax
