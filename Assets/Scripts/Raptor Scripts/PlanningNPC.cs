@@ -94,6 +94,8 @@ public class PlanningNPC : MonoBehaviour {
 	protected PlanGoal goal;
 	public string actionName = "no action";
 
+	StateMachine states;
+
 	public NavMeshAgent agent { get; private set; }                 // the navmesh agent required for the path finding
 	public ThirdPersonCharacter character { get; private set; }     // the character we are controlling
 	public Animator animator { get; private set; }
@@ -115,287 +117,96 @@ public class PlanningNPC : MonoBehaviour {
 
 		player = GameObject.FindObjectOfType<RaptorInteraction>();
 
-		InitGoals();
-		InitActions();
+		//InitGoals();
+		//InitActions();
 
 		//Plan();
+
+		InitStates();
 
 		RagDoll(transform, false);
 	}
 
-	//Goals
-	protected PlanGoal gDie, gPassOut, gWakeUp, gStand, gMoveToTarget, gUseObject, gActivateAlarm, gFlee, gInspect, gFollowNoise, gChaseNoise;
-	public virtual void InitGoals() {
-		/*gDie = new PlanState(200) {
-			{"knockedOut", true}
-		};
-		goals.Add(gDie);*/
+	protected State stand, sleep, moveToTarget, useObject, activateAlarm, flee, inspect, wander;
+	public virtual void InitStates() {
+		states = new StateMachine();
 
-		gPassOut = new PlanGoal(
-			"pass out",
-			new PlanState() {
-				{"sleeping", true}
-			},
-			new PlanState() {
-				{"knockedOut", true}
-			},
-			100);
-		//goals.Add(gPassOut);
-
-		gWakeUp = new PlanGoal(
-			"wake up",
-			new PlanState() {
-				{"sleeping", true},
-				//{"knockedOut", true}
-			},
-			new PlanState() {
-				{"sleeping", false},
-				{"knockedOut", false}
-			},
-			100);
-		goals.Add(gWakeUp);
-
-		gStand = new PlanGoal(
-			"stand",
-			new PlanState() {
-				{"standing", false}
-			},
-			new PlanState() {
-				{"standing", true}
-			});
-		goals.Add(gStand);
-
-		gMoveToTarget = new PlanGoal(
-			"move to target",
-			new PlanState() {
-				{"atTarget", false}
-			},
-			new PlanState() {
-				{"atTarget", true}
-			},
-			1);
-		//goals.Add(gMoveToTarget);
-
-		gUseObject = new PlanGoal(
-			"use object",
-			new PlanState() {
-				{"usingObject", true}
-			},
-			new PlanState() {
-				{"usingObject", false}
-			},
-			2);
-		//goals.Add(gUseObject);
-
-		gActivateAlarm = new PlanGoal(
-			"activate alarm",
-			new PlanState() {
-				{"alarmActivated", false},
-				{"alertShip", true}
-				//Add anther condition here once you figure things out, only if enemySeen?
-			},
-			new PlanState() {
-				{"alarmActivated", true},
-				{"usingObject", false},
-				{"running", true}
-			},
-			100);
-		goals.Add(gActivateAlarm);
-
-		gFlee = new PlanGoal(
-			"flee",
-			new PlanState() {
-				{"healthLow", true},
-				//{"enemyVisible", true}
-			},
-			new PlanState() {
-				{"enemyVisible", false},
-				{"running", true}
-			},
-			75);
-		goals.Add(gFlee);
-
-		gInspect = new PlanGoal(
-			"inspect",
-			new PlanState() {
-				{"bored", true}
-			},
-			new PlanState() {
-				{"bored", false}
-			},
-			1);
-		goals.Add(gInspect);
-
-		gFollowNoise = new PlanGoal(
-			"follow noise",
-			new PlanState() {
-				{"curious", true}
-			},
-			new PlanState() {
-				{"curious", false}
-			},
-			1);
-		goals.Add(gFollowNoise);
-
-		gChaseNoise = new PlanGoal(
-			"chase noise",
-			new PlanState() {
-				{"alarmed", true}
-			},
-			new PlanState() {
-				{"alarmed", false},
-				{"running", true}
-			},
-			1);
-		goals.Add(gChaseNoise);
-	}
-
-	//Actions
-	protected PlanAction aPassOut, aSleep, aWakeUp, aStand, aMoveToTarget, aWalk, aRun, aUseObject, aFindAlarm, aActivateAlarm, aFlee, aInspect, aFindInteresting, aFollowNoise, aChaseNoise, aEnableLight, aDisableLight, aWander;
-	public virtual void InitActions() {
-		aPassOut = new PlanAction(
-			new PlanState() {
-				{ "sleeping", true },
-				{ "knockedOut", false }
-			},
-			new PlanState() { 
-				{ "knockedOut", true }
+		stand = new State(
+			delegate() {
+				return true;
 			},
 			delegate() {
-				knockedOut = true;
+				actionName = "Stand";
 
-				character.enabled = false;
-				rigidbody.isKinematic = true;
-				RagDoll(transform, true);
-				GetComponent<CapsuleCollider>().enabled = false;
-				animator.enabled = false;
-
-				gameObject.GetComponent<ShipGridItem>().interestLevel = 0.001f;
-
-				if(weapon != null) {
-					weapon.Drop();
-					weapon = null;
-					carryingObject = false;
-				}
-
-				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/dying"), SoundManager.SoundType.Dialogue, gameObject);
+				Move(Vector3.zero);
 
 				return false;
-			});
-		aPassOut.name = "pass out";
-		planner.Add(aPassOut);
+			}
+		);
 
-		aSleep = new PlanAction(
-			new PlanState() {
-				{ "sleeping", true },
-				{ "knockedOut", true },
-				//{ "dead", false }
-			},
-			new PlanState() {
-				{ "sleeping", false }
+		sleep = new State(
+			delegate() {
+				return sleeping;
 			},
 			delegate() {
-				if(!dead) {
-					sleepTime -= Time.deltaTime;
-				}
-				//knockedOut = sleepTime <= 0;
-				return false;
-			});
-		aSleep.name = "sleep";
-		planner.Add(aSleep);
+				actionName = "Sleep";
 
-		aWakeUp = new PlanAction(
-			new PlanState() {
-				{ "sleeping", false },
-				{ "knockedOut", true }
-			},
-			new PlanState() {
-				{ "knockedOut", false }
-			},
-			delegate() {
-				if(!animator.enabled) {
-					rigidbody.isKinematic = false;
-					animator.enabled = true;
-					RagDoll(transform, false);
-					collider.enabled = true;
-					character.enabled = true;
+				if(!knockedOut) {
+					knockedOut = true;
+					character.enabled = false;
+					rigidbody.isKinematic = true;
+					RagDoll(transform, true);
+					GetComponent<CapsuleCollider>().enabled = false;
+					animator.enabled = false;
 
-					gameObject.GetComponent<ShipGridItem>().interestLevel = Mathf.Infinity;
+					gameObject.GetComponent<ShipGridItem>().interestLevel = 0.001f;
+
+					if(weapon != null) {
+						weapon.Drop();
+						weapon = null;
+						carryingObject = false;
+					}
+
+					SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/dying"), SoundManager.SoundType.Dialogue, gameObject);
 				}
 				else {
-					animator.SetBool("GetUpFromBelly", false);
-					animator.SetBool("GetUpFromBack", false);
-					knockedOut = false;
+					sleepTime -= Time.deltaTime;
+
+					if(sleepTime <= 0) {
+						if(!animator.enabled) {
+							rigidbody.isKinematic = false;
+							animator.enabled = true;
+							RagDoll(transform, false);
+							collider.enabled = true;
+							character.enabled = true;
+
+							gameObject.GetComponent<ShipGridItem>().interestLevel = Mathf.Infinity;
+						}
+						else {
+							knockedOut = false;
+							animator.SetBool("GetUpFromBelly", false);
+							animator.SetBool("GetUpFromBack", false);
+							SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/iguessipassedout"), SoundManager.SoundType.Dialogue, gameObject);
+							return true;
+						}
+					}
 				}
-				SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/iguessipassedout"), SoundManager.SoundType.Dialogue, gameObject);
-				return false;
-			});
-		aWakeUp.name = "wake up";
-		planner.Add(aWakeUp);
 
-		aWalk = new PlanAction(
-			new PlanState() { 
-				{ "running", true },
-				{ "canInspect", false }
-			},
-			new PlanState() {
-				{ "running", false }
+				return false;
+			}
+		);
+
+		moveToTarget = new State(
+			delegate() {
+				return hasTarget && !atTarget;
 			},
 			delegate() {
-				running = false;
-				return false;
-			});
-		aWalk.name = "walk";
-		planner.Add(aWalk);
+				actionName = "MoveToTarget";
 
-		aRun = new PlanAction(
-			new PlanState() { 
-				{ "running", false },
-				{ "canInspect", false }
-			},
-			new PlanState() {
-				{ "running", true }
-			},
-			delegate() {
-				running = true;
-				return false;
-			});
-		aRun.name = "run";
-		planner.Add(aRun);
-
-		aStand = new PlanAction(
-			new PlanState() { 
-				{ "standing", false },
-				{ "knockedOut", false },
-				{ "sleeping", false },
-				{ "running", false }
-			},
-			new PlanState() {
-				{ "standing", true }
-			},
-			delegate() {
-				//character.Move(Vector3.zero, false, false, transform.position + transform.forward * 100);
-				Move(Vector3.zero);
-				return false;
-			});
-		aStand.name = "stand";
-		planner.Add(aStand);
-
-		aMoveToTarget = new PlanAction(
-			new PlanState() {
-				{ "hasTarget", true },
-				{ "atTarget", false },
-				{ "knockedOut", false },
-				{ "sleeping", false }
-			},
-			new PlanState() {
-				{ "atTarget", true }
-			},
-			delegate() {
 				// update the progress if the character has made it to the previous target
 				//if((target.position - targetPos).magnitude > targetChangeTolerance) {
-					targetPos = target.position;
-					agent.SetDestination(targetPos);
+				targetPos = target.position;
+				agent.SetDestination(targetPos);
 				//}
 
 				// update the agents posiiton 
@@ -403,7 +214,9 @@ public class PlanningNPC : MonoBehaviour {
 
 				if(agent.pathStatus == NavMeshPathStatus.PathPartial) {
 					//print("can't reach target");
+					target = null;
 					useTarget = null;
+					return true;
 				}
 
 				// use the values to move the character
@@ -411,27 +224,19 @@ public class PlanningNPC : MonoBehaviour {
 				Move(agent.desiredVelocity, targetPos);
 				standing = false;
 
-				return false;
-			});
-		aMoveToTarget.name = "move to target";
-		planner.Add(aMoveToTarget);
+				return atTarget;
+			}
+		);
 
 		float useTimer = 0;
 		Vector3 useTargetPos = Vector3.zero;
-		aUseObject = new PlanAction(
-			new PlanState() {
-				{ "hasUseTarget", true },
-				{ "usingObject", true },
-				{ "atTarget", true },
-				//{ "standing", true },
-				{ "knockedOut", false },
-				{ "sleeping", false }
-			},
-			new PlanState() {
-				{ "usingObject", false },
-				{ "alarmActivated", true }
+		useObject = new State(
+			delegate() {
+				return hasUseTarget && usingObject && atTarget;
 			},
 			delegate() {
+				actionName = "Use Object";
+
 				animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1.0f);
 
 				useTimer += Time.deltaTime;
@@ -463,98 +268,73 @@ public class PlanningNPC : MonoBehaviour {
 					useTimer = 0;
 				}
 
-				return false;
-			});
-		aUseObject.name = "use object";
-		planner.Add(aUseObject);
+				return !hasUseTarget || !usingObject;
+			}
+		);
 
-		aFindAlarm = new PlanAction(
-			new PlanState() {
-				{ "alarmFound", false },
-				{ "alarmActivated", false },
-				{ "enemyVisible", false },
-				{ "alertShip", true },
-				{ "running", true },
-				{ "knockedOut", false },
-				{ "sleeping", false }
-			},
-			new PlanState() {
-				{ "alarmFound", true },
-				{ "hasTarget", true }
-				//{ "alarmActivated", true }
+		activateAlarm = new State(
+			delegate() {
+				return alertShip && !enemyVisible;
 			},
 			delegate() {
-				float minAlarmDis = Mathf.Infinity;
-				Alarm minAlarm;
-				Vector3 minAlarmPos = transform.position;
-				if(Alarm.alarms.Count > 0) {
-					minAlarm = Alarm.alarms[0];
-					if(!Alarm.activated) {
-						foreach(Alarm alarm in Alarm.alarms) {
-							targetPos = alarm.transform.position;
-							agent.SetDestination(targetPos);
-							float dis = (alarm.transform.position - transform.position).magnitude;
-							if(dis < minAlarmDis) {
-								minAlarmDis = dis;
-								minAlarmPos = alarm.transform.position;
-								minAlarm = alarm;
+				actionName = "Activate Alarm";
+
+				running = true;
+
+				if(!alarmFound) {
+					float minAlarmDis = Mathf.Infinity;
+					Alarm minAlarm;
+					Vector3 minAlarmPos = transform.position;
+					if(Alarm.alarms.Count > 0) {
+						minAlarm = Alarm.alarms[0];
+						if(!Alarm.activated) {
+							foreach(Alarm alarm in Alarm.alarms) {
+								targetPos = alarm.transform.position;
+								agent.SetDestination(targetPos);
+								float dis = (alarm.transform.position - transform.position).magnitude;
+								if(dis < minAlarmDis) {
+									minAlarmDis = dis;
+									minAlarmPos = alarm.transform.position;
+									minAlarm = alarm;
+								}
 							}
 						}
-					}
 
-					target = minAlarm.transform;
-					alarmFound = true;
+						target = minAlarm.transform;
+						alarmFound = true;
+					}
+					else {
+						Alarm.activated = true;
+						alarmActivated = true;
+					}
 				}
 				else {
-					Alarm.activated = true;
-					alarmActivated = true;
+					usingObject = true;
+					useTarget = target;
+					//alarmActivated = true;
+					enemySeen = false;
+					return true;
 				}
 
 				return false;
-			});
-		aFindAlarm.name = "find alarm";
-		planner.Add(aFindAlarm);
+			}
+		);
 
-		aActivateAlarm = new PlanAction(
-			new PlanState() {
-				{ "alarmActivated", false },
-				//{ "running", true },
-				{ "hasTarget", true },
-				{ "atTarget", true },
-				{ "alarmFound", true },
-				{ "knockedOut", false },
-				{ "sleeping", false }
-			},
-			new PlanState() {
-				//{ "alarmActivated", true },
-				{ "usingObject", true }
+		flee = new State(
+			delegate() {
+				return healthLow && enemySeen;
 			},
 			delegate() {
-				usingObject = true;
-				useTarget = target;
-				//alarmActivated = true;
-				enemySeen = false;
-				//alertShip = false;
+				actionName = "Flee";
 
-				return false;
-			});
-		aActivateAlarm.name = "activate alarm";
-		planner.Add(aActivateAlarm);
+				running = true;
 
-		aFlee = new PlanAction(
-			new PlanState() {
-				{ "healthLow", true },
-				{ "enemySeen", true },
-				{ "running", true },
-				{ "knockedOut", false },
-				{ "sleeping", false }
-			},
-			new PlanState() {
-				{ "enemyVisible", false }
-			},
-			delegate() {
 				targetPos = transform.position + (transform.position - player.transform.position);
 				agent.SetDestination(targetPos);
+
+				if(agent.pathStatus == NavMeshPathStatus.PathPartial || agent.remainingDistance < targetChangeTolerance) {
+					return true;
+				}
 
 				// update the agents posiiton 
 				agent.transform.position = transform.position;
@@ -562,33 +342,124 @@ public class PlanningNPC : MonoBehaviour {
 
 				// use the values to move the character
 				Move(agent.desiredVelocity, targetPos);
-				standing = false;
 
 				return false;
-			});
-		aFlee.name = "flee";
-		planner.Add(aFlee);
+			}
+		);
 
-		aFindInteresting = new PlanAction(
-			new PlanState() {
-				{ "canInspect", true },
-				{ "knockedOut", false },
-				{ "sleeping", false }
-			},
-			new PlanState() {
-				{ "atTarget", true }
+		float lookTimer = 0;
+		Vector3 lookPos = Vector3.zero;
+		float inspectTimer = 0;
+		inspect = new State(
+			delegate() {
+				return bored && canInspect;
 			},
 			delegate() {
-				target = mostInteresting.transform;
+				actionName = "Inspect";
 
-				if(mostInteresting.GetComponent<PlanningNPC>() != null) {
-					alertShip = true;
+				if(!atTarget) {
+					if(mostInteresting != null) {
+						target = mostInteresting.transform;
+					}
+
+					PlanningNPC npc = mostInteresting.GetComponent<PlanningNPC>();
+					if(npc != null && (npc.knockedOut || npc.dead)) {
+						alertShip = true;
+					}
+
+					return true;
+				}
+				else {
+
+					lookTimer += Time.deltaTime;
+
+					Move(Vector3.zero, targetPos);
+
+					if(targetPos != lookPos) {
+						targetPos = Vector3.Lerp(targetPos, lookPos, lookTimer / lookTime);
+					}
+					else {
+						inspectTimer += Time.deltaTime;
+						if(lookTimer >= lookTime) {
+							float lookDis = 0.25f;
+							if(mostInteresting != null) {
+								lookPos.x = mostInteresting.transform.position.x + Random.Range(-lookDis, lookDis);
+								lookPos.y = mostInteresting.transform.position.y + Random.Range(-lookDis, lookDis);
+								lookPos.z = mostInteresting.transform.position.z + Random.Range(-lookDis, lookDis);
+
+								if(mostInteresting.useTarget != null) {
+									useTarget = mostInteresting.useTarget;
+									usingObject = true;
+									bored = false;
+								}
+							}
+
+							lookTimer = 0;
+						}
+					}
+
+					if(inspectTimer >= inspectTime) {
+						inspectTimer = 0;
+						mostInteresting = null;
+						usingObject = false;
+						boredomLevel = 0;
+					}
 				}
 
-				return false;
-			});
-		aFindInteresting.name = "find interesting";
-		planner.Add(aFindInteresting);
+				return !bored;
+			}
+		);
+
+		float wanderTimer = wanderTime;
+		Vector3 wanderPos = new Vector3();
+		wander = new State(
+			delegate() {
+				return !enemySeen && !enemyVisible;
+			},
+			delegate() {
+				actionName = "Wander";
+
+				running = false;
+				wanderTimer += Time.deltaTime;
+
+				agent.SetDestination(wanderPos);
+
+				// update the agents posiiton 
+				agent.transform.position = transform.position;
+
+				NavMeshHit hit;
+				agent.Raycast(transform.position + transform.forward, out hit);
+
+				if(hit.hit || wanderTimer >= wanderTime || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
+					//Vector3 randomDir = Random.insideUnitSphere * 10;
+					//NavMesh.SamplePosition(transform.position + randomDir, out hit, 10, 1);
+					//patrolPos = hit.position;// transform.position + transform.forward * 10;
+					wanderPos = transform.position + transform.forward * 10;
+					wanderTimer = 0;
+				}
+
+				// use the values to move the character
+				Move(agent.desiredVelocity);
+
+				return sleeping || enemySeen || alertShip || canInspect;
+			}
+		);
+
+		states.Add(stand);
+
+		stand.Add(sleep);
+		stand.Add(moveToTarget);
+		stand.Add(useObject);
+		stand.Add(activateAlarm);
+		stand.Add(flee);
+		stand.Add(inspect);
+		stand.Add(wander);
+	}
+
+	//Actions
+	protected PlanAction aPassOut, aSleep, aWakeUp, aStand, aMoveToTarget, aWalk, aRun, aUseObject, aFindAlarm, aActivateAlarm, aFlee, aInspect, aFindInteresting, aFollowNoise, aChaseNoise, aEnableLight, aDisableLight, aWander;
+	public virtual void InitActions() {
+		
 
 		float lookTimer = 0;
 		Vector3 lookPos = Vector3.zero;
@@ -840,12 +711,13 @@ public class PlanningNPC : MonoBehaviour {
 
 		speed = running ? runSpeed : walkSpeed;
 
-		if(!dead) {
+		if(!dead && !knockedOut) {
 			LookForEnemy();
 			CheckGrid();
 		}
 
-		Plan();
+		//Plan();
+		states.Update();
 	}
 
 	protected void Move(Vector3 moveDir, Vector3 lookPos) {
@@ -880,6 +752,7 @@ public class PlanningNPC : MonoBehaviour {
 								if(hit.collider.tag == "Player" || (hit.collider.transform.parent != null && hit.collider.transform.parent.tag == "Player")) {
 									enemyVisible = true;
 									noticeTimer += enemyVisibility * Mathf.Max(0, (1.0f - hit.distance / curViewDis)) * Time.deltaTime;
+									print("noticing");
 									if(noticeTimer >= noticeTime) {
 										enemySeen = true;
 										alertShip = true;

@@ -17,7 +17,7 @@ public class Guard : PlanningNPC {
 	protected Vector3 patrolPos;
 
 	// Use this for initialization
-	public override void Start () {
+	/*public override void Start () {
 		base.Start();
 	}
 
@@ -224,7 +224,7 @@ public class Guard : PlanningNPC {
 			});
 		aPatrol.name = "patrol";
 		planner.Add(aPatrol);*/
-	}
+	/*}
 	
 	// Update is called once per frame
 	public override void Update () {
@@ -239,5 +239,5 @@ public class Guard : PlanningNPC {
 
 		//This should be last in most cases
 		base.Update();
-	}
+	}*/
 }

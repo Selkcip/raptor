@@ -9,7 +9,7 @@ public class Cop : Guard {
 	public bool roomChecked = false;
 
 	// Use this for initialization
-	public override void Start() {
+	/*public override void Start() {
 		base.Start();
 	}
 
@@ -77,5 +77,5 @@ public class Cop : Guard {
 
 		//This should be last in most cases
 		base.Update();
-	}
+	}*/
 }
