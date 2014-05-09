@@ -22,6 +22,7 @@ public class PlanningNPC : MonoBehaviour {
 	public float useTime = 5f;
 	public float wanderTime = 5f;
 	public bool followsNoise = false;
+	protected PlanCondition cFollowsNoise;
 	public float curiousNoiseLevel = 1f;
 	public float alarmedNoiseLevel = 5f;
 	public float noiseLevel = 0;
@@ -38,31 +39,56 @@ public class PlanningNPC : MonoBehaviour {
 	public float enemyVisibility = 1;
 
 	public bool sleeping = false;
+	protected PlanCondition cSleeping;
 	public bool knockedOut = false;
+	protected PlanCondition cKnockedOut;
 	public bool dead = false;
+	protected PlanCondition cDead;
 	public bool healthLow = false;
+	protected PlanCondition cHealthLow;
 	public bool hasTarget = false;
+	protected PlanCondition cHasTarget;
 	public bool atTarget = false;
+	protected PlanCondition cAtTarget;
 	public bool standing = false;
+	protected PlanCondition cStanding;
 	public bool running = false;
+	protected PlanCondition cRunning;
 	public bool carryingObject = false;
+	protected PlanCondition cCarryingObject;
 	public bool hasUseTarget = false;
+	protected PlanCondition cHasUseTarget;
 	public bool usingObject = false;
+	protected PlanCondition cUsingObject;
 	public bool crouch = false;
+	protected PlanCondition cCrouch;
 	public bool enemyVisible = false;
+	protected PlanCondition cEnemyVisible;
 	//public bool enemyNoticed = false;
 	public bool enemySeen = false;
+	protected PlanCondition cEnemySeen;
 	public bool alertShip = false;
+	protected PlanCondition cAlertShip;
 	public bool alarmFound = false;
+	protected PlanCondition cAlarmFound;
 	public bool alarmActivated = false;
+	protected PlanCondition cAlarmActivated;
 	public bool bored = false;
+	protected PlanCondition cBored;
 	public bool canInspect = false;
+	protected PlanCondition cCanInspect;
 	public bool curious = false;
+	protected PlanCondition cCurious;
 	public bool alarmed = false;
+	protected PlanCondition cAlarmed;
 	public bool hasFlashlight = false;
+	protected PlanCondition cHasFlashLight;
 	public bool flashLightOn = false;
+	protected PlanCondition cFlashLightOn;
 	public bool needLight = false;
+	protected PlanCondition cNeedLight;
 	public bool canSee = false;
+	protected PlanCondition cCanSee;
 
 	//Vector3 targetDir;
 	//Vector3 targetPos;
@@ -102,7 +128,6 @@ public class PlanningNPC : MonoBehaviour {
 
 	// Use this for initialization
 	public virtual void Start() {
-
 		// get the components on the object we need ( should not be null due to require component so no need to check )
 		character = GetComponent<ThirdPersonCharacter>();
 		animator = GetComponent<Animator>();
@@ -115,6 +140,7 @@ public class PlanningNPC : MonoBehaviour {
 
 		player = GameObject.FindObjectOfType<RaptorInteraction>();
 
+		InitConds();
 		InitGoals();
 		InitActions();
 
@@ -123,21 +149,50 @@ public class PlanningNPC : MonoBehaviour {
 		RagDoll(transform, false);
 	}
 
+	
+	public virtual void InitConds() {
+		cSleeping = delegate() { return sleeping; };
+		cKnockedOut = delegate() { return knockedOut; };
+		cDead = delegate() { return dead; };
+		cHealthLow = delegate() { return healthLow; };
+		cHasTarget = delegate() { return hasTarget; };
+		cAtTarget = delegate() { return atTarget; };
+		cStanding = delegate() { return standing; };
+		cRunning = delegate() { return running; };
+		cCarryingObject = delegate() { return carryingObject; };
+		cHasUseTarget = delegate() { return hasUseTarget; };
+		cUsingObject = delegate() { return usingObject; };
+		cCrouch = delegate() { return crouch; };
+		cEnemyVisible = delegate() { return enemyVisible; };
+		cEnemySeen = delegate() { return enemySeen; };
+		cAlertShip = delegate() { return alertShip; };
+		cAlarmFound = delegate() { return alarmFound; };
+		cAlarmActivated = delegate() { return alarmActivated; };
+		cBored = delegate() { return bored; };
+		cCanInspect = delegate() { return canInspect; };
+		cCurious = delegate() { return curious; };
+		cAlarmed = delegate() { return alarmed; };
+		cHasFlashLight = delegate() { return hasFlashlight; };
+		cFlashLightOn = delegate() { return flashLightOn; };
+		cNeedLight = delegate() { return needLight; };
+		cCanSee = delegate() { return canSee; };
+	}
+
 	//Goals
 	protected PlanGoal gDie, gPassOut, gWakeUp, gStand, gMoveToTarget, gUseObject, gActivateAlarm, gFlee, gInspect, gFollowNoise, gChaseNoise;
 	public virtual void InitGoals() {
 		/*gDie = new PlanState(200) {
-			{"knockedOut", true}
+			{cKnockedOut, true}
 		};
 		goals.Add(gDie);*/
 
 		gPassOut = new PlanGoal(
 			"pass out",
 			new PlanState() {
-				{"sleeping", true}
+				{cSleeping, true}
 			},
 			new PlanState() {
-				{"knockedOut", true}
+				{cKnockedOut, true}
 			},
 			100);
 		//goals.Add(gPassOut);
@@ -145,12 +200,12 @@ public class PlanningNPC : MonoBehaviour {
 		gWakeUp = new PlanGoal(
 			"wake up",
 			new PlanState() {
-				{"sleeping", true},
-				//{"knockedOut", true}
+				{cSleeping, true},
+				//{cKnockedOut, true}
 			},
 			new PlanState() {
-				{"sleeping", false},
-				{"knockedOut", false}
+				{cSleeping, false},
+				{cKnockedOut, false}
 			},
 			100);
 		goals.Add(gWakeUp);
@@ -158,20 +213,20 @@ public class PlanningNPC : MonoBehaviour {
 		gStand = new PlanGoal(
 			"stand",
 			new PlanState() {
-				{"standing", false}
+				{cStanding, false}
 			},
 			new PlanState() {
-				{"standing", true}
+				{cStanding, true}
 			});
 		goals.Add(gStand);
 
 		gMoveToTarget = new PlanGoal(
 			"move to target",
 			new PlanState() {
-				{"atTarget", false}
+				{cAtTarget, false}
 			},
 			new PlanState() {
-				{"atTarget", true}
+				{cAtTarget, true}
 			},
 			1);
 		//goals.Add(gMoveToTarget);
@@ -179,10 +234,10 @@ public class PlanningNPC : MonoBehaviour {
 		gUseObject = new PlanGoal(
 			"use object",
 			new PlanState() {
-				{"usingObject", true}
+				{cUsingObject, true}
 			},
 			new PlanState() {
-				{"usingObject", false}
+				{cUsingObject, false}
 			},
 			2);
 		//goals.Add(gUseObject);
@@ -190,14 +245,14 @@ public class PlanningNPC : MonoBehaviour {
 		gActivateAlarm = new PlanGoal(
 			"activate alarm",
 			new PlanState() {
-				{"alarmActivated", false},
-				{"alertShip", true}
+				{cAlarmActivated, false},
+				{cAlertShip, true}
 				//Add anther condition here once you figure things out, only if enemySeen?
 			},
 			new PlanState() {
-				{"alarmActivated", true},
-				{"usingObject", false},
-				{"running", true}
+				{cAlarmActivated, true},
+				{cUsingObject, false},
+				{cRunning, true}
 			},
 			100);
 		goals.Add(gActivateAlarm);
@@ -205,12 +260,12 @@ public class PlanningNPC : MonoBehaviour {
 		gFlee = new PlanGoal(
 			"flee",
 			new PlanState() {
-				{"healthLow", true},
-				//{"enemyVisible", true}
+				{cHealthLow, true},
+				//{cEnemyVisible, true}
 			},
 			new PlanState() {
-				{"enemyVisible", false},
-				{"running", true}
+				{cEnemyVisible, false},
+				{cRunning, true}
 			},
 			75);
 		goals.Add(gFlee);
@@ -218,21 +273,21 @@ public class PlanningNPC : MonoBehaviour {
 		gInspect = new PlanGoal(
 			"inspect",
 			new PlanState() {
-				{"bored", true}
+				{cBored, true}
 			},
 			new PlanState() {
-				{"bored", false}
+				{cBored, false}
 			},
 			1);
 		goals.Add(gInspect);
 
-		gFollowNoise = new PlanGoal(
+		/*gFollowNoise = new PlanGoal(
 			"follow noise",
 			new PlanState() {
-				{"curious", true}
+				{cCurious, true}
 			},
 			new PlanState() {
-				{"curious", false}
+				{cCurious, false}
 			},
 			1);
 		goals.Add(gFollowNoise);
@@ -240,14 +295,14 @@ public class PlanningNPC : MonoBehaviour {
 		gChaseNoise = new PlanGoal(
 			"chase noise",
 			new PlanState() {
-				{"alarmed", true}
+				{cAlarmed, true}
 			},
 			new PlanState() {
-				{"alarmed", false},
-				{"running", true}
+				{cAlarmed, false},
+				{cRunning, true}
 			},
 			1);
-		goals.Add(gChaseNoise);
+		goals.Add(gChaseNoise);*/
 	}
 
 	//Actions
@@ -255,11 +310,11 @@ public class PlanningNPC : MonoBehaviour {
 	public virtual void InitActions() {
 		aPassOut = new PlanAction(
 			new PlanState() {
-				{ "sleeping", true },
-				{ "knockedOut", false }
+				{cSleeping, true },
+				{cKnockedOut, false }
 			},
 			new PlanState() { 
-				{ "knockedOut", true }
+				{cKnockedOut, true }
 			},
 			delegate() {
 				knockedOut = true;
@@ -287,12 +342,12 @@ public class PlanningNPC : MonoBehaviour {
 
 		aSleep = new PlanAction(
 			new PlanState() {
-				{ "sleeping", true },
-				{ "knockedOut", true },
-				//{ "dead", false }
+				{cSleeping, true },
+				{cKnockedOut, true },
+				//{ cDead, false }
 			},
 			new PlanState() {
-				{ "sleeping", false }
+				{cSleeping, false }
 			},
 			delegate() {
 				if(!dead) {
@@ -306,11 +361,11 @@ public class PlanningNPC : MonoBehaviour {
 
 		aWakeUp = new PlanAction(
 			new PlanState() {
-				{ "sleeping", false },
-				{ "knockedOut", true }
+				{cSleeping, false },
+				{cKnockedOut, true }
 			},
 			new PlanState() {
-				{ "knockedOut", false }
+				{cKnockedOut, false }
 			},
 			delegate() {
 				if(!animator.enabled) {
@@ -335,11 +390,11 @@ public class PlanningNPC : MonoBehaviour {
 
 		aWalk = new PlanAction(
 			new PlanState() { 
-				{ "running", true },
-				{ "canInspect", false }
+				{delegate(){ return running; }, true },
+				{delegate(){ return canInspect; }, false }
 			},
 			new PlanState() {
-				{ "running", false }
+				{delegate(){ return running; }, false }
 			},
 			delegate() {
 				running = false;
@@ -350,11 +405,11 @@ public class PlanningNPC : MonoBehaviour {
 
 		aRun = new PlanAction(
 			new PlanState() { 
-				{ "running", false },
-				{ "canInspect", false }
+				{delegate(){ return running; }, false },
+				{delegate(){ return canInspect; }, false }
 			},
 			new PlanState() {
-				{ "running", true }
+				{delegate(){ return running; }, true }
 			},
 			delegate() {
 				running = true;
@@ -365,13 +420,13 @@ public class PlanningNPC : MonoBehaviour {
 
 		aStand = new PlanAction(
 			new PlanState() { 
-				{ "standing", false },
-				{ "knockedOut", false },
-				{ "sleeping", false },
-				{ "running", false }
+				{cStanding, false },
+				{cKnockedOut, false },
+				{cSleeping, false },
+				{delegate(){ return running; }, false }
 			},
 			new PlanState() {
-				{ "standing", true }
+				{cStanding, true }
 			},
 			delegate() {
 				//character.Move(Vector3.zero, false, false, transform.position + transform.forward * 100);
@@ -383,13 +438,13 @@ public class PlanningNPC : MonoBehaviour {
 
 		aMoveToTarget = new PlanAction(
 			new PlanState() {
-				{ "hasTarget", true },
-				{ "atTarget", false },
-				{ "knockedOut", false },
-				{ "sleeping", false }
+				{delegate(){ return hasTarget; }, true },
+				{cAtTarget, false },
+				{cKnockedOut, false },
+				{cSleeping, false }
 			},
 			new PlanState() {
-				{ "atTarget", true }
+				{cAtTarget, true }
 			},
 			delegate() {
 				// update the progress if the character has made it to the previous target
@@ -420,16 +475,16 @@ public class PlanningNPC : MonoBehaviour {
 		Vector3 useTargetPos = Vector3.zero;
 		aUseObject = new PlanAction(
 			new PlanState() {
-				{ "hasUseTarget", true },
-				{ "usingObject", true },
-				{ "atTarget", true },
+				{ cHasUseTarget, true },
+				{ cUsingObject, true },
+				{ cAtTarget, true },
 				//{ "standing", true },
-				{ "knockedOut", false },
-				{ "sleeping", false }
+				{ cKnockedOut, false },
+				{ cSleeping, false }
 			},
 			new PlanState() {
-				{ "usingObject", false },
-				{ "alarmActivated", true }
+				{ cUsingObject, false },
+				{ cAlarmActivated, true }
 			},
 			delegate() {
 				animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1.0f);
@@ -470,18 +525,18 @@ public class PlanningNPC : MonoBehaviour {
 
 		aFindAlarm = new PlanAction(
 			new PlanState() {
-				{ "alarmFound", false },
-				{ "alarmActivated", false },
-				{ "enemyVisible", false },
-				{ "alertShip", true },
-				{ "running", true },
-				{ "knockedOut", false },
-				{ "sleeping", false }
+				{ cAlarmFound, false },
+				{ cAlarmActivated, false },
+				{ cEnemyVisible, false },
+				{ cAlertShip, true },
+				{ cRunning, true },
+				{ cKnockedOut, false },
+				{ cSleeping, false }
 			},
 			new PlanState() {
-				{ "alarmFound", true },
-				{ "hasTarget", true }
-				//{ "alarmActivated", true }
+				{ cAlarmFound, true },
+				{ cHasTarget, true }
+				//{ cAlarmActivated, true }
 			},
 			delegate() {
 				float minAlarmDis = Mathf.Infinity;
@@ -517,17 +572,17 @@ public class PlanningNPC : MonoBehaviour {
 
 		aActivateAlarm = new PlanAction(
 			new PlanState() {
-				{ "alarmActivated", false },
-				//{ "running", true },
-				{ "hasTarget", true },
-				{ "atTarget", true },
-				{ "alarmFound", true },
-				{ "knockedOut", false },
-				{ "sleeping", false }
+				{ cAlarmActivated, false },
+				//{ cRunning, true },
+				{ cHasTarget, true },
+				{ cAtTarget, true },
+				{ cAlarmFound, true },
+				{ cKnockedOut, false },
+				{ cSleeping, false }
 			},
 			new PlanState() {
-				//{ "alarmActivated", true },
-				{ "usingObject", true }
+				//{ cAlarmActivated, true },
+				{ cUsingObject, true }
 			},
 			delegate() {
 				usingObject = true;
@@ -543,14 +598,14 @@ public class PlanningNPC : MonoBehaviour {
 
 		aFlee = new PlanAction(
 			new PlanState() {
-				{ "healthLow", true },
-				{ "enemySeen", true },
-				{ "running", true },
-				{ "knockedOut", false },
-				{ "sleeping", false }
+				{ cHealthLow, true },
+				{ cEnemySeen, true },
+				{ cRunning, true },
+				{ cKnockedOut, false },
+				{ cSleeping, false }
 			},
 			new PlanState() {
-				{ "enemyVisible", false }
+				{ cEnemyVisible, false }
 			},
 			delegate() {
 				targetPos = transform.position + (transform.position - player.transform.position);
@@ -571,12 +626,12 @@ public class PlanningNPC : MonoBehaviour {
 
 		aFindInteresting = new PlanAction(
 			new PlanState() {
-				{ "canInspect", true },
-				{ "knockedOut", false },
-				{ "sleeping", false }
+				{ cCanInspect, true },
+				{ cKnockedOut, false },
+				{ cSleeping, false }
 			},
 			new PlanState() {
-				{ "atTarget", true }
+				{ cAtTarget, true }
 			},
 			delegate() {
 				target = mostInteresting.transform;
@@ -595,15 +650,15 @@ public class PlanningNPC : MonoBehaviour {
 		float inspectTimer = 0;
 		aInspect = new PlanAction(
 			new PlanState() {
-				{ "bored", true },
-				{ "canInspect", true },
-				{ "atTarget", true },
-				{ "enemyVisible", false },
-				{ "knockedOut", false },
-				{ "sleeping", false }
+				{ cBored, true },
+				{ cCanInspect, true },
+				{ cAtTarget, true },
+				{ cEnemyVisible, false },
+				{ cKnockedOut, false },
+				{ cSleeping, false }
 			},
 			new PlanState() {
-				{ "bored", false }
+				{ cBored, false }
 			},
 			delegate() {
 				lookTimer += Time.deltaTime;
@@ -645,20 +700,20 @@ public class PlanningNPC : MonoBehaviour {
 		aInspect.name = "inspect";
 		planner.Add(aInspect);
 
-		bool initNoise = true;
+		/*bool initNoise = true;
 		//Maybe these should do a short path search and choose a cell to move to using the nav mesh
 		aFollowNoise = new PlanAction(
 			new PlanState() {
-				{ "followsNoise", true },
-				{ "curious", true },
-				{ "alarmed", false },
-				{ "enemyVisible", false },
-				{ "knockedOut", false },
-				{ "sleeping", false }
+				{ cFollowsNoise, true },
+				{ cCurious, true },
+				{ cAlarmed, false },
+				{ cEnemyVisible, false },
+				{ cKnockedOut, false },
+				{ cSleeping, false }
 			},
 			new PlanState() {
-				{ "curious", false },
-				{ "playerVisible", true }
+				{ cCurious, false },
+				{ cEnemyVisible, true }
 			},
 			delegate() {
 				agent.SetDestination(noisePos);
@@ -684,16 +739,16 @@ public class PlanningNPC : MonoBehaviour {
 
 		aChaseNoise = new PlanAction(
 			new PlanState() {
-				{ "followsNoise", true },
-				{ "alarmed", true },
-				{ "enemyVisible", false },
-				{ "running", true },
-				{ "knockedOut", false },
-				{ "sleeping", false }
+				{ cFollowsNoise, true },
+				{ cAlarmed, true },
+				{ cEnemyVisible, false },
+				{ cRunning, true },
+				{ cKnockedOut, false },
+				{ cSleeping, false }
 			},
 			new PlanState() {
-				{ "alarmed", false },
-				{ "playerVisible", true }
+				{ cAlarmed, false },
+				{ cEnemyVisible, true }
 			},
 			delegate() {
 				agent.SetDestination(noisePos);
@@ -715,19 +770,19 @@ public class PlanningNPC : MonoBehaviour {
 				return false;
 			});
 		aChaseNoise.name = "chase noise";
-		planner.Add(aChaseNoise);
+		planner.Add(aChaseNoise);*/
 
 		aEnableLight = new PlanAction(
 			new PlanState() {
-				{ "hasFlashlight", true },
-				{ "flashLightOn", false },
-				{ "needLight", true },
-				{ "knockedOut", false },
-				{ "sleeping", false }
+				{ cHasFlashLight, true },
+				{ cFlashLightOn, false },
+				{ cNeedLight, true },
+				{ cKnockedOut, false },
+				{ cSleeping, false }
 			},
 			new PlanState() {
-				{ "flashLightOn", true },
-				{ "needLight", false }
+				{ cFlashLightOn, true },
+				{ cNeedLight, false }
 			},
 			delegate() {
 				weapon.flashLight.enabled = true;
@@ -739,14 +794,14 @@ public class PlanningNPC : MonoBehaviour {
 
 		aDisableLight = new PlanAction(
 			new PlanState() {
-				{ "hasFlashlight", true },
-				{ "flashLightOn", true },
-				{ "needLight", false },
-				{ "knockedOut", false },
-				{ "sleeping", false }
+				{ cHasFlashLight, true },
+				{ cFlashLightOn, true },
+				{ cNeedLight, false },
+				{ cKnockedOut, false },
+				{ cSleeping, false }
 			},
 			new PlanState() {
-				{ "flashLightOn", false }
+				{ cFlashLightOn, false }
 			},
 			delegate() {
 				weapon.flashLight.enabled = false;
@@ -760,18 +815,18 @@ public class PlanningNPC : MonoBehaviour {
 		Vector3 wanderPos = new Vector3();
 		aWander = new PlanAction(
 			new PlanState() {
-				{ "enemySeen", false },
-				{ "enemyVisible", false },
-				{ "curious", false },
-				{ "alarmed", false },
-				{ "canInspect", false },
-				{ "alertShip", false },
-				{ "running", false },
-				{ "knockedOut", false },
-				{ "dead", false }
+				{ cEnemySeen, false },
+				{ cEnemyVisible, false },
+				{ cCurious, false },
+				{ cAlarmed, false },
+				{ cCanInspect, false },
+				{ cAlertShip, false },
+				//{ cRunning, false },
+				{ cKnockedOut, false },
+				{ cDead, false }
 			},
 			new PlanState() {
-				{ "canInspect", true }
+				{ cCanInspect, true }
 			},
 			delegate() {
 				wanderTimer += Time.deltaTime;
@@ -985,7 +1040,7 @@ public class PlanningNPC : MonoBehaviour {
 	}
 
 	protected void Plan() {
-		/*if(plan.Count > 0) {
+		if(plan.Count > 0) {
 			//Carry out plan
 			PlanAction action = plan[0];
 			actionName = action.name;
@@ -1006,7 +1061,7 @@ public class PlanningNPC : MonoBehaviour {
 				}
 			}
 		}
-		else {*/
+		else {
 			actionName = "no action";
 			//Sort list of goals by priority
 			goals.Sort(delegate(PlanGoal a, PlanGoal b) {
@@ -1022,7 +1077,7 @@ public class PlanningNPC : MonoBehaviour {
 					break;
 				}
 			}
-		//}
+		}
 	}
 
 	protected void ClearPlan() {

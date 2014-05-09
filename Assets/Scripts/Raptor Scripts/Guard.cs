@@ -8,10 +8,15 @@ public class Guard : PlanningNPC {
 	public float punchCoolDown = 1;
 
 	public bool playerDead = false;
+	protected PlanCondition cPlayerDead;
 	public bool nearEnemy = false;
+	protected PlanCondition cNearEnemy;
 	public bool facingEnemy = false;
+	protected PlanCondition cFacingEnemy;
 	public bool canPunch = false;
+	protected PlanCondition cCanPunch;
 	public bool canShoot = false;
+	protected PlanCondition cCanShoot;
 
 	protected float punchTime = 0;
 	protected Vector3 patrolPos;
@@ -21,6 +26,15 @@ public class Guard : PlanningNPC {
 		base.Start();
 	}
 
+	public override void InitConds() {
+		base.InitConds();
+		cPlayerDead = delegate() { return playerDead; };
+		cNearEnemy = delegate() { return nearEnemy; };
+		cFacingEnemy = delegate() { return facingEnemy; };
+		cCanPunch = delegate() { return canPunch; };
+		cCanShoot = delegate() { return canShoot; };
+	}
+
 	protected PlanGoal gKillPlayer;
 	public override void InitGoals() {
 		base.InitGoals();
@@ -28,10 +42,10 @@ public class Guard : PlanningNPC {
 		gKillPlayer = new PlanGoal(
 			"kill player",
 			new PlanState() {
-				{"playerDead", false}
+				{cPlayerDead, false}
 			},
 			new PlanState() {
-				{"playerDead", true}
+				{cPlayerDead, true}
 			},
 			25);
 		goals.Add(gKillPlayer);
@@ -43,17 +57,17 @@ public class Guard : PlanningNPC {
 
 		aChasePlayer = new PlanAction(
 			new PlanState() {
-				{ "enemySeen", true },
-				//{ "enemyVisible", false },
-				{ "nearEnemy", false },
-				{ "running", true },
-				{ "knockedOut", false },
-				{ "dead", false }
+				{ cEnemySeen, true },
+				//{ cEnemyVisible, false },
+				{ cNearEnemy, false },
+				{ cRunning, true },
+				{ cKnockedOut, false },
+				{ cDead, false }
 			},
 			new PlanState() {
 				//{ "atTarget", true },
-				{ "enemyVisible", true },
-				{ "nearEnemy", true }
+				{ cEnemyVisible, true },
+				{ cNearEnemy, true }
 			},
 			delegate() {
 				//target = player.transform;
@@ -79,17 +93,17 @@ public class Guard : PlanningNPC {
 
 		aPunchPlayer = new PlanAction(
 			new PlanState() {
-				{ "enemySeen", true },
-				{ "enemyVisible", true },
-				{ "nearEnemy", true },
-				{ "facingEnemy", true },
-				//{ "standing", true },
-				{ "canPunch", true },
-				{ "knockedOut", false },
-				{ "dead", false }
+				{ cEnemySeen, true },
+				{ cEnemyVisible, true },
+				{ cNearEnemy, true },
+				{ cFacingEnemy, true },
+				//{ cStanding, true },
+				{ cCanPunch, true },
+				{ cKnockedOut, false },
+				{ cDead, false }
 			},
 			new PlanState() {
-				{ "playerDead", true }
+				{ cPlayerDead, true }
 			},
 			delegate() {
 				player.Hurt(new Damage(punchDamage, transform.position));
@@ -102,12 +116,12 @@ public class Guard : PlanningNPC {
 
 		aCoolPunch = new PlanAction(
 			new PlanState() {
-				{ "canPunch", false },
-				{ "knockedOut", false },
-				{ "dead", false }
+				{ cCanPunch, false },
+				{ cKnockedOut, false },
+				{ cDead, false }
 			},
 			new PlanState() {
-				{ "canPunch", true }
+				{ cCanPunch, true }
 			},
 			delegate() {
 				punchTime -= Time.deltaTime;
@@ -119,16 +133,16 @@ public class Guard : PlanningNPC {
 
 		aFacePlayer = new PlanAction(
 			new PlanState() {
-				//{ "enemySeen", true },
-				{ "enemyVisible", true },
-				//{ "standing", true },
-				{ "facingEnemy", false },
-				{ "knockedOut", false },
-				{ "dead", false }
+				//{ cEnemySeen, true },
+				{ cEnemyVisible, true },
+				//{ cStanding, true },
+				{ cFacingEnemy, false },
+				{ cKnockedOut, false },
+				{ cDead, false }
 			},
 			new PlanState() {
-				{ "facingEnemy", true },
-				{ "enemySeen", true }
+				{ cFacingEnemy, true },
+				{ cEnemySeen, true }
 			},
 			delegate() {
 				Vector3 targetDir = (enemyPos - transform.position).normalized;
@@ -144,17 +158,17 @@ public class Guard : PlanningNPC {
 
 		aShootPlayer = new PlanAction(
 			new PlanState() {
-				{ "enemySeen", true },
-				{ "enemyVisible", true },
-				{ "nearEnemy", false },
-				{ "facingEnemy", true },
-				{ "canShoot", true },
-				{ "standing", true },
-				{ "knockedOut", false },
-				{ "dead", false }
+				{ cEnemySeen, true },
+				{ cEnemyVisible, true },
+				{ cNearEnemy, false },
+				{ cFacingEnemy, true },
+				{ cCanShoot, true },
+				{ cStanding, true },
+				{ cKnockedOut, false },
+				{ cDead, false }
 			},
 			new PlanState() {
-				{ "playerDead", true }
+				{ cPlayerDead, true }
 			},
 			delegate() {
 				Vector3 targetDir = (enemyPos - transform.position).normalized;
@@ -179,24 +193,24 @@ public class Guard : PlanningNPC {
 		aWander.name = "patrol";
 		aWander.output.Clear();
 		aWander.output = new PlanState() {
-			{ "enemySeen", true }
+			{ cEnemySeen, true }
 		};
 
 		/*float patrolTimer = 0;
 		aPatrol = new PlanAction(
 			new PlanState() {
-				{ "enemySeen", false },
-				{ "enemyVisible", false },
+				{ cEnemySeen, false },
+				{ cEnemyVisible, false },
 				{ "curious", false },
 				{ "alarmed", false },
 				{ "canInspect", false },
 				{ "alertShip", false },
-				{ "running", false },
-				{ "knockedOut", false },
-				{ "dead", false }
+				{ cRunning, false },
+				{ cKnockedOut, false },
+				{ cDead, false }
 			},
 			new PlanState() {
-				{ "enemySeen", true }
+				{ cEnemySeen, true }
 			},
 			delegate() {
 				patrolTimer += Time.deltaTime;
