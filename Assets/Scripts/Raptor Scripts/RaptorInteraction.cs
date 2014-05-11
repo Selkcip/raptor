@@ -143,11 +143,11 @@ public class RaptorInteraction : MonoBehaviour {
 			MakeNoise();
 			CheckGrid();
 
-			EdgeDetectEffectNormals edge = Camera.main.GetComponent<EdgeDetectEffectNormals>();
+			/*EdgeDetectEffectNormals edge = Camera.main.GetComponent<EdgeDetectEffectNormals>();
 			if(edge != null) {
 				edge.enabled = true;// heatRenderer.enabled;
 				edge.edgesOnly = Mathf.Lerp(edge.edgesOnly, Mathf.Max(0, Mathf.Min(1, 1 - lightLevel / maxLightLevel)), 0.1f);
-			}
+			}*/
 
 			//prevents the player from getting stuck when pouncing next to a wall
 			if(hud.stamina <= 0f) {
@@ -327,6 +327,14 @@ public class RaptorInteraction : MonoBehaviour {
 				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 				rigidbody.isKinematic = false;
 				fpc.enabled = true;
+			}
+
+			if(Input.GetKeyUp(KeyCode.F)) {
+				EdgeDetectEffectNormals edge = Camera.main.GetComponent<EdgeDetectEffectNormals>();
+				if(edge != null) {
+					edge.enabled = !edge.enabled;// heatRenderer.enabled;
+					//edge.edgesOnly = 0.5f;
+				}
 			}
 		}
 		else {

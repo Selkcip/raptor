@@ -94,7 +94,7 @@ public class PlanningNPC : MonoBehaviour {
 	protected PlanGoal goal;
 	public string actionName = "no action";
 
-	StateMachine states;
+	protected StateMachine states;
 
 	public NavMeshAgent agent { get; private set; }                 // the navmesh agent required for the path finding
 	public ThirdPersonCharacter character { get; private set; }     // the character we are controlling
@@ -146,7 +146,7 @@ public class PlanningNPC : MonoBehaviour {
 
 		sleep = new State(
 			delegate() {
-				return sleeping;
+				return sleeping || knockedOut;
 			},
 			delegate() {
 				actionName = "Sleep";
@@ -445,15 +445,22 @@ public class PlanningNPC : MonoBehaviour {
 			}
 		);
 
-		states.Add(stand);
+		sleep.priority = 100;
+		flee.priority = 90;
+		useObject.priority = 80;
+		activateAlarm.priority = 70;
+		inspect.priority = 60;
+		moveToTarget.priority = 50;
+		wander.priority = 40;
 
-		stand.Add(sleep);
-		stand.Add(moveToTarget);
-		stand.Add(useObject);
-		stand.Add(activateAlarm);
-		stand.Add(flee);
-		stand.Add(inspect);
-		stand.Add(wander);
+		states.Add(stand);
+		states.Add(sleep);
+		states.Add(moveToTarget);
+		states.Add(useObject);
+		states.Add(activateAlarm);
+		states.Add(flee);
+		states.Add(inspect);
+		states.Add(wander);
 	}
 
 	//Actions

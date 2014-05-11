@@ -8,6 +8,39 @@ public class Cop : Guard {
 	public bool roomSet = false;
 	public bool roomChecked = false;
 
+	protected State checkRoom;
+	public override void InitStates() {
+		base.InitStates();
+
+		checkRoom = new State(
+			delegate() {
+				return !enemySeen && !nearEnemy && roomSet && !roomChecked;
+			},
+			delegate() {
+				actionName = "Check Room";
+
+				agent.SetDestination(room.position);
+
+				// update the agents posiiton 
+				agent.transform.position = transform.position;
+
+				if(agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
+					roomChecked = true;
+					return true;
+				}
+
+				// use the values to move the character
+				Move(agent.desiredVelocity);
+
+				return false;
+			}
+		);
+
+		checkRoom.priority = 45;
+
+		states.Add(checkRoom);
+	}
+
 	// Use this for initialization
 	/*public override void Start() {
 		base.Start();

@@ -16,25 +16,106 @@ public class Guard : PlanningNPC {
 	protected float punchTime = 0;
 	protected Vector3 patrolPos;
 
+	protected State chasePlayer, facePlayer, punchPlayer, shootPlayer;
+	public override void InitStates() {
+		base.InitStates();
+
+		chasePlayer = new State(
+			delegate() {
+				return enemySeen && !nearEnemy;
+			},
+			delegate() {
+				actionName = "Chase Player";
+
+				running = true;
+
+				agent.SetDestination(enemyPos);
+				// update the agents posiiton 
+				agent.transform.position = transform.position;
+
+				if(agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
+					return true;
+				}
+
+				// use the values to move the character
+				Move(agent.desiredVelocity, enemyPos);
+
+				return false;
+			}
+		);
+
+		facePlayer = new State(
+			delegate() {
+				return enemyVisible && !facingEnemy;
+			},
+			delegate() {
+				actionName = "Face Player";
+
+				Vector3 targetDir = (enemyPos - transform.position).normalized;
+
+				Move(Vector3.zero, enemyPos);
+
+				return true;
+			}
+		);
+
+		punchPlayer = new State(
+			delegate() {
+				return enemySeen && enemyVisible && facingEnemy && nearEnemy;
+			},
+			delegate() {
+				actionName = "Punch Player";
+
+				if(punchTime <= 0) {
+					player.Hurt(new Damage(punchDamage, transform.position));
+					punchTime = punchCoolDown;
+				}
+				else {
+					punchTime -= Time.deltaTime;
+				}
+
+				return true;
+			}
+		);
+
+		shootPlayer = new State(
+			delegate() {
+				return enemySeen && enemyVisible && facingEnemy && !nearEnemy && canShoot;
+			},
+			delegate() {
+				actionName = "Shoot Player";
+
+				Vector3 targetDir = (enemyPos - transform.position).normalized;
+
+				Move(Vector3.zero, enemyPos);
+
+				if(weapon != null) {
+					weapon.transform.LookAt(enemyPos);
+					return weapon.Use(gameObject);
+				}
+
+				if(!weapon.hasAmmo) {
+					weapon.transform.localRotation = Quaternion.identity;
+				}
+
+				return true;
+			}
+		);
+
+		facePlayer.priority = 88;
+		punchPlayer.priority = 87;
+		shootPlayer.priority = 86;
+		chasePlayer.priority = 85;
+
+		states.Add(chasePlayer);
+		states.Add(facePlayer);
+		states.Add(punchPlayer);
+		states.Add(shootPlayer);
+	}
+
 	// Use this for initialization
 	/*public override void Start () {
 		base.Start();
-	}
-
-	protected PlanGoal gKillPlayer;
-	public override void InitGoals() {
-		base.InitGoals();
-
-		gKillPlayer = new PlanGoal(
-			"kill player",
-			new PlanState() {
-				{"playerDead", false}
-			},
-			new PlanState() {
-				{"playerDead", true}
-			},
-			25);
-		goals.Add(gKillPlayer);
 	}
 
 	PlanAction aFindPlayer, aChasePlayer, aPunchPlayer, aCoolPunch, aShootPlayer, aPatrol, aFacePlayer;
@@ -224,7 +305,7 @@ public class Guard : PlanningNPC {
 			});
 		aPatrol.name = "patrol";
 		planner.Add(aPatrol);*/
-	/*}
+	/*}*/
 	
 	// Update is called once per frame
 	public override void Update () {
@@ -239,5 +320,5 @@ public class Guard : PlanningNPC {
 
 		//This should be last in most cases
 		base.Update();
-	}*/
+	}
 }
