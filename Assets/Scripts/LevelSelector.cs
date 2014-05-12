@@ -14,6 +14,10 @@ public class LevelSelector : MonoBehaviour {
     public float notorietyPerShip;
 
 	public GameObject cargoShip;
+    public Vector2 cargoSpawnDistance; // min/max relative distance between cargo ship spawns
+    public Vector2 cargoSpawnWidth; // min/max width of the lane
+    public Vector2 cargoSpawnSpeed; // min/max speed of the lane
+    public int maxNearbyLanes; // max # of lanes with the spawn radius
 
 	public DeliveryShip deliveryShip;
 	public float deliveryShipSpawnDis = 10;
@@ -48,23 +52,54 @@ public class LevelSelector : MonoBehaviour {
         isPlayerSpotted = false;
         lastDetectedLocation = transform.position;
 
-        CargoLane cargoLane = new CargoLane(new Vector2(25, 0), new Vector2(1, 1), new Vector2(10, 15), 10, new Vector2(11, 12));
-        features.Add(cargoLane);
-
-        //SpawnPolice();
+        SpawnPolice(); // only time police spawn is at beginning of level? (ex: ships spot you and call police)
 	}
 
     public void SpawnPolice() {
-       if (RaptorHUD.pTime < RaptorHUD.maxPTime) {
+       if (RaptorHUD.pTime < RaptorHUD.maxPTime) { // if police timer was triggered
             //spawn police
             Vector2 spawnLocation = Random.insideUnitCircle * RaptorHUD.pTime * policeShip.GetComponent<PoliceShip>().maxSpeed;
-            for (float i = 0; i < RaptorInteraction.notoriety; i += notorietyPerShip) {
-                GameObject ship = (GameObject)Instantiate(policeShip, spawnLocation, Quaternion.identity);
-                ship.GetComponent<PoliceShip>().searchTimer = RaptorHUD.pTime + ship.GetComponent<PoliceShip>().maxSearchTime;
-                policeShips.Add(ship);
-                spawnLocation += Random.insideUnitCircle * policeSpawnProximity;
-            }
+            if (notorietyPerShip > 0)
+                for (float i = 0; i < RaptorInteraction.notoriety; i += notorietyPerShip) {
+                    GameObject ship = (GameObject)Instantiate(policeShip, spawnLocation, Quaternion.identity);
+                    ship.GetComponent<PoliceShip>().searchTimer = RaptorHUD.pTime + ship.GetComponent<PoliceShip>().maxSearchTime;
+                    policeShips.Add(ship);
+                    spawnLocation += Random.insideUnitCircle * Mathf.Max(policeSpawnProximity, 1); // using max for possible spawn crash
+                }
         }
+    }
+
+    public void SpawnCargoLane() { 
+		ArrayList nearbyLanes = new ArrayList(); // get the nearby lanes
+		foreach (SpaceyFeature feature in features)
+			if (feature.type == FeatureType.CargoLane && Vector2.Distance(feature.location, transform.position) < despawnRadius)
+				nearbyLanes.Add(feature);
+		//print(nearbyLanes.Count);
+
+        // check to make sure that there aren't more than the max number of lanes nearby (within despawn)
+        // if there are more than max nearby (within despawn) remove an extra (outside of spawn)
+		if (nearbyLanes.Count > maxNearbyLanes) {
+			//print("poop");
+			foreach (CargoLane lane in nearbyLanes)
+				if (Vector2.Distance(lane.location, transform.position) > spawnRadius) {
+					features.Remove(lane);
+					break; // only remove one (also b/c removal in loop)
+				}
+		}
+        // otherwise add another lane (within despawn) that doesn't intersect/enter spawn area
+		else if (nearbyLanes.Count < maxNearbyLanes) {
+			//print("smurf");
+			CargoLane newLane = new CargoLane((Vector2)transform.position + Random.insideUnitCircle * despawnRadius, Random.insideUnitCircle, cargoSpawnDistance, cargoSpawnWidth.x + Random.value * (cargoSpawnWidth.y - cargoSpawnWidth.x), cargoSpawnSpeed);
+
+			// update location of lane to spot closest to player along the lane
+			Vector2 distance = (Vector2)transform.position - newLane.location;
+			Vector2 closest = Vector3.Project(distance, newLane.direction);
+			newLane.location += closest;
+
+			// if it is outside spawn radius, add the lane
+			if (Vector2.Distance(newLane.location, transform.position) > spawnRadius)
+				features.Add(newLane);
+		}
     }
 
 	public void Load(){
@@ -86,7 +121,7 @@ public class LevelSelector : MonoBehaviour {
 		}
 
         UpdateShips();
-        foreach (SpaceyFeature feature in features) { 
+        foreach (SpaceyFeature feature in features)
             switch(feature.type) {
                 case FeatureType.CargoLane:
                     UpdateCargoLane((CargoLane)feature);
@@ -97,7 +132,8 @@ public class LevelSelector : MonoBehaviour {
             }
 
         UpdateBackground();
-        }
+
+		SpawnCargoLane();
 	}
 
     void UpdateShips() {
@@ -107,23 +143,27 @@ public class LevelSelector : MonoBehaviour {
 		coastIsClear = true;
         // update police ships
 		foreach (GameObject ship in policeShips) {
+			// check health is less than 0
+			if (ship.GetComponent<PoliceShip>().health <= 0) {
+				toBeRemoved.Add(ship);
+				continue;
+			}
 			//stop searching when time is 0
-            if (ship.GetComponent<PoliceShip>().searchTimer <= 0) {
-                if (!leave) {
-                    leave = true;
-					//coastIsClear = true;
-                    lastDetectedLocation = Random.insideUnitCircle * despawnRadius;
-                }
-				if(Vector3.Distance(transform.position, ship.transform.position) > despawnRadius || ship.GetComponent<PoliceShip>().health <= 0)
-                    toBeRemoved.Add(ship);
-            }
+			if (ship.GetComponent<PoliceShip>().searchTimer <= 0) {
+				leave = true;
+				//coastIsClear = true;
+				// check far enough away
+				if (Vector3.Distance(transform.position, ship.transform.position) > despawnRadius)
+					toBeRemoved.Add(ship);
+			}
 			//reset timer if spotted again
-            else if (ship.GetComponent<PoliceShip>().IsPlayerSpotted()) {
-                isPlayerSpotted = true;
-                leave = false;
-                lastDetectedLocation = transform.position;
+			else if (ship.GetComponent<PoliceShip>().IsPlayerSpotted())
+			{
+				isPlayerSpotted = true;
+				leave = false;
+				lastDetectedLocation = transform.position;
 				coastIsClear = false;
-            }
+			}
 		}
 		foreach (GameObject ship in toBeRemoved) {
 			policeShips.Remove(ship);
@@ -224,10 +264,12 @@ public class LevelSelector : MonoBehaviour {
     }
 
     void UpdateCargoLane(CargoLane lane) {
-        // update location of lane to spot closest to player along direction
+        // update location of lane to spot closest to player along the lane
         Vector2 distance = (Vector2)transform.position - lane.location;
         Vector2 closest = Vector3.Project(distance, lane.direction);
         lane.location += closest;
+
+		Debug.DrawRay(lane.location, lane.direction * 10);
 
         // if within spawnradius spawn ships
         distance = (Vector2)transform.position - lane.location;
@@ -272,8 +314,9 @@ public class SpaceyFeature {
     public Vector2 location;
     public FeatureType type;
 
-    public SpaceyFeature()
-    { }
+    public SpaceyFeature() {
+		type = FeatureType.Empty;
+	}
 
     public SpaceyFeature(Vector2 location) {
         this.location = location;

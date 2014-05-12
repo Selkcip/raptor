@@ -7,8 +7,8 @@ public class CargoShip : MonoBehaviour {
 
     public GameObject bullet;
     public float bulletSpeed;
-	float reload = 0;
 	public float reloadTime;
+	float reload = 0;
 
 	public float health = 100;
 
