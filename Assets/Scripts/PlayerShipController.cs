@@ -41,6 +41,7 @@ public class PlayerShipController : MonoBehaviour {
 	public static float damage = 10;
 	public static List<UpgradeCount> consumables = new List<UpgradeCount>();
 	public static int currentConsumable = 0;
+
 	public static void AddConsumable(ConsumableUpgrade upgrade) {
 		UpgradeCount count = consumables.Find(delegate(UpgradeCount cur) {
 			return cur.upgrade = upgrade;
@@ -176,33 +177,6 @@ public class PlayerShipController : MonoBehaviour {
 			reload = reloadTime;
 		}
 	}
-
-    /*void OnCollisionEnter2D(Collision2D col) {
-        // detect if player is hit with a shot
-		if (col.gameObject.tag == "bullet") {
-			Destroy(col.gameObject);
-			health -= 1;
-			if (health <= 0) {
-				isDead = true;
-				rigidbody2D.fixedAngle = false;
-			}
-		}
-        // detect player collides with a ship and is cloaked
-        if (col.gameObject.tag == "enemy" && isCloaked) {
-            //col.gameObject.renderer.material.color = Color.red;
-            // check collision is in back of ship and front of player
-			foreach (ContactPoint2D contact in col.contacts)
-			{
-				if (col.collider.transform.InverseTransformPoint(contact.point).y < 0)
-				{
-					//col.gameObject.renderer.material.color = Color.blue;
-					// load level
-					//AsyncOperation async = Application.LoadLevelAsync("cargoship");
-					levelSelector.Load();
-				}
-			}
-        }
-    }*/
 
 	public void Hurt(Damage damage) {
 		health -= damage.amount;
