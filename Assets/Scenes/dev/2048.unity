@@ -229,7 +229,7 @@ GameObject:
   - 23: {fileID: 1198101359}
   - 114: {fileID: 1198101358}
   m_Layer: 0
-  m_Name: Quad
+  m_Name: 2048
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -246,7 +246,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f7a23954f89a04480e6c58968309d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileCount: 8
+  moveTime: .00999999978
+  tileCount: 4
   tile: {fileID: 1972908964}
   tileSize: 0
   offset: {x: 0, y: 0, z: 0}
@@ -332,7 +333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b177dbc9a2f53e3449af9f04de739663, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  value: 1
+  value: 0
   pos: {x: 0, y: 0, z: 0}
   moveTime: .25
   mergeTarget: {fileID: 0}
