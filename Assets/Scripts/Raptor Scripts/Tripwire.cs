@@ -14,9 +14,13 @@ public class Tripwire : Triggerable {
 	public Transform emitter2;
 	public Transform laser;
 
+	private UISlider defuse;
+
 	// Use this for initialization
 	void Start() {
 		if(RaptorInteraction.notoriety < notorietyToSpawn) Destroy(gameObject);
+
+		defuse = GameObject.Find("HUD-Defuse").GetComponent<UISlider>();
 
 		//Adjusts the length of the laser to fit between the two things
 		float distance = Vector3.Distance(emitter1.position, emitter2.position);
@@ -50,11 +54,10 @@ public class Tripwire : Triggerable {
 	}
 
 	public void Use() {
-		//make an upgrade for dis shit
 		if(!hacked) {
 			RaptorInteraction.defusing = true;
 
-			if(RaptorHUD.defuseTime >= 1.0f) {
+			if(defuse.value >= 1.0f) {
 				hacked = true;
 				laser.renderer.enabled = false;
 			}

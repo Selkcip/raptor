@@ -4,7 +4,6 @@ using System.Collections;
 public class HealthUpgrade : CollectibleUpgrade {
 	public override void Apply(RaptorInteraction player) {
 		RaptorInteraction.maxHealth += 50;
-		GameObject.Find("Player").GetComponent<RaptorHUD>().health = 1f;
 		player.health = RaptorInteraction.maxHealth;
 
 		//print(RaptorInteraction.maxHealth + " : " + other.GetComponent<RaptorInteraction>().health);

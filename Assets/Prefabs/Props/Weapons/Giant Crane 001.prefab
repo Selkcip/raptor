@@ -59,7 +59,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400006}
-  - 95: {fileID: 9500000}
+  - 65: {fileID: 6500000}
+  - 65: {fileID: 6500004}
+  - 65: {fileID: 6500002}
   m_Layer: 0
   m_Name: Giant Crane 001
   m_TagString: Untagged
@@ -107,7 +109,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 147.274246, y: 4.30751419, z: 83.1266327}
+  m_LocalPosition: {x: -1.8028717, y: 4.01660538, z: -4.37273407}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400004}
@@ -198,20 +200,42 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
   m_Mesh: {fileID: 4300004, guid: d7e13fd8b17b0f54cafad65ff098b8a8, type: 3}
---- !u!95 &9500000
-Animator:
-  serializedVersion: 2
+--- !u!65 &6500000
+BoxCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: d7e13fd8b17b0f54cafad65ff098b8a8, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_ApplyRootMotion: 1
-  m_AnimatePhysics: 0
-  m_HasTransformHierarchy: 1
+  serializedVersion: 2
+  m_Size: {x: 1.97084451, y: 2.30134106, z: 1.99678588}
+  m_Center: {x: -.0958442688, y: 2.7836833, z: .000196456909}
+--- !u!65 &6500002
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100006}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.04947019, y: 2.80565166, z: .859266877}
+  m_Center: {x: 1.42844391, y: 1.24911594, z: .00469017029}
+--- !u!65 &6500004
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100006}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.00618219, y: 2.74381399, z: .859269679}
+  m_Center: {x: -1.48718643, y: 1.22438097, z: -.00234413147}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

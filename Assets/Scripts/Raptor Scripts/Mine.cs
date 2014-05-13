@@ -14,11 +14,13 @@ public class Mine : MonoBehaviour {
 	public Explosion explosionPrefab;
 
 	private Transform center;
+	private UISlider defuse;
 
 	// Use this for initialization
 	void Start () {
 		if(RaptorInteraction.notoriety < notorietyToSpawn) Destroy(gameObject);
 
+		defuse = GameObject.Find("HUD-Defuse").GetComponent<UISlider>();
 		center = transform.FindChild("center");
 	}
 
@@ -42,11 +44,10 @@ public class Mine : MonoBehaviour {
 	}
 
 	public void Use() {
-		//make an upgrade for dis shit
 		if(!hacked) {
 			RaptorInteraction.defusing = true;
 
-			if(RaptorHUD.defuseTime >= 1.0f) {
+			if(defuse.value >= 1.0f) {
 				hacked = true;
 				center.renderer.material.color = Color.blue;
 			}
