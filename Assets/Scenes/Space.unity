@@ -2828,6 +2828,10 @@ MonoBehaviour:
   policeSpawnProximity: 0
   notorietyPerShip: 2000
   cargoShip: {fileID: 100000, guid: 4c444abae610f574ca1002d38bf4f218, type: 2}
+  cargoSpawnDistance: {x: 30, y: 40}
+  cargoSpawnWidth: {x: 20, y: 30}
+  cargoSpawnSpeed: {x: 10, y: 15}
+  maxNearbyLanes: 3
   deliveryShip: {fileID: 11400000, guid: 368257f2ff522c84ab2ea211d6d43f92, type: 2}
   deliveryShipSpawnDis: 10
   deliveryShipIndicator: {fileID: 2800000, guid: 039029b80919b75469427191d7a33680,
@@ -10424,7 +10428,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3000
+  startingRenderQueue: 3001
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
@@ -11303,7 +11307,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3002
+  startingRenderQueue: 3001
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
@@ -14731,7 +14735,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3002
+  startingRenderQueue: 3001
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
@@ -19797,6 +19801,34 @@ Prefab:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11400002, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
+      propertyPath: cargoSpawnDistance.x
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400002, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
+      propertyPath: cargoSpawnDistance.y
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400002, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
+      propertyPath: cargoSpawnWidth.x
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400002, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
+      propertyPath: cargoSpawnWidth.y
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400002, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
+      propertyPath: cargoSpawnSpeed.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400002, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
+      propertyPath: cargoSpawnSpeed.y
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400002, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
+      propertyPath: maxNearbyLanes
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
   m_RootGameObject: {fileID: 253428885}
@@ -20278,7 +20310,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3002
+  startingRenderQueue: 3000
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 0, w: 0}

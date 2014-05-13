@@ -56,13 +56,13 @@ public class LevelSelector : MonoBehaviour {
 	}
 
     public void SpawnPolice() {
-       if (RaptorHUD.pTime < RaptorHUD.maxPTime) { // if police timer was triggered
+		if(Timer.pTime < Timer.maxPTime) { // if police timer was triggered
             //spawn police
-            Vector2 spawnLocation = Random.insideUnitCircle * RaptorHUD.pTime * policeShip.GetComponent<PoliceShip>().maxSpeed;
+			Vector2 spawnLocation = Random.insideUnitCircle * Timer.pTime * policeShip.GetComponent<PoliceShip>().maxSpeed;
             if (notorietyPerShip > 0)
                 for (float i = 0; i < RaptorInteraction.notoriety; i += notorietyPerShip) {
                     GameObject ship = (GameObject)Instantiate(policeShip, spawnLocation, Quaternion.identity);
-                    ship.GetComponent<PoliceShip>().searchTimer = RaptorHUD.pTime + ship.GetComponent<PoliceShip>().maxSearchTime;
+					ship.GetComponent<PoliceShip>().searchTimer = Timer.pTime + ship.GetComponent<PoliceShip>().maxSearchTime;
                     policeShips.Add(ship);
                     spawnLocation += Random.insideUnitCircle * Mathf.Max(policeSpawnProximity, 1); // using max for possible spawn crash
                 }
