@@ -5,20 +5,37 @@ using System.Collections.Generic;
 public class HackGame : MonoBehaviour {
 	public float moveTime = 1;
 	public int tileCount = 8;
+	public float zOffset = 1;
 	public HackGameTile tile;
+	public List<Texture2D> textures = new List<Texture2D>();
+
+	public float mapAvailable = 1;
+	public float maxTileValue = 0.25f;
+	public float mapPerLevel = 0;
+	public float notorietyToLock = 10000;
 
 	public float tileSize = 0;
 	public Vector3 offset;
 	List<List<int>> spaces = new List<List<int>>();
 	List<List<HackGameTile>> tiles = new List<List<HackGameTile>>();
 	List<HackGameTile> movingTiles = new List<HackGameTile>();
+	bool madeMove = false;
+
+	bool hacking = false;
+	bool hackable = true;
+	FirstPersonCharacter fpc;
 
 	// Use this for initialization
 	void Start () {
-		tileSize = renderer.bounds.size.x / tileCount;
-		offset = -renderer.bounds.size/2;
+		//renderer.enabled = false;
+
+		tileSize = 1f / tileCount;
+		offset = -Vector3.one/2;
 		offset.x += tileSize / 2;
 		offset.y += tileSize / 2;
+		offset.z = -zOffset;
+
+		mapPerLevel = maxTileValue / Mathf.Pow(2, 11);
 
 		for(int x = 0; x < tileCount; x++) {
 			spaces.Add(new List<int>());
@@ -29,7 +46,33 @@ public class HackGame : MonoBehaviour {
 			}
 		}
 
-		AddTiles();
+		if(RaptorInteraction.notoriety >= notorietyToLock) {
+			hackable = false;
+		}
+		else {
+			AddTiles();
+		}
+	}
+
+	public void Use(GameObject user) {
+		fpc = user.GetComponent<FirstPersonCharacter>();
+		if(fpc != null) {
+			if(hackable && !hacking) {
+				hacking = true;
+				fpc.enabled = false;
+				user.rigidbody.velocity *= 0;
+			}
+			else {
+				StopHacking();
+			}
+		}
+	}
+
+	void StopHacking() {
+		hacking = false;
+		if(fpc != null) {
+			fpc.enabled = true;
+		}
 	}
 
 	void AddTiles() {
@@ -45,12 +88,20 @@ public class HackGame : MonoBehaviour {
 			Vector3 space = empties[Random.Range(0, empties.Count - 1)];
 			//print(space);
 			if(space != null) {
-				HackGameTile newTile = (HackGameTile)Instantiate(tile, offset + space * tileSize, Quaternion.identity);
+				HackGameTile newTile = (HackGameTile)Instantiate(tile, Vector3.zero, Quaternion.identity);
+				newTile.gameObject.SetActive(true);
 				tiles[(int)space.x][(int)space.y] = newTile;
+				newTile.transform.parent = transform;
 				newTile.value = Random.Range(0, 2);
-				newTile.pos = offset + space * tileSize;
+				newTile.transform.localPosition = offset + space * tileSize;
+				newTile.transform.localEulerAngles = Vector3.zero;
+				newTile.pos = newTile.transform.localPosition;
 				newTile.transform.localScale = new Vector3(tileSize, tileSize, tileSize);
+				newTile.renderer.material.mainTexture = textures[newTile.value];
 			}
+		}
+		else {
+			Alarm.ActivateAlarms();
 		}
 	}
 
@@ -188,13 +239,13 @@ public class HackGame : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		for(int x = 0; x < tileCount; x++) {
+		/*for(int x = 0; x < tileCount; x++) {
 			for(int y = 0; y < tileCount; y++) {
 				if(tiles[x][y] != null) {
-					Debug.DrawRay(offset + new Vector3(x * tileSize, y * tileSize, -1), transform.right);
+					Debug.DrawRay(transform.TransformPoint(offset + new Vector3(x * tileSize, y * tileSize, -1)), transform.right);
 				}
 			}
-		}
+		}*/
 
 		if(movingTiles.Count > 0) {
 			//print("moving tiles");
@@ -202,16 +253,19 @@ public class HackGame : MonoBehaviour {
 				HackGameTile cur = movingTiles[i];
 				//cur.renderer.material.color = Color.red;
 				//print("moving tile");
-				Vector3 diff = cur.pos - cur.transform.position;
+				Vector3 diff = cur.pos - cur.transform.localPosition;
 				if(diff.magnitude > 0.05f) {
-					cur.transform.position += diff * Time.deltaTime / moveTime;
+					cur.transform.localPosition += diff * Time.deltaTime / moveTime;
 				}
 				else {
 					//cur.renderer.material.color = Color.green;
-					cur.transform.position = cur.pos;
+					cur.transform.localPosition = cur.pos;
 					movingTiles[i] = null;
 					if(cur.mergeTarget != null && cur.mergeTarget != cur) {
-						cur.mergeTarget.Merge(cur);
+						HackGameTile target = cur.mergeTarget;
+						target.Merge(cur);
+						RaptorInteraction.mapAmountAcquired += target.value * mapPerLevel;
+						target.renderer.material.mainTexture = textures[target.value];
 					}
 				}
 			}
@@ -223,17 +277,31 @@ public class HackGame : MonoBehaviour {
 			}
 		}
 		else {
-			if(Input.GetKeyDown(KeyCode.D)) {
-				MoveRight();
-			}
-			else if(Input.GetKeyDown(KeyCode.A)) {
-				MoveLeft();
-			}
-			else if(Input.GetKeyDown(KeyCode.W)) {
-				MoveUp();
-			}
-			else if(Input.GetKeyDown(KeyCode.S)) {
-				MoveDown();
+			if(hacking) {
+				if(!hackable || RebindableInput.GetKeyDown("Jump")) {
+					StopHacking();
+				}
+				else {
+					float v = RebindableInput.GetAxis("Vertical");
+					float h = RebindableInput.GetAxis("Horizontal");
+
+					if(!madeMove) {
+						if(h > 0) {
+							MoveRight();
+						}
+						else if(h < 0) {
+							MoveLeft();
+						}
+						else if(v > 0) {
+							MoveUp();
+						}
+						else if(v < 0) {
+							MoveDown();
+						}
+					}
+
+					madeMove = Mathf.Abs(v + h) > 0;
+				}
 			}
 		}
 	}

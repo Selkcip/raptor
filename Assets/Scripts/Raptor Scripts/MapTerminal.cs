@@ -10,9 +10,7 @@ public class MapTerminal : MonoBehaviour {
 	public float notorietyToLock = 10000;
 	public bool hackable = true;
 	public bool hacked = false;
-	public UISlider mapBar;
-	public UISlider alarmBar;
-	public UILabel alarmLabel;
+	
 
 	private float initMapAvailable;
 
@@ -22,7 +20,7 @@ public class MapTerminal : MonoBehaviour {
 	public float timeRemaining { get { return hackTime / alarmCountDown; } }
 
 	// Use this for initialization
-	void Start() {
+	/*void Start() {
 		transferRate = mapAvailable / alarmCountDown;
 		initMapAvailable = mapAvailable;
 
@@ -44,10 +42,10 @@ public class MapTerminal : MonoBehaviour {
 			alarmLabel.enabled = true;
 			Alarm.ActivateAlarms();
 		}
-	}
+	}*/
 
 	// Update is called once per frame
-	void Update() {
+	/*void Update() {
 		if(hackable && hacked) {
 			if(hackTime < alarmCountDown) {
 				hackTime += Time.deltaTime;
@@ -58,5 +56,5 @@ public class MapTerminal : MonoBehaviour {
 		}
 		mapBar.value = mapRemaining;
 		alarmBar.value = timeRemaining;
-	}
+	}*/
 }

@@ -28,7 +28,7 @@ public class HackGameTile : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		renderer.material.color = colors[value];
+		//renderer.material.color = colors[value];
 		/*Vector3 diff = pos - transform.position;
 		if(diff.magnitude > 0.05f) {
 			transform.position += diff * Time.deltaTime / moveTime;
