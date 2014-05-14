@@ -11,6 +11,7 @@ public class State {
 	public int priority;
 	public StateCondition Condition;
 	public StateUpdate Update;
+	public StateUpdate Exit;
 	public List<State> states;
 
 	public State(StateCondition condition, StateUpdate update, int priority = 0) {
@@ -46,9 +47,32 @@ public class StateMachine {
 		states.Remove(state);
 	}
 
+	State cur;
 	public void Update() {
 		if(states.Count > 0) {
-			State cur = states[states.Count-1];
+			states.Sort(delegate(State a, State b) {
+				return a.priority - b.priority;
+			});
+
+			foreach(State state in states) {
+				if(state.Condition()) {
+					if(cur != null && cur.Exit != null) {
+						cur.Exit();
+					}
+					cur = state;
+				}
+				else if(state == cur) {
+					break;
+				}
+			}
+
+			if(cur != null) {
+				if(cur.Update()) {
+					cur = null;
+				}
+			}
+
+			/*State cur = states[states.Count-1];
 
 			cur.states.Sort(delegate(State a, State b) {
 				return a.priority - b.priority;
@@ -63,7 +87,7 @@ public class StateMachine {
 			cur = states[states.Count - 1];
 			if(cur.Update()) {
 				states.Remove(cur);
-			}
+			}*/
 		}
 	}
 }

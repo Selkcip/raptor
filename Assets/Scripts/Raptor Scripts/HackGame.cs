@@ -3,18 +3,39 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class HackGame : MonoBehaviour {
+	public float moveTime = 1;
 	public int tileCount = 8;
+	public float zOffset = 1;
 	public HackGameTile tile;
+	public List<Texture2D> textures = new List<Texture2D>();
+
+	public float mapAvailable = 1;
+	public float maxTileValue = 0.25f;
+	public float mapPerLevel = 0;
+	public float notorietyToLock = 10000;
 
 	public float tileSize = 0;
 	public Vector3 offset;
 	List<List<int>> spaces = new List<List<int>>();
 	List<List<HackGameTile>> tiles = new List<List<HackGameTile>>();
+	List<HackGameTile> movingTiles = new List<HackGameTile>();
+	bool madeMove = false;
+
+	bool hacking = false;
+	bool hackable = true;
+	FirstPersonCharacter fpc;
 
 	// Use this for initialization
 	void Start () {
-		tileSize = renderer.bounds.size.x / tileCount;
-		offset = -renderer.bounds.size/2;
+		//renderer.enabled = false;
+
+		tileSize = 1f / tileCount;
+		offset = -Vector3.one/2;
+		offset.x += tileSize / 2;
+		offset.y += tileSize / 2;
+		offset.z = -zOffset;
+
+		mapPerLevel = maxTileValue / Mathf.Pow(2, 11);
 
 		for(int x = 0; x < tileCount; x++) {
 			spaces.Add(new List<int>());
@@ -25,98 +46,263 @@ public class HackGame : MonoBehaviour {
 			}
 		}
 
-		AddTiles();
+		if(RaptorInteraction.notoriety >= notorietyToLock) {
+			hackable = false;
+		}
+		else {
+			AddTiles();
+		}
+	}
+
+	public void Use(GameObject user) {
+		fpc = user.GetComponent<FirstPersonCharacter>();
+		if(fpc != null) {
+			if(hackable && !hacking) {
+				hacking = true;
+				fpc.enabled = false;
+				user.rigidbody.velocity *= 0;
+			}
+			else {
+				StopHacking();
+			}
+		}
+	}
+
+	void StopHacking() {
+		hacking = false;
+		if(fpc != null) {
+			fpc.enabled = true;
+		}
 	}
 
 	void AddTiles() {
 		List<Vector3> empties = new List<Vector3>();
 		for(int x = 0; x < tileCount; x++) {
 			for(int y = 0; y < tileCount; y++) {
-				if(spaces[x][y] == 0) {
-					empties.Add(new Vector3(x, y, -1));
+				if(tiles[x][y] == null) {
+					empties.Add(new Vector3(x, y, 0));
 				}
 			}
 		}
-		Vector3 space = new Vector3(0, 0, 0);// empties[Random.Range(0, empties.Count - 1)];
-		//print(space);
-		if(space != null) {
-			spaces[(int)space.x][(int)space.y] = 1;
-			HackGameTile newTile = (HackGameTile)Instantiate(tile, offset+space * tileSize, Quaternion.identity);
-			tiles[(int)space.x][(int)space.y] = newTile;
-			newTile.pos = offset + space * tileSize;
-			newTile.transform.localScale = new Vector3(tileSize, tileSize, tileSize);
+		if(empties.Count > 0) {
+			Vector3 space = empties[Random.Range(0, empties.Count - 1)];
+			//print(space);
+			if(space != null) {
+				HackGameTile newTile = (HackGameTile)Instantiate(tile, Vector3.zero, Quaternion.identity);
+				newTile.gameObject.SetActive(true);
+				tiles[(int)space.x][(int)space.y] = newTile;
+				newTile.transform.parent = transform;
+				newTile.value = Random.Range(0, 2);
+				newTile.transform.localPosition = offset + space * tileSize;
+				newTile.transform.localEulerAngles = Vector3.zero;
+				newTile.pos = newTile.transform.localPosition;
+				newTile.transform.localScale = new Vector3(tileSize, tileSize, tileSize);
+				newTile.renderer.material.mainTexture = textures[newTile.value];
+			}
+		}
+		else {
+			Alarm.ActivateAlarms();
 		}
 	}
 
 	void MoveRight() {
 		int tilesMoved = 0;
 		for(int y = 0; y < tileCount; y++) {
+			int initN = tileCount - 1;
 			for(int x = tileCount - 2; x > -1; x--) {
 				HackGameTile cur = tiles[x][y];
 				if(cur != null) {
-					int n = tileCount - 1;
-					for(; n > x; n--) {
+					for(int n = initN; n > x; n--) {
+						initN = x;
 						HackGameTile neigh = tiles[n][y];
-						if(neigh == null || neigh.value == cur.value) {
+						if(neigh == null || (neigh != cur && neigh.value == cur.value)) {
 							cur.pos.x = offset.x + n * tileSize;
 							cur.pos.y = offset.y + y * tileSize;
 							cur.mergeTarget = neigh;
 							if(neigh != null) {
-								//print("c "+cur.value+" n "+neigh.value);
-								neigh.value += cur.value;
+								neigh.value += 1;
+								initN = n - 1;
 							}
 							else {
 								tiles[n][y] = cur;
+								initN = n;
 							}
 							tiles[x][y] = null;
 							tilesMoved++;
+							movingTiles.Add(cur);
 							break;
 						}
 					}
 				}
 			}
 		}
-		if(tilesMoved > 0) {
-			AddTiles();
-		}
 	}
 
 	void MoveLeft() {
 		int tilesMoved = 0;
 		for(int y = 0; y < tileCount; y++) {
+			int initN = 0;
 			for(int x = 1; x < tileCount; x++) {
-				int v = spaces[x][y];
-				if(v > 0) {
-					int n = 0;
-					for(; n < x; n++) {
-						if(spaces[n][y] == 0 || spaces[n][y] == v) {
-							spaces[n][y] += v;
-							spaces[x][y] = 0;
-							HackGameTile cur = tiles[x][y];
-							if(cur) {
-								cur.pos.x = offset.x + n * tileSize;
-								cur.pos.y = offset.y + y * tileSize;
-								cur.mergeTarget = tiles[n][y];
-								tilesMoved++;
-								break;
+				HackGameTile cur = tiles[x][y];
+				if(cur != null) {
+					for(int n = initN; n < x; n++) {
+						initN = x;
+						HackGameTile neigh = tiles[n][y];
+						if(neigh == null || neigh.value == cur.value) {
+							cur.pos.x = offset.x + n * tileSize;
+							cur.pos.y = offset.y + y * tileSize;
+							cur.mergeTarget = neigh;
+							if(neigh != null) {
+								neigh.value += 1;
+								initN = n + 1;
 							}
+							else {
+								tiles[n][y] = cur;
+								initN = n;
+							}
+							tiles[x][y] = null;
+							tilesMoved++;
+							movingTiles.Add(cur);
+							break;
 						}
 					}
 				}
 			}
 		}
-		if(tilesMoved > 0) {
-			AddTiles();
+	}
+
+	void MoveUp() {
+		int tilesMoved = 0;
+		for(int x = 0; x < tileCount; x++) {
+			int initN = tileCount - 1;
+			for(int y = tileCount - 2; y > -1; y--) {
+				HackGameTile cur = tiles[x][y];
+				if(cur != null) {
+					for(int n = initN; n > y; n--) {
+						initN = y;
+						HackGameTile neigh = tiles[x][n];
+						if(neigh == null || (neigh != cur && neigh.value == cur.value)) {
+							cur.pos.x = offset.x + x * tileSize;
+							cur.pos.y = offset.y + n * tileSize;
+							cur.mergeTarget = neigh;
+							if(neigh != null) {
+								neigh.value += 1;
+								initN = n - 1;
+							}
+							else {
+								tiles[x][n] = cur;
+								initN = n;
+							}
+							tiles[x][y] = null;
+							tilesMoved++;
+							movingTiles.Add(cur);
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	void MoveDown() {
+		int tilesMoved = 0;
+		for(int x = 0; x < tileCount; x++) {
+			int initN = 0;
+			for(int y = 1; y < tileCount; y++) {
+				HackGameTile cur = tiles[x][y];
+				if(cur != null) {
+					for(int n = initN; n < y; n++) {
+						initN = y;
+						HackGameTile neigh = tiles[x][n];
+						if(neigh == null || neigh.value == cur.value) {
+							cur.pos.x = offset.x + x * tileSize;
+							cur.pos.y = offset.y + n * tileSize;
+							cur.mergeTarget = neigh;
+							if(neigh != null) {
+								neigh.value += 1;
+								initN = n + 1;
+							}
+							else {
+								tiles[x][n] = cur;
+								initN = n;
+							}
+							tiles[x][y] = null;
+							tilesMoved++;
+							movingTiles.Add(cur);
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetKeyDown(KeyCode.D)) {
-			MoveRight();
+		/*for(int x = 0; x < tileCount; x++) {
+			for(int y = 0; y < tileCount; y++) {
+				if(tiles[x][y] != null) {
+					Debug.DrawRay(transform.TransformPoint(offset + new Vector3(x * tileSize, y * tileSize, -1)), transform.right);
+				}
+			}
+		}*/
+
+		if(movingTiles.Count > 0) {
+			//print("moving tiles");
+			for(int i = 0; i < movingTiles.Count; i++) {
+				HackGameTile cur = movingTiles[i];
+				//cur.renderer.material.color = Color.red;
+				//print("moving tile");
+				Vector3 diff = cur.pos - cur.transform.localPosition;
+				if(diff.magnitude > 0.05f) {
+					cur.transform.localPosition += diff * Time.deltaTime / moveTime;
+				}
+				else {
+					//cur.renderer.material.color = Color.green;
+					cur.transform.localPosition = cur.pos;
+					movingTiles[i] = null;
+					if(cur.mergeTarget != null && cur.mergeTarget != cur) {
+						HackGameTile target = cur.mergeTarget;
+						target.Merge(cur);
+						RaptorInteraction.mapAmountAcquired += target.value * mapPerLevel;
+						target.renderer.material.mainTexture = textures[target.value];
+					}
+				}
+			}
+			movingTiles.RemoveAll(delegate(HackGameTile tile) {
+				return tile == null;
+			});
+			if(movingTiles.Count <= 0) {
+				AddTiles();
+			}
 		}
-		else if(Input.GetKeyDown(KeyCode.A)) {
-			MoveLeft();
+		else {
+			if(hacking) {
+				if(!hackable || RebindableInput.GetKeyDown("Jump")) {
+					StopHacking();
+				}
+				else {
+					float v = RebindableInput.GetAxis("Vertical");
+					float h = RebindableInput.GetAxis("Horizontal");
+
+					if(!madeMove) {
+						if(h > 0) {
+							MoveRight();
+						}
+						else if(h < 0) {
+							MoveLeft();
+						}
+						else if(v > 0) {
+							MoveUp();
+						}
+						else if(v < 0) {
+							MoveDown();
+						}
+					}
+
+					madeMove = Mathf.Abs(v + h) > 0;
+				}
+			}
 		}
 	}
 }

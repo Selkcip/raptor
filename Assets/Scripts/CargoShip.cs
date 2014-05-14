@@ -7,8 +7,8 @@ public class CargoShip : MonoBehaviour {
 
     public GameObject bullet;
     public float bulletSpeed;
-	float reload = 0;
 	public float reloadTime;
+	float reload = 0;
 
 	public float health = 100;
 
@@ -47,7 +47,7 @@ public class CargoShip : MonoBehaviour {
             //Debug.DrawRay(transform.position, targetDirection);
 
 			GameObject shot = (GameObject)Instantiate(bullet, transform.position, Quaternion.FromToRotation(Vector3.up, targetDirection));
-			//shot.layer = LayerMask.NameToLayer("Enemy");
+			shot.layer = LayerMask.NameToLayer("Enemy");
 			shot.rigidbody2D.velocity = rigidbody2D.velocity + (Vector2)(shot.transform.up * bulletSpeed);
 			reload = reloadTime;
 		}

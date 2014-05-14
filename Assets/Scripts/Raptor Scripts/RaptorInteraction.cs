@@ -16,13 +16,13 @@ public class RaptorInteraction : MonoBehaviour {
 
 	//Raptor Stats
 	public static string name = "Regina";
-	public static string level = "DemoShip";
+	public static string level = "PrisonShip";
 	public static float maxHealth = 100f;
 	public static float attack = 20f;
 	public static float stealthTime = 180f; //time in seconds
 
 	//Defaults
-	public static string defaultLevel = "DemoShip";
+	public static string defaultLevel = "PrisonShip";
 	public static float defaultMaxHealth = 100f;
 	public static float defaultAttack = 20f;
 	public static float defaultStealthTime = 180f; //time in seconds
@@ -97,7 +97,7 @@ public class RaptorInteraction : MonoBehaviour {
 	private float meleeRange = 1.0f;
 
 	//Collection data
-	public static float mapAmountAcquired = 0;
+	public static float _mapAmountAcquired = 0;
 	public static int money = 10000000;
 	public static float _notoriety = 0f;//Notoriety should increase by 2000 for killing a guy;
 	public static float notorietyStep = 2000;
@@ -110,6 +110,14 @@ public class RaptorInteraction : MonoBehaviour {
 		set { 
 			_notoriety = value;
 			print("+"+value+" Notoriety");
+		}
+	}
+
+	public static float mapAmountAcquired {
+		get { return _mapAmountAcquired; }
+		set {
+			_mapAmountAcquired = value;
+			print(value + " map");
 		}
 	}
 
@@ -144,11 +152,11 @@ public class RaptorInteraction : MonoBehaviour {
 			MakeNoise();
 			CheckGrid();
 
-			EdgeDetectEffectNormals edge = Camera.main.GetComponent<EdgeDetectEffectNormals>();
+			/*EdgeDetectEffectNormals edge = Camera.main.GetComponent<EdgeDetectEffectNormals>();
 			if(edge != null) {
 				edge.enabled = true;// heatRenderer.enabled;
 				edge.edgesOnly = Mathf.Lerp(edge.edgesOnly, Mathf.Max(0, Mathf.Min(1, 1 - lightLevel / maxLightLevel)), 0.1f);
-			}
+			}*/
 		}
 		else {
 			//Die
@@ -328,6 +336,14 @@ public class RaptorInteraction : MonoBehaviour {
 				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 				rigidbody.isKinematic = false;
 				fpc.enabled = true;
+			}
+
+			if(Input.GetKeyUp(KeyCode.F)) {
+				EdgeDetectEffectNormals edge = Camera.main.GetComponent<EdgeDetectEffectNormals>();
+				if(edge != null) {
+					edge.enabled = !edge.enabled;// heatRenderer.enabled;
+					//edge.edgesOnly = 0.5f;
+				}
 			}
 		}
 		else {

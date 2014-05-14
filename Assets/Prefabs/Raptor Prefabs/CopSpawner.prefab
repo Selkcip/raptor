@@ -12,7 +12,7 @@ GameObject:
   m_Layer: 0
   m_Name: CopSpawner
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: -1003283189, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -23,7 +23,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.296700954, y: 0, z: -11.0507364}
+  m_LocalPosition: {x: .0157141685, y: 1.13564539, z: -11.8190613}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -40,8 +40,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   copPrefab: {fileID: 100136, guid: a6764424a61276b4bb94c509b3fe135e, type: 2}
   rooms:
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 0}
   spawnRate: 1
   notorietyStep: 8000
