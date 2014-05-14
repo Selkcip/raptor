@@ -284,10 +284,14 @@ public class RaptorInteraction : MonoBehaviour {
 				RaycastHit hit;
 				int mask = ~(1 << LayerMask.NameToLayer("Player"));
 				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2, mask)) {
-					//hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+					if(hit.transform.tag == "trap") {
+						hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+					}
+
+					else { 
 					ikControl.UseObject(hit.point+Camera.main.transform.up, hit.transform);
-					if(hit.transform.tag != "trap") {
-						defusing = false;
+					//if(hit.transform.tag != "trap") {
+					defusing = false;
 					}
 				}
 				else {
