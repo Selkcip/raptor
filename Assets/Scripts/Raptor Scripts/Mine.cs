@@ -25,7 +25,7 @@ public class Mine : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision col) {
-		if(!hacked && col.transform.tag == "Player") {
+		if(!hacked && col.transform.tag == "Player" && activated) {
 			Explosion(col.transform, playerDamage);
 		}
 		else if(hacked && col.transform.tag == "enemy" && activated) {
