@@ -119,6 +119,7 @@ public class PlanningNPC : MonoBehaviour {
 		ragdollHelper = GetComponent<RagdollHelper>();
 
 		player = GameObject.FindObjectOfType<RaptorInteraction>();
+		stamina = maxStamina;
 
 		//InitGoals();
 		//InitActions();
@@ -456,20 +457,37 @@ public class PlanningNPC : MonoBehaviour {
 				// update the agents posiiton 
 				agent.transform.position = transform.position;
 
-				NavMeshHit hit;
-				agent.Raycast(transform.position + transform.forward, out hit);
+				// use the values to move the character
+				Move(agent.desiredVelocity);
 
-				if(hit.hit || wanderTimer >= wanderTime || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
+				RaycastHit rayHit;
+				int mask = ~(1 << LayerMask.NameToLayer("Enemy"));
+				bool goingToHitSomthing = false;// Physics.Raycast(transform.position + new Vector3(0, 1, 0), transform.forward, out rayHit, 0.25f, mask);
+
+				NavMeshHit hit;
+				//agent.Raycast(transform.position + new Vector3(0, 1, 0) + agent.desiredVelocity.normalized, out hit);
+
+				if(goingToHitSomthing || wanderTimer >= wanderTime || agent.remainingDistance <= targetChangeTolerance) {// || agent.pathStatus == NavMeshPathStatus.PathPartial) {
+					actionName = "Rethinking Wander";
+
+					wanderPos = transform.position + transform.forward * 10;
+					/*if(goingToHitSomthing) {
+						print("Bouncing");
+						wanderPos = rayHit.point + rayHit.normal * 1;// Vector3.Reflect(transform.forward, hit.normal).normalized * 5;
+						wanderPos.y = transform.position.y;
+					}*/
 					//Vector3 randomDir = Random.insideUnitSphere * 10;
 					//NavMesh.SamplePosition(transform.position + randomDir, out hit, 10, 1);
 					//patrolPos = hit.position;// transform.position + transform.forward * 10;
-					wanderPos = transform.position + transform.forward * 10;
+					//Vector3 dir = hit.hit ? (transform.position - hit.position).normalized : transform.forward;
+					//Debug.DrawRay(transform.position, dir);
+					NavMesh.SamplePosition(wanderPos, out hit, 10, 0);
+					if(hit.hit) {
+						wanderPos = hit.position;
+					}
 					wanderTimer = 0;
 					return true;
 				}
-
-				// use the values to move the character
-				Move(agent.desiredVelocity);
 
 				return false;// sleeping || enemySeen || alertShip || canInspect;
 			}
@@ -481,7 +499,9 @@ public class PlanningNPC : MonoBehaviour {
 				return followsNoise && curious && !alarmed && !enemyVisible;
 			},
 			delegate() {
-				running = true;
+				actionName = "Follow Noise";
+
+				running = false;
 
 				if(initNoise) {
 					noisePos = transform.position + noiseDir * 10;
@@ -514,6 +534,8 @@ public class PlanningNPC : MonoBehaviour {
 				return followsNoise && curious && alarmed && !enemyVisible;
 			},
 			delegate() {
+				actionName = "Chase Noise";
+
 				running = true;
 
 				if(initNoise) {
@@ -558,170 +580,10 @@ public class PlanningNPC : MonoBehaviour {
 		states.Add(useObject);
 		states.Add(activateAlarm);
 		states.Add(flee);
-		states.Add(inspect);
+		//states.Add(inspect);
 		states.Add(wander);
-		states.Add(followNoise);
-		states.Add(chaseNoise);
-	}
-
-	//Actions
-	protected PlanAction aPassOut, aSleep, aWakeUp, aStand, aMoveToTarget, aWalk, aRun, aUseObject, aFindAlarm, aActivateAlarm, aFlee, aInspect, aFindInteresting, aFollowNoise, aChaseNoise, aEnableLight, aDisableLight, aWander;
-	public virtual void InitActions() {
-
-		bool initNoise = true;
-		//Maybe these should do a short path search and choose a cell to move to using the nav mesh
-		aFollowNoise = new PlanAction(
-			new PlanState() {
-				{ "followsNoise", true },
-				{ "curious", true },
-				{ "alarmed", false },
-				{ "enemyVisible", false },
-				{ "knockedOut", false },
-				{ "sleeping", false }
-			},
-			new PlanState() {
-				{ "curious", false },
-				{ "playerVisible", true }
-			},
-			delegate() {
-				agent.SetDestination(noisePos);
-
-				// update the agents posiiton 
-				agent.transform.position = transform.position;
-
-				NavMeshHit hit;
-				agent.Raycast(transform.position + transform.forward, out hit);
-
-				if(initNoise || hit.hit || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
-					noisePos = transform.position + noiseDir * 10;
-					initNoise = false;
-				}
-
-				// use the values to move the character
-				Move(agent.desiredVelocity);
-
-				return false;
-			});
-		aFollowNoise.name = "follow noise";
-		planner.Add(aFollowNoise);
-
-		aChaseNoise = new PlanAction(
-			new PlanState() {
-				{ "followsNoise", true },
-				{ "alarmed", true },
-				{ "enemyVisible", false },
-				{ "running", true },
-				{ "knockedOut", false },
-				{ "sleeping", false }
-			},
-			new PlanState() {
-				{ "alarmed", false },
-				{ "playerVisible", true }
-			},
-			delegate() {
-				agent.SetDestination(noisePos);
-
-				// update the agents posiiton 
-				agent.transform.position = transform.position;
-
-				NavMeshHit hit;
-				agent.Raycast(transform.position + transform.forward, out hit);
-
-				if(initNoise || hit.hit || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
-					noisePos = transform.position + noiseDir * 10;
-					initNoise = false;
-				}
-
-				// use the values to move the character
-				Move(agent.desiredVelocity);
-
-				return false;
-			});
-		aChaseNoise.name = "chase noise";
-		planner.Add(aChaseNoise);
-
-		aEnableLight = new PlanAction(
-			new PlanState() {
-				{ "hasFlashlight", true },
-				{ "flashLightOn", false },
-				{ "needLight", true },
-				{ "knockedOut", false },
-				{ "sleeping", false }
-			},
-			new PlanState() {
-				{ "flashLightOn", true },
-				{ "needLight", false }
-			},
-			delegate() {
-				weapon.flashLight.enabled = true;
-
-				return false;
-			});
-		aEnableLight.name = "enable light";
-		//planner.Add(aEnableLight);
-
-		aDisableLight = new PlanAction(
-			new PlanState() {
-				{ "hasFlashlight", true },
-				{ "flashLightOn", true },
-				{ "needLight", false },
-				{ "knockedOut", false },
-				{ "sleeping", false }
-			},
-			new PlanState() {
-				{ "flashLightOn", false }
-			},
-			delegate() {
-				weapon.flashLight.enabled = false;
-
-				return false;
-			});
-		aDisableLight.name = "disable light";
-		//planner.Add(aDisableLight);
-
-		float wanderTimer = wanderTime;
-		Vector3 wanderPos = new Vector3();
-		aWander = new PlanAction(
-			new PlanState() {
-				{ "enemySeen", false },
-				{ "enemyVisible", false },
-				{ "curious", false },
-				{ "alarmed", false },
-				{ "canInspect", false },
-				{ "alertShip", false },
-				{ "running", false },
-				{ "knockedOut", false },
-				{ "dead", false }
-			},
-			new PlanState() {
-				{ "canInspect", true }
-			},
-			delegate() {
-				wanderTimer += Time.deltaTime;
-
-				agent.SetDestination(wanderPos);
-
-				// update the agents posiiton 
-				agent.transform.position = transform.position;
-
-				NavMeshHit hit;
-				agent.Raycast(transform.position + transform.forward, out hit);
-
-				if(hit.hit || wanderTimer >= wanderTime || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
-					//Vector3 randomDir = Random.insideUnitSphere * 10;
-					//NavMesh.SamplePosition(transform.position + randomDir, out hit, 10, 1);
-					//patrolPos = hit.position;// transform.position + transform.forward * 10;
-					wanderPos = transform.position + transform.forward * 10;
-					wanderTimer = 0;
-				}
-
-				// use the values to move the character
-				Move(agent.desiredVelocity);
-
-				return false;
-			});
-		aWander.name = "wander";
-		planner.Add(aWander);
+		//states.Add(followNoise);
+		//states.Add(chaseNoise);
 	}
 
 	// Update is called once per frame
@@ -770,6 +632,7 @@ public class PlanningNPC : MonoBehaviour {
 			CheckGrid();
 		}
 
+		actionName = "No Action";
 		//Plan();
 		states.Update();
 	}
