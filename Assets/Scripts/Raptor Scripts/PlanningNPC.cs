@@ -131,6 +131,15 @@ public class PlanningNPC : MonoBehaviour {
 		RagDoll(transform, false);
 	}
 
+	NavMeshHit nearestHit;
+	Vector3 NearestNavPoint(Vector3 pos) {
+		NavMesh.SamplePosition(pos, out nearestHit, 10, 0);
+		if(nearestHit.hit) {
+			pos = nearestHit.position;
+		}
+		return pos;
+	}
+
 	protected State stand, sleep, moveToTarget, useObject, activateAlarm, flee, inspect, wander, followNoise, chaseNoise;
 	public virtual void InitStates() {
 		states = new StateMachine();
@@ -188,6 +197,8 @@ public class PlanningNPC : MonoBehaviour {
 					RagDoll(transform, true);
 					GetComponent<CapsuleCollider>().enabled = false;
 					animator.enabled = false;
+
+					DropEverything();
 
 					gameObject.GetComponent<ShipGridItem>().interestLevel = 0.001f;
 
@@ -352,6 +363,7 @@ public class PlanningNPC : MonoBehaviour {
 			}
 		);
 
+		bool fleePosSet = false;
 		flee = new State(
 			delegate() {
 				return healthLow && enemySeen;
@@ -361,12 +373,27 @@ public class PlanningNPC : MonoBehaviour {
 
 				running = true;
 
-				targetPos = transform.position + (transform.position - player.transform.position);
-				agent.SetDestination(targetPos);
+				if(!fleePosSet) {
+					List<Vector3> positions = new List<Vector3>();
+					positions.Add(NearestNavPoint(transform.position + transform.forward * 10));
+					positions.Add(NearestNavPoint(transform.position - transform.forward * 10));
+					positions.Add(NearestNavPoint(transform.position + transform.right * 10));
+					positions.Add(NearestNavPoint(transform.position - transform.right * 10));
 
-				if(agent.pathStatus == NavMeshPathStatus.PathPartial || agent.remainingDistance < targetChangeTolerance) {
-					return true;
+					float maxDis = 0;
+					targetPos = positions[0];
+					foreach(Vector3 pos in positions) {
+						float dis = (player.transform.position - pos).magnitude;
+						if(dis > maxDis) {
+							targetPos = pos;
+							maxDis = dis;
+						}
+					}
+
+					fleePosSet = true;
 				}
+				
+				agent.SetDestination(targetPos);
 
 				// update the agents posiiton 
 				agent.transform.position = transform.position;
@@ -374,6 +401,11 @@ public class PlanningNPC : MonoBehaviour {
 
 				// use the values to move the character
 				Move(agent.desiredVelocity, targetPos);
+
+				if(agent.pathStatus == NavMeshPathStatus.PathPartial || agent.remainingDistance < targetChangeTolerance) {
+					fleePosSet = false;
+					return true;
+				}
 
 				return false;
 			}
@@ -444,7 +476,7 @@ public class PlanningNPC : MonoBehaviour {
 		Vector3 wanderPos = new Vector3();
 		wander = new State(
 			delegate() {
-				return !enemySeen && !enemyVisible && !tired;
+				return wanderTime > 0 && !enemySeen && !enemyVisible && !tired;
 			},
 			delegate() {
 				actionName = "Wander";
@@ -460,27 +492,11 @@ public class PlanningNPC : MonoBehaviour {
 				// use the values to move the character
 				Move(agent.desiredVelocity);
 
-				RaycastHit rayHit;
-				int mask = ~(1 << LayerMask.NameToLayer("Enemy"));
-				bool goingToHitSomthing = false;// Physics.Raycast(transform.position + new Vector3(0, 1, 0), transform.forward, out rayHit, 0.25f, mask);
-
 				NavMeshHit hit;
-				//agent.Raycast(transform.position + new Vector3(0, 1, 0) + agent.desiredVelocity.normalized, out hit);
-
-				if(goingToHitSomthing || wanderTimer >= wanderTime || agent.remainingDistance <= targetChangeTolerance) {// || agent.pathStatus == NavMeshPathStatus.PathPartial) {
+				if(wanderTimer >= wanderTime || agent.remainingDistance <= targetChangeTolerance) {// || agent.pathStatus == NavMeshPathStatus.PathPartial) {
 					actionName = "Rethinking Wander";
 
 					wanderPos = transform.position + transform.forward * 10;
-					/*if(goingToHitSomthing) {
-						print("Bouncing");
-						wanderPos = rayHit.point + rayHit.normal * 1;// Vector3.Reflect(transform.forward, hit.normal).normalized * 5;
-						wanderPos.y = transform.position.y;
-					}*/
-					//Vector3 randomDir = Random.insideUnitSphere * 10;
-					//NavMesh.SamplePosition(transform.position + randomDir, out hit, 10, 1);
-					//patrolPos = hit.position;// transform.position + transform.forward * 10;
-					//Vector3 dir = hit.hit ? (transform.position - hit.position).normalized : transform.forward;
-					//Debug.DrawRay(transform.position, dir);
 					NavMesh.SamplePosition(wanderPos, out hit, 10, 0);
 					if(hit.hit) {
 						wanderPos = hit.position;
@@ -795,7 +811,7 @@ public class PlanningNPC : MonoBehaviour {
 					}
 					else {
 						player.eatTarget = null;
-						DropEverything();
+						//DropEverything();
 						Destroy(gameObject);
 					}
 				}
