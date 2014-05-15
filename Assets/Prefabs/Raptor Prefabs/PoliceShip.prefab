@@ -376,15 +376,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseForce: 40
   turnRate: 180
-  detectionRange: 20
+  detectionRange: 50
   fireAngle: 5
   maxSpeed: 20
   maxSearchTime: 20
   bullet: {fileID: 100000, guid: e70b81815de3a2340873cd1bcd9e02e4, type: 2}
   bulletSpeed: 25
   reloadTime: 1
-  searchTimer: 5
   health: 100
+  searchTimer: 5
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
