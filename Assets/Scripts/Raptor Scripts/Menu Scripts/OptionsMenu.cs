@@ -14,7 +14,7 @@ public class OptionsMenu : MonoBehaviour {
 	public UIPopupList bloom;
 	public UIPopupList ssao;
 	public UIToggle aa;
-	public UIPopupList glow;
+	public UIPopupList overall;
 	public UIPopupList tiltShift;
 	public GameObject reflections;
 
@@ -66,8 +66,8 @@ public class OptionsMenu : MonoBehaviour {
 		//SSAO
 		GrapicsToggles.SSAOQuality = ssao.items.IndexOf(ssao.value) - 1;
 
-		//Glow
-		GrapicsToggles.GlowQuality = glow.items.IndexOf(glow.value) + 1;
+		//Overall
+		QualitySettings.SetQualityLevel(overall.items.IndexOf(overall.value));
 
 		//Tilt Shift
 		if(tiltShift.items.IndexOf(tiltShift.value) == 0) {

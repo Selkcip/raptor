@@ -10969,7 +10969,7 @@ MonoBehaviour:
   bloom: {fileID: 11400382}
   ssao: {fileID: 11400308}
   aa: {fileID: 11400358}
-  glow: {fileID: 11400348}
+  overall: {fileID: 0}
   tiltShift: {fileID: 11400236}
   reflections: {fileID: 100234}
   musicSlider: {fileID: 100130}

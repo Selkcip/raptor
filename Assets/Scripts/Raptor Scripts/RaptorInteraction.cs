@@ -338,7 +338,7 @@ public class RaptorInteraction : MonoBehaviour {
 				fpc.enabled = true;
 			}
 
-			if(Input.GetKeyUp(KeyCode.F)) {
+			if (RebindableInput.GetKeyDown("NightVision")){		//if(Input.GetKeyUp(KeyCode.F)) {
 				EdgeDetectEffectNormals edge = Camera.main.GetComponent<EdgeDetectEffectNormals>();
 				if(edge != null) {
 					edge.enabled = !edge.enabled;// heatRenderer.enabled;
