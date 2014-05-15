@@ -28,6 +28,7 @@ public class LevelSelector : MonoBehaviour {
 
     public Vector2 debrisRadius;
     public Vector2 debrisDepth; // min/max depth of debris
+    public float debrisSpin;
     public GameObject debrisObject;
 
     public bool isPlayerSpotted;
@@ -210,8 +211,9 @@ public class LevelSelector : MonoBehaviour {
             // place one near center if none yet
             Vector2 position = Random.insideUnitCircle.normalized * debrisRadius.x / 4;
             float z = Random.value * (debrisDepth.y - debrisDepth.x) + debrisDepth.x; // random depth
-
-            GameObject derb = (GameObject)Instantiate(debrisObject, new Vector3(position.x, position.y, z), Quaternion.identity);
+            
+            GameObject derb = (GameObject)Instantiate(debrisObject, new Vector3(position.x, position.y, z), Random.rotation);
+            derb.rigidbody.AddTorque(Random.insideUnitCircle * debrisSpin);
             debris.Add(derb);
         }
         ArrayList newDerbs = new ArrayList(debris);
@@ -242,7 +244,8 @@ public class LevelSelector : MonoBehaviour {
             if (add)
             {
                 float z = Random.value * (debrisDepth.y - debrisDepth.x) + debrisDepth.x; // random depth
-                GameObject newDerb = (GameObject)Instantiate(debrisObject, new Vector3(position.x, position.y, z), Quaternion.identity);
+                GameObject newDerb = (GameObject)Instantiate(debrisObject, new Vector3(position.x, position.y, z), Random.rotation);
+                newDerb.rigidbody.AddTorque(Random.insideUnitCircle * debrisSpin);
                 toBeAdded.Add(newDerb);
             }
         }
