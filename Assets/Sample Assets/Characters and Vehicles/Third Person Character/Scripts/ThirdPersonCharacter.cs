@@ -48,7 +48,7 @@ public class ThirdPersonCharacter : MonoBehaviour {
 	public bool moving = false;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		animator = GetComponentInChildren<Animator>();
 		capsule = collider as CapsuleCollider;
 
@@ -100,8 +100,9 @@ public class ThirdPersonCharacter : MonoBehaviour {
 		UpdateAnimator (); // send input and other state parameters to the animator
 
 		// reassign velocity, since it will have been modified by the above functions.
-		rigidbody.velocity = velocity;	
-
+		if(!rigidbody.isKinematic) {
+			rigidbody.velocity = velocity;
+		}
 
 	}
 

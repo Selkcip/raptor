@@ -15,7 +15,6 @@ GameObject:
   - 114: {fileID: 11400002}
   - 114: {fileID: 11400020}
   - 114: {fileID: 11400000}
-  - 114: {fileID: 11400026}
   - 114: {fileID: 11400036}
   - 114: {fileID: 11400022}
   - 95: {fileID: 9500002}
@@ -924,8 +923,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: -4.37113883e-08}
-  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 22.7112808, y: .970000029, z: -31.875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400058}
@@ -1729,7 +1728,7 @@ MonoBehaviour:
   raptorArms: {fileID: 0}
   pounceSpeed: 15
   verticalPounceComponent: .25
-  noiseLifeTime: .100000001
+  noiseLifeTime: .00999999978
   noiseFlowRate: .899999976
   walkNoiseLevel: 5
   walkNoiseFalloff: .5
@@ -1741,6 +1740,7 @@ MonoBehaviour:
   knockOutTime: 10
   bloodSpurt: {fileID: 19800000}
   health: 0
+  stamina: 1
   isMoving: 0
   isRunning: 0
   isSlashing: 0
@@ -1996,18 +1996,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd4e133dcd8c8a44f898f481c5db983c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &11400026
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77b6eaa0965d5de43be81636e383b8c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 0
 --- !u!114 &11400028
 MonoBehaviour:
   m_ObjectHideFlags: 1

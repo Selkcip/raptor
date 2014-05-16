@@ -1570,7 +1570,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100046}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 21.500948, y: 0, z: -24.4214287}
+  m_LocalPosition: {x: 23.005928, y: 0, z: -29.579134}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400000}
@@ -2983,11 +2983,13 @@ MonoBehaviour:
   targetChangeTolerance: 2
   walkSpeed: .5
   runSpeed: 1
+  maxStamina: 5
   viewDis: 20
   fov: 90
   noticeTime: .100000001
   health: 100
   fleeHealth: 100
+  fleeTime: 10
   standTime: 5
   lookTime: 1
   inspectTime: 1
@@ -3006,15 +3008,17 @@ MonoBehaviour:
   head: {fileID: 400026}
   money: 0
   sleepTime: 0
+  stamina: 1
   enemyVisibility: 1
   sleeping: 0
   knockedOut: 0
   dead: 0
+  tired: 0
   healthLow: 0
   hasTarget: 0
   atTarget: 0
   standing: 0
-  running: 1
+  running: 0
   carryingObject: 0
   hasUseTarget: 0
   usingObject: 0

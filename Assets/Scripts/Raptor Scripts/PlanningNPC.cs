@@ -17,6 +17,7 @@ public class PlanningNPC : MonoBehaviour {
 	public float noticeTime = 2;
 	public float health = 100f;
 	public float fleeHealth = 25f;
+	public float fleeTime = 10;
 	public float standTime = 5f;
 	public float lookTime = 1f;
 	public float inspectTime = 5f;
@@ -107,7 +108,6 @@ public class PlanningNPC : MonoBehaviour {
 
 	// Use this for initialization
 	public virtual void Start() {
-
 		// get the components on the object we need ( should not be null due to require component so no need to check )
 		character = GetComponent<ThirdPersonCharacter>();
 		animator = GetComponent<Animator>();
@@ -126,6 +126,8 @@ public class PlanningNPC : MonoBehaviour {
 
 		//Plan();
 
+		Move(Vector3.zero, head.position + head.forward*5);
+
 		InitStates();
 
 		RagDoll(transform, false);
@@ -140,7 +142,7 @@ public class PlanningNPC : MonoBehaviour {
 		return pos;
 	}
 
-	protected State stand, sleep, moveToTarget, useObject, activateAlarm, flee, inspect, wander, followNoise, chaseNoise;
+	protected State stand, sleep, moveToTarget, useObject, activateAlarm, flee, inspect, wander, followNoise;
 	public virtual void InitStates() {
 		states = new StateMachine();
 
@@ -156,21 +158,22 @@ public class PlanningNPC : MonoBehaviour {
 
 				lookTimer += Time.deltaTime;
 
-				Move(Vector3.zero, targetPos);
-
 				if(targetPos != lookPos) {
 					targetPos = Vector3.Lerp(targetPos, lookPos, lookTimer / lookTime);
 				}
 				else {
 					if(lookTimer >= lookTime) {
-						float lookDis = 0.25f;
+						float lookDis = 1f;
+						float yLookDis = 0.25f;
 						lookPos.x += Random.Range(-lookDis, lookDis);
-						lookPos.y += Random.Range(-lookDis, lookDis);
+						lookPos.y += Random.Range(-yLookDis, yLookDis);
 						lookPos.z += Random.Range(-lookDis, lookDis);
 
 						lookTimer = 0;
 					}
 				}
+
+				Move(Vector3.zero, targetPos);
 
 				standTimer += Time.deltaTime;
 				if(standTimer >= standTime) {
@@ -182,6 +185,11 @@ public class PlanningNPC : MonoBehaviour {
 				return false;
 			}
 		);
+		stand.Enter = delegate() {
+			lookPos = head.position + head.forward * 1;
+			targetPos = head.position + head.forward * 2;
+			return true;
+		};
 
 		sleep = new State(
 			delegate() {
@@ -280,6 +288,10 @@ public class PlanningNPC : MonoBehaviour {
 			delegate() {
 				actionName = "Use Object";
 
+				running = false;
+
+				Move(Vector3.zero, targetPos);
+
 				animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1.0f);
 
 				useTimer += Time.deltaTime;
@@ -314,10 +326,14 @@ public class PlanningNPC : MonoBehaviour {
 				return !hasUseTarget || !usingObject;
 			}
 		);
+		useObject.Exit = delegate() {
+			animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 0);
+			return true;
+		};
 
 		activateAlarm = new State(
 			delegate() {
-				return alertShip && !enemyVisible;
+				return alertShip && !alarmFound && !enemyVisible;
 			},
 			delegate() {
 				actionName = "Activate Alarm";
@@ -363,53 +379,58 @@ public class PlanningNPC : MonoBehaviour {
 			}
 		);
 
-		bool fleePosSet = false;
+		float fleeTimer = 0;
 		flee = new State(
 			delegate() {
-				return healthLow && enemySeen;
+				return healthLow && enemyVisible;
 			},
 			delegate() {
 				actionName = "Flee";
 
 				running = true;
 
-				if(!fleePosSet) {
-					List<Vector3> positions = new List<Vector3>();
-					positions.Add(NearestNavPoint(transform.position + transform.forward * 10));
-					positions.Add(NearestNavPoint(transform.position - transform.forward * 10));
-					positions.Add(NearestNavPoint(transform.position + transform.right * 10));
-					positions.Add(NearestNavPoint(transform.position - transform.right * 10));
+				target = null;
 
-					float maxDis = 0;
-					targetPos = positions[0];
-					foreach(Vector3 pos in positions) {
-						float dis = (player.transform.position - pos).magnitude;
-						if(dis > maxDis) {
-							targetPos = pos;
-							maxDis = dis;
-						}
-					}
+				fleeTimer += Time.deltaTime;
 
-					fleePosSet = true;
-				}
-				
 				agent.SetDestination(targetPos);
 
 				// update the agents posiiton 
 				agent.transform.position = transform.position;
-				//print(agent.desiredVelocity);
 
 				// use the values to move the character
 				Move(agent.desiredVelocity, targetPos);
 
 				if(agent.pathStatus == NavMeshPathStatus.PathPartial || agent.remainingDistance < targetChangeTolerance) {
-					fleePosSet = false;
-					return true;
+					flee.Enter();
 				}
 
-				return false;
+				return fleeTimer >= fleeTime;
 			}
 		);
+		flee.Enter = delegate() {
+			if(enemyVisible) {
+				fleeTimer = 0;
+			}
+
+			List<Vector3> positions = new List<Vector3>();
+			positions.Add(NearestNavPoint(transform.position + transform.forward * 10));
+			positions.Add(NearestNavPoint(transform.position - transform.forward * 10));
+			positions.Add(NearestNavPoint(transform.position + transform.right * 10));
+			positions.Add(NearestNavPoint(transform.position - transform.right * 10));
+
+			float maxDis = 0;
+			targetPos = positions[0];
+			foreach(Vector3 pos in positions) {
+				float dis = (player.transform.position - pos).magnitude;
+				if(dis > maxDis) {
+					targetPos = pos;
+					maxDis = dis;
+				}
+			}
+
+			return false;
+		};
 
 		float inspectTimer = 0;
 		inspect = new State(
@@ -435,8 +456,6 @@ public class PlanningNPC : MonoBehaviour {
 
 					lookTimer += Time.deltaTime;
 
-					Move(Vector3.zero, targetPos);
-
 					if(targetPos != lookPos) {
 						targetPos = Vector3.Lerp(targetPos, lookPos, lookTimer / lookTime);
 					}
@@ -445,9 +464,9 @@ public class PlanningNPC : MonoBehaviour {
 						if(lookTimer >= lookTime) {
 							float lookDis = 0.25f;
 							if(mostInteresting != null) {
-								lookPos.x = mostInteresting.transform.position.x + Random.Range(-lookDis, lookDis);
-								lookPos.y = mostInteresting.transform.position.y + Random.Range(-lookDis, lookDis);
-								lookPos.z = mostInteresting.transform.position.z + Random.Range(-lookDis, lookDis);
+								lookPos.x = mostInteresting.transform.position.x;// +Random.Range(-lookDis, lookDis);
+								lookPos.y = mostInteresting.transform.position.y;// +Random.Range(-lookDis, lookDis);
+								lookPos.z = mostInteresting.transform.position.z;// +Random.Range(-lookDis, lookDis);
 
 								if(mostInteresting.useTarget != null) {
 									useTarget = mostInteresting.useTarget;
@@ -460,6 +479,8 @@ public class PlanningNPC : MonoBehaviour {
 						}
 					}
 
+					Move(Vector3.zero, targetPos);
+
 					if(inspectTimer >= inspectTime) {
 						inspectTimer = 0;
 						mostInteresting = null;
@@ -471,6 +492,13 @@ public class PlanningNPC : MonoBehaviour {
 				return !bored;
 			}
 		);
+		inspect.Enter = delegate() {
+			if(mostInteresting != null) {
+				lookPos = mostInteresting.transform.position;
+			}
+			targetPos = head.position + head.forward * 2;
+			return true;
+		};
 
 		float wanderTimer = wanderTime;
 		Vector3 wanderPos = new Vector3();
@@ -509,85 +537,42 @@ public class PlanningNPC : MonoBehaviour {
 			}
 		);
 
-		bool initNoise = true;
 		followNoise = new State(
 			delegate() {
-				return followsNoise && curious && !alarmed && !enemyVisible;
+				return followsNoise && curious && !enemyVisible && (noisePos - transform.position).magnitude > targetChangeTolerance;
 			},
 			delegate() {
 				actionName = "Follow Noise";
 
-				running = false;
+				running = alarmed;
 
-				if(initNoise) {
-					noisePos = transform.position + noiseDir * 10;
-					initNoise = false;
-				}
-
-				agent.SetDestination(noisePos);
+				agent.SetDestination(NearestNavPoint(noisePos));
 
 				// update the agents posiiton 
 				agent.transform.position = transform.position;
 
-				NavMeshHit hit;
-				agent.Raycast(transform.position + transform.forward, out hit);
-
-
-				if(hit.hit || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
-					initNoise = true;
-					return true;
-				}
-
 				// use the values to move the character
 				Move(agent.desiredVelocity);
+
+				if(agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
+					return true;
+				}
 
 				return false;
 			}
 		);
-
-		chaseNoise = new State(
-			delegate() {
-				return followsNoise && curious && alarmed && !enemyVisible;
-			},
-			delegate() {
-				actionName = "Chase Noise";
-
-				running = true;
-
-				if(initNoise) {
-					noisePos = transform.position + noiseDir * 10;
-					initNoise = false;
-				}
-
-				agent.SetDestination(noisePos);
-
-				// update the agents posiiton 
-				agent.transform.position = transform.position;
-
-				NavMeshHit hit;
-				agent.Raycast(transform.position + transform.forward, out hit);
-
-
-				if(hit.hit || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
-					initNoise = true;
-					return true;
-				}
-
-				// use the values to move the character
-				Move(agent.desiredVelocity);
-
-				return false;
-			}
-		);
+		followNoise.Enter = delegate() {
+			//noisePos = transform.position + noiseDir * 10;
+			return true;
+		};
 
 		sleep.priority = 100;
 		flee.priority = 90;
 		useObject.priority = 80;
 		activateAlarm.priority = 70;
-		inspect.priority = 60;
-		chaseNoise.priority = 55;
+		moveToTarget.priority = 60;
 		followNoise.priority = 50;
-		moveToTarget.priority = 40;
+		inspect.priority = 40;
 		wander.priority = 10;
 
 		states.Add(stand);
@@ -596,14 +581,15 @@ public class PlanningNPC : MonoBehaviour {
 		states.Add(useObject);
 		states.Add(activateAlarm);
 		states.Add(flee);
-		//states.Add(inspect);
+		states.Add(inspect);
 		states.Add(wander);
-		//states.Add(followNoise);
-		//states.Add(chaseNoise);
+		states.Add(followNoise);
 	}
 
 	// Update is called once per frame
 	public virtual void Update() {
+		Debug.DrawRay(targetPos, Vector3.up);
+
 		bool justDied = false;
 		if(!dead && health <= 0) {
 			dead = true;
@@ -653,6 +639,13 @@ public class PlanningNPC : MonoBehaviour {
 		states.Update();
 	}
 
+	void OnCollisionEnter(Collision collision) {
+		if(collision.gameObject.tag == "Player") {
+			curFov = 360;
+			//noticeTimer = noticeTime;
+		}
+	}
+
 	protected void Move(Vector3 moveDir, Vector3 lookPos) {
 		character.Move(moveDir.normalized * speed, false, false, lookPos);
 	}
@@ -685,7 +678,7 @@ public class PlanningNPC : MonoBehaviour {
 								if(hit.collider.tag == "Player" || (hit.collider.transform.parent != null && hit.collider.transform.parent.tag == "Player")) {
 									enemyVisible = true;
 									noticeTimer += enemyVisibility * Mathf.Max(0, (1.0f - hit.distance / curViewDis)) * Time.deltaTime;
-									print("noticing");
+									//print("noticing");
 									if(noticeTimer >= noticeTime) {
 										enemySeen = true;
 										alertShip = true;
@@ -735,6 +728,7 @@ public class PlanningNPC : MonoBehaviour {
 			ShipGridFluid noise;
 			cell.fluids.TryGetValue("noise", out noise);
 			if(noise != null) {
+				float curNoiseLevel = noise.level;
 				noiseLevel = noise.level;
 				//noiseDir.Set(0, 0, 0);
 				/*foreach(ShipGridCell neigh in cell.neighbors) {
@@ -747,17 +741,28 @@ public class PlanningNPC : MonoBehaviour {
 					}
 				}*/
 				Vector3 diff = new Vector3();
-				foreach(ShipGridCell neigh in cell.neighbors) {
-					neigh.fluids.TryGetValue("noise", out noise);
-					if(noise != null) {
-						diff.x = neigh.x - cell.x;
-						diff.y = neigh.y - cell.y;
-						diff.z = neigh.z - cell.z;
-						noiseDir += (diff * (noise.level-noiseLevel)).normalized * Mathf.Abs(noise.level);
+				ShipGridCell cur = cell;
+				noisePos = ShipGrid.IndexToPosI(cur.x, cur.y, cur.z);
+				for(int i = 0; i < 5; i++) {
+					List<ShipGridCell> neighs = cur.neighbors;
+					foreach(ShipGridCell neigh in neighs) {
+						neigh.fluids.TryGetValue("noise", out noise);
+						if(noise != null) {
+							if(noise.level > curNoiseLevel) {
+								curNoiseLevel = noise.level;
+								cur = neigh;
+							}
+							/*diff.x = neigh.x - cell.x;
+							diff.y = neigh.y - cell.y;
+							diff.z = neigh.z - cell.z;
+							noiseDir += (diff * (noise.level - noiseLevel)).normalized * Mathf.Abs(noise.level);*/
+
+						}
 					}
 				}
-				noiseDir.Normalize();
-				Debug.DrawRay(transform.position, noiseDir, Color.blue);
+				noisePos = ShipGrid.IndexToPosI(cur.x, cur.y, cur.z);
+				//noiseDir.Normalize();
+				Debug.DrawLine(transform.position, noisePos, Color.blue);
 			}
 
 			ShipGridFluid cellLight;
