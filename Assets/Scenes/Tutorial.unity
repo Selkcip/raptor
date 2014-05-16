@@ -8575,7 +8575,7 @@ Transform:
   m_PrefabInternal: {fileID: 1244388885}
   m_GameObject: {fileID: 261621046}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 622.688599, y: 337, z: 0}
+  m_LocalPosition: {x: 463.000244, y: 337, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 139970306}
@@ -11506,7 +11506,7 @@ Transform:
   m_PrefabInternal: {fileID: 1244388885}
   m_GameObject: {fileID: 320558290}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.84414673, y: 338, z: -67.4436951}
+  m_LocalPosition: {x: 5, y: 338, z: -67.4436951}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 139970306}
@@ -28113,7 +28113,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: c6b0b620041a24441ad30793a57cec98, type: 2}
       propertyPath: isLocked
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c6b0b620041a24441ad30793a57cec98, type: 2}
@@ -34540,7 +34540,7 @@ MonoBehaviour:
   LeftDoor: {fileID: 435011600}
   RightDoor: {fileID: 159619544}
   isOpen: 0
-  isLocked: 0
+  isLocked: 1
 --- !u!1 &976966890
 GameObject:
   m_ObjectHideFlags: 0
@@ -38165,7 +38165,7 @@ Transform:
   m_PrefabInternal: {fileID: 1244388885}
   m_GameObject: {fileID: 1114389755}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.155853271, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: .982812583, y: 1, z: 1}
   m_Children:
   - {fileID: 1245595628}
@@ -42798,7 +42798,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400346, guid: 4768fd0552d8a47459230ef878c75178, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -522.000305
+      value: -362.000244
       objectReference: {fileID: 0}
     - target: {fileID: 400346, guid: 4768fd0552d8a47459230ef878c75178, type: 2}
       propertyPath: m_LocalPosition.y
@@ -42818,7 +42818,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400334, guid: 4768fd0552d8a47459230ef878c75178, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -567.000305
+      value: -407.000244
       objectReference: {fileID: 0}
     - target: {fileID: 400334, guid: 4768fd0552d8a47459230ef878c75178, type: 2}
       propertyPath: m_LocalPosition.y
@@ -42826,7 +42826,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400332, guid: 4768fd0552d8a47459230ef878c75178, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 4.84414673
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 400332, guid: 4768fd0552d8a47459230ef878c75178, type: 2}
       propertyPath: m_LocalPosition.y
@@ -42834,7 +42834,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400330, guid: 4768fd0552d8a47459230ef878c75178, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -.155853271
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400330, guid: 4768fd0552d8a47459230ef878c75178, type: 2}
       propertyPath: m_LocalPosition.y
@@ -42842,7 +42842,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400328, guid: 4768fd0552d8a47459230ef878c75178, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 622.688599
+      value: 463.000244
       objectReference: {fileID: 0}
     - target: {fileID: 400328, guid: 4768fd0552d8a47459230ef878c75178, type: 2}
       propertyPath: m_LocalPosition.y
@@ -43859,7 +43859,7 @@ MonoBehaviour:
   LeftDoor: {fileID: 743517852}
   RightDoor: {fileID: 685678925}
   isOpen: 0
-  isLocked: 0
+  isLocked: 1
 --- !u!1001 &1271874209
 Prefab:
   m_ObjectHideFlags: 0
@@ -48241,7 +48241,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: c6b0b620041a24441ad30793a57cec98, type: 2}
       propertyPath: isLocked
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: c6b0b620041a24441ad30793a57cec98, type: 2}
       propertyPath: keyCardsToUnlock
@@ -51841,7 +51841,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: c6b0b620041a24441ad30793a57cec98, type: 2}
       propertyPath: isLocked
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c6b0b620041a24441ad30793a57cec98, type: 2}
@@ -52560,7 +52560,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: c6b0b620041a24441ad30793a57cec98, type: 2}
       propertyPath: isLocked
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c6b0b620041a24441ad30793a57cec98, type: 2}
@@ -55155,7 +55155,7 @@ MonoBehaviour:
   LeftDoor: {fileID: 1512525140}
   RightDoor: {fileID: 1646504189}
   isOpen: 0
-  isLocked: 0
+  isLocked: 1
 --- !u!1 &1622670566
 GameObject:
   m_ObjectHideFlags: 0
@@ -60746,7 +60746,7 @@ Transform:
   m_PrefabInternal: {fileID: 1244388885}
   m_GameObject: {fileID: 1735807565}
   m_LocalRotation: {x: 0, y: 0, z: -8.74227766e-08, w: 1}
-  m_LocalPosition: {x: -567.000305, y: 312, z: 0}
+  m_LocalPosition: {x: -407.000244, y: 312, z: 0}
   m_LocalScale: {x: .766719043, y: .999924481, z: .999924481}
   m_Children:
   - {fileID: 576790344}
@@ -61326,7 +61326,7 @@ Transform:
   m_PrefabInternal: {fileID: 1244388885}
   m_GameObject: {fileID: 1747085484}
   m_LocalRotation: {x: 0, y: 0, z: -8.74227766e-08, w: 1}
-  m_LocalPosition: {x: -522.000305, y: 336, z: 0}
+  m_LocalPosition: {x: -362.000244, y: 336, z: 0}
   m_LocalScale: {x: .766719043, y: .999924481, z: .999924481}
   m_Children:
   - {fileID: 2006024724}
@@ -68436,7 +68436,7 @@ MonoBehaviour:
   LeftDoor: {fileID: 1934742028}
   RightDoor: {fileID: 737220301}
   isOpen: 0
-  isLocked: 0
+  isLocked: 1
 --- !u!1 &1955843669
 GameObject:
   m_ObjectHideFlags: 0
