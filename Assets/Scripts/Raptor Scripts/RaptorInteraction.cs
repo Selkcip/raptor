@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using Holoville.HOTween;
 
 public class Notoriety {
@@ -92,6 +93,10 @@ public class RaptorInteraction : MonoBehaviour {
 	private RaycastHit inRange;
 	private float range = 8.5f;
 
+	//Use Messages
+	 private Dictionary<string, int> useTable = new Dictionary<string, int>();
+	 private RaptorHUD hud;
+
 	//Slashing melee detection
 	private RaycastHit hit;
 	private float meleeRange = 1.0f;
@@ -138,6 +143,14 @@ public class RaptorInteraction : MonoBehaviour {
 		health = maxHealth;
 
 		//defaultRotation = raptorArms.localRotation;
+
+		//Use message stuff
+		useTable.Add("ship", 0);
+		useTable.Add("collectible", 1);
+		useTable.Add("terminal", 2);
+		useTable.Add("trap", 3);
+
+		hud = GameObject.Find("HUD").GetComponent<RaptorHUD>();
 	}
 
 	// Update is called once per frame
@@ -531,11 +544,19 @@ public class RaptorInteraction : MonoBehaviour {
 	bool InAttackRange() {
 		Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * range, Color.cyan);
 		Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * meleeRange, Color.red);
-		if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out inRange, range)) {
-			if(inRange.collider.tag == "enemy") {
+		if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out inRange, meleeRange)) {
+			//print(inRange.collider.tag + " : " + useTable.ContainsKey(inRange.collider.tag));
+			if(useTable.ContainsKey(inRange.collider.tag)) {
+				int value;
+				useTable.TryGetValue(inRange.collider.tag, out value);
+				hud.UsePromptUpdate(true, value, inRange.collider.gameObject);
+				return true;
+			}
+			else if (inRange.collider.tag == "enemy") {
 				return true;
 			}
 		}
+		hud.UsePromptUpdate(false, 0, null);
 		return false;
 	}
 
