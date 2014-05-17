@@ -20,6 +20,7 @@ public class PlanningNPC : MonoBehaviour {
 	public float fleeTime = 10;
 	public float standTime = 5f;
 	public float lookTime = 1f;
+	public Vector3 lookDis = new Vector3(1, 0.25f, 1);
 	public float inspectTime = 5f;
 	public float useTime = 5f;
 	public float wanderTime = 5f;
@@ -164,11 +165,9 @@ public class PlanningNPC : MonoBehaviour {
 				}
 				else {
 					if(lookTimer >= lookTime) {
-						float lookDis = 1f;
-						float yLookDis = 0.25f;
-						lookPos.x += Random.Range(-lookDis, lookDis);
-						lookPos.y += Random.Range(-yLookDis, yLookDis);
-						lookPos.z += Random.Range(-lookDis, lookDis);
+						lookPos.x += Random.Range(-lookDis.x, lookDis.x);
+						lookPos.y += Random.Range(-lookDis.y, lookDis.y);
+						lookPos.z += Random.Range(-lookDis.z, lookDis.z);
 
 						lookTimer = 0;
 					}
@@ -463,11 +462,10 @@ public class PlanningNPC : MonoBehaviour {
 					else {
 						inspectTimer += Time.deltaTime;
 						if(lookTimer >= lookTime) {
-							float lookDis = 0.25f;
 							if(mostInteresting != null) {
-								lookPos.x = mostInteresting.transform.position.x;// +Random.Range(-lookDis, lookDis);
-								lookPos.y = mostInteresting.transform.position.y;// +Random.Range(-lookDis, lookDis);
-								lookPos.z = mostInteresting.transform.position.z;// +Random.Range(-lookDis, lookDis);
+								lookPos.x = mostInteresting.transform.position.x +Random.Range(-lookDis.x, lookDis.x);
+								lookPos.y = mostInteresting.transform.position.y +Random.Range(-lookDis.y, lookDis.y);
+								lookPos.z = mostInteresting.transform.position.z +Random.Range(-lookDis.z, lookDis.z);
 
 								if(mostInteresting.useTarget != null) {
 									useTarget = mostInteresting.useTarget;
