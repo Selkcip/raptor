@@ -2719,6 +2719,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   painIndicator: {fileID: 2800000, guid: 039029b80919b75469427191d7a33680, type: 3}
+  shipMesh: {fileID: 1869901181}
   forwardForce: 5
   reverseForce: 5
   sideForce: 2
@@ -2825,7 +2826,7 @@ MonoBehaviour:
   spawnRadius: 120
   maxShips: 20
   policeShip: {fileID: 100000, guid: 8678207e8b4258a41a3537ec5d1ed997, type: 2}
-  policeSpawnProximity: 0
+  policeSpawnProximity: 15
   notorietyPerShip: 2000
   cargoShip: {fileID: 100000, guid: 4c444abae610f574ca1002d38bf4f218, type: 2}
   cargoSpawnDistance: {x: 30, y: 40}
@@ -2840,6 +2841,7 @@ MonoBehaviour:
   upgradeSpawned: 0
   debrisRadius: {x: 25, y: 100}
   debrisDepth: {x: 25, y: 40}
+  debrisSpin: 50
   debrisObject: {fileID: 100000, guid: d387d7ab0af08e54fa48bc238551db2a, type: 2}
   isPlayerSpotted: 0
   lastDetectedLocation: {x: 0, y: 0, z: 0}
@@ -10428,7 +10430,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3001
+  startingRenderQueue: 3000
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
@@ -11307,7 +11309,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3001
+  startingRenderQueue: 3002
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
@@ -14735,7 +14737,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3001
+  startingRenderQueue: 3002
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
@@ -19829,6 +19831,10 @@ Prefab:
       propertyPath: maxNearbyLanes
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
+      propertyPath: shipMesh
+      value: 
+      objectReference: {fileID: 1869901181}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
   m_RootGameObject: {fileID: 253428885}
@@ -20310,7 +20316,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3000
+  startingRenderQueue: 3002
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 0, w: 0}
@@ -22791,7 +22797,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: 4992090341ac6fa4fa830b5fc217e0f3, type: 2}
+  - {fileID: 2100000, guid: e6dd5cc2d5de0a54987a99707a029992, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -23373,7 +23379,7 @@ MonoBehaviour:
   bloom: {fileID: 229300822}
   ssao: {fileID: 1322831618}
   aa: {fileID: 403243565}
-  glow: {fileID: 392343381}
+  overall: {fileID: 0}
   tiltShift: {fileID: 870437488}
   reflections: {fileID: 1498656553}
   musicSlider: {fileID: 975382788}

@@ -16,6 +16,7 @@ public class UpgradeCount {
 public class PlayerShipController : MonoBehaviour {
 
 	public Texture2D painIndicator;
+	public MeshRenderer shipMesh;
 
     public float forwardForce, reverseForce, sideForce;
 	public float turnRate; // deg/s
@@ -67,7 +68,9 @@ public class PlayerShipController : MonoBehaviour {
 		if (!isDead)
 		{
 			//print(cloakTrans);
-			renderer.material.SetFloat("_CloakAmt", cloakTrans * 128);
+			if(shipMesh != null) {
+				shipMesh.material.SetFloat("_CloakAmt", cloakTrans * 128);
+			}
 			// rotate ship to point at current mouse position on screen
 			/*float distance = transform.position.z - Camera.main.transform.position.z;
 			Vector3 mouse = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance));

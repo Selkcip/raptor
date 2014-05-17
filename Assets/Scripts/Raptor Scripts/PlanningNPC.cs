@@ -508,6 +508,7 @@ public class PlanningNPC : MonoBehaviour {
 			delegate() {
 				actionName = "Wander";
 
+				usingObject = false;
 				running = false;
 				wanderTimer += Time.deltaTime;
 
