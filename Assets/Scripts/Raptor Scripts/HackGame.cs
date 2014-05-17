@@ -7,6 +7,8 @@ public class HackGame : MonoBehaviour {
 	public int tileCount = 8;
 	public float zOffset = 1;
 	public HackGameTile tile;
+	public UISlider progressBar;
+	public UILabel alarmLabel;
 	public List<Texture2D> textures = new List<Texture2D>();
 
 	public float mapAvailable = 1;
@@ -20,6 +22,8 @@ public class HackGame : MonoBehaviour {
 	List<List<HackGameTile>> tiles = new List<List<HackGameTile>>();
 	List<HackGameTile> movingTiles = new List<HackGameTile>();
 	bool madeMove = false;
+
+	float initAmount;
 
 	bool hacking = false;
 	bool hackable = true;
@@ -35,7 +39,9 @@ public class HackGame : MonoBehaviour {
 		offset.y += tileSize / 2;
 		offset.z = -zOffset;
 
-		mapPerLevel = maxTileValue / Mathf.Pow(2, 11);
+		mapPerLevel = maxTileValue / Mathf.Pow(11, 3);
+
+		initAmount = mapAvailable;
 
 		for(int x = 0; x < tileCount; x++) {
 			spaces.Add(new List<int>());
@@ -98,6 +104,46 @@ public class HackGame : MonoBehaviour {
 				newTile.pos = newTile.transform.localPosition;
 				newTile.transform.localScale = new Vector3(tileSize, tileSize, tileSize);
 				newTile.renderer.material.mainTexture = textures[newTile.value];
+
+				if(empties.Count <= 1) {
+					bool canMove = false;
+					for(int x = 0; x < tileCount; x++) {
+						for(int y = 0; y < tileCount; y++) {
+							HackGameTile curTile = tiles[x][y];
+							if(curTile == null) {
+								canMove = true;
+							}
+							else {
+								int nx = x + 1;
+								int ny = y;
+								if(nx >= 0 && nx <= tileCount - 1 && ny >= 0 && ny <= tileCount - 1) {
+									canMove = tiles[nx][ny].value == curTile.value ? true : canMove;
+								}
+								nx = x - 1;
+								ny = y;
+								if(nx >= 0 && nx <= tileCount - 1 && ny >= 0 && ny <= tileCount - 1) {
+									canMove = tiles[nx][ny].value == curTile.value ? true : canMove;
+								}
+								nx = x;
+								ny = y + 1;
+								if(nx >= 0 && nx <= tileCount - 1 && ny >= 0 && ny <= tileCount - 1) {
+									canMove = tiles[nx][ny].value == curTile.value ? true : canMove;
+								}
+								nx = x;
+								ny = y - 1;
+								if(nx >= 0 && nx <= tileCount - 1 && ny >= 0 && ny <= tileCount - 1) {
+									canMove = tiles[nx][ny].value == curTile.value ? true : canMove;
+								}
+							}
+						}
+					}
+
+					if(!canMove) {
+						print("no moves left");
+						Alarm.ActivateAlarms();
+						RaptorInteraction.notoriety += Notoriety.hack;
+					}
+				}
 			}
 		}
 		else {
@@ -239,6 +285,10 @@ public class HackGame : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		hackable = (Alarm.activated || mapAvailable <=0) ? false : hackable;
+
+		progressBar.value = mapAvailable / initAmount;
+		alarmLabel.enabled = !hackable;
 		/*for(int x = 0; x < tileCount; x++) {
 			for(int y = 0; y < tileCount; y++) {
 				if(tiles[x][y] != null) {
@@ -264,7 +314,9 @@ public class HackGame : MonoBehaviour {
 					if(cur.mergeTarget != null && cur.mergeTarget != cur) {
 						HackGameTile target = cur.mergeTarget;
 						target.Merge(cur);
-						RaptorInteraction.mapAmountAcquired += target.value * mapPerLevel;
+						float mapValue = Mathf.Min(mapAvailable, Mathf.Pow(target.value / 11f, 4) * initAmount);
+						mapAvailable -= mapValue;
+						RaptorInteraction.mapAmountAcquired += mapValue;
 						target.renderer.material.mainTexture = textures[target.value];
 					}
 				}

@@ -9,14 +9,13 @@ public class Guard : PlanningNPC {
 
 	public bool playerDead = false;
 	public bool nearEnemy = false;
-	public bool facingEnemy = false;
 	public bool canPunch = false;
 	public bool canShoot = false;
 
 	protected float punchTime = 0;
 	protected Vector3 patrolPos;
 
-	protected State chasePlayer, facePlayer, punchPlayer, shootPlayer;
+	protected State chasePlayer, punchPlayer, shootPlayer;
 	public override void InitStates() {
 		base.InitStates();
 
@@ -41,19 +40,6 @@ public class Guard : PlanningNPC {
 				Move(agent.desiredVelocity, enemyPos);
 
 				return false;
-			}
-		);
-
-		facePlayer = new State(
-			delegate() {
-				return enemyVisible && !facingEnemy;
-			},
-			delegate() {
-				actionName = "Face Player";
-
-				Move(Vector3.zero, enemyPos);
-
-				return facingEnemy;
 			}
 		);
 
@@ -106,7 +92,6 @@ public class Guard : PlanningNPC {
 		facePlayer.priority = 84;
 
 		states.Add(chasePlayer);
-		states.Add(facePlayer);
 		states.Add(punchPlayer);
 		states.Add(shootPlayer);
 	}
@@ -116,12 +101,12 @@ public class Guard : PlanningNPC {
 		//Set bools and stuff up here
 		playerDead = player.health <= 0;
 		canPunch = punchTime <= 0;
-		enemyPos = enemyVisible ? Camera.main.transform.position : enemyPos;
+		//enemyPos = enemyVisible ? Camera.main.transform.position : enemyPos;
 		nearEnemy = (enemyPos - transform.position).magnitude <= punchDistance;
-		Vector3 enemyDiff = enemyPos - transform.position;
-		enemyDiff.y *= 0;
-		Debug.DrawRay(transform.position + Vector3.up, enemyDiff);
-		facingEnemy = Vector3.Dot(enemyDiff.normalized, transform.forward) >= 0.9f;
+		//Vector3 enemyDiff = enemyPos - transform.position;
+		//enemyDiff.y *= 0;
+		//Debug.DrawRay(transform.position + Vector3.up, enemyDiff);
+		//facingEnemy = Vector3.Dot(enemyDiff.normalized, transform.forward) >= 0.9f;
 		canShoot = weapon != null && weapon.hasAmmo;
 
 		//This should be last in most cases

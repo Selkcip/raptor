@@ -72,6 +72,9 @@ public class StateMachine {
 
 			if(cur != null) {
 				if(cur.Update()) {
+					if(cur.Exit != null) {
+						cur.Exit();
+					}
 					cur = null;
 				}
 			}

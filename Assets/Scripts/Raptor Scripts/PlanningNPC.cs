@@ -56,6 +56,7 @@ public class PlanningNPC : MonoBehaviour {
 	public bool enemyVisible = false;
 	//public bool enemyNoticed = false;
 	public bool enemySeen = false;
+	public bool facingEnemy = false;
 	public bool alertShip = false;
 	public bool alarmFound = false;
 	public bool alarmActivated = false;
@@ -142,7 +143,7 @@ public class PlanningNPC : MonoBehaviour {
 		return pos;
 	}
 
-	protected State stand, sleep, moveToTarget, useObject, activateAlarm, flee, inspect, wander, followNoise;
+	protected State stand, sleep, moveToTarget, useObject, activateAlarm, flee, inspect, wander, followNoise, facePlayer;
 	public virtual void InitStates() {
 		states = new StateMachine();
 
@@ -327,7 +328,7 @@ public class PlanningNPC : MonoBehaviour {
 			}
 		);
 		useObject.Exit = delegate() {
-			animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 0);
+			usingObject = false;
 			return true;
 		};
 
@@ -382,7 +383,7 @@ public class PlanningNPC : MonoBehaviour {
 		float fleeTimer = 0;
 		flee = new State(
 			delegate() {
-				return healthLow && enemyVisible;
+				return healthLow && enemySeen && enemyVisible;
 			},
 			delegate() {
 				actionName = "Flee";
@@ -566,8 +567,22 @@ public class PlanningNPC : MonoBehaviour {
 			return true;
 		};
 
+		facePlayer = new State(
+			delegate() {
+				return enemyVisible && !facingEnemy;
+			},
+			delegate() {
+				actionName = "Face Player";
+
+				Move(Vector3.zero, enemyPos);
+
+				return facingEnemy;
+			}
+		);
+
 		sleep.priority = 100;
 		flee.priority = 90;
+		facePlayer.priority = 85;
 		useObject.priority = 80;
 		activateAlarm.priority = 70;
 		moveToTarget.priority = 60;
@@ -584,6 +599,7 @@ public class PlanningNPC : MonoBehaviour {
 		states.Add(inspect);
 		states.Add(wander);
 		states.Add(followNoise);
+		states.Add(facePlayer);
 	}
 
 	// Update is called once per frame
@@ -614,6 +630,12 @@ public class PlanningNPC : MonoBehaviour {
 		flashLightOn = hasFlashlight && weapon.flashLight.enabled == true;
 		needLight = lightLevel <= minLightLevel ? true : (lightLevel >= maxLightLevel ? false : needLight);
 
+		enemyPos = enemyVisible ? Camera.main.transform.position : enemyPos;
+		Vector3 enemyDiff = enemyPos - transform.position;
+		enemyDiff.y *= 0;
+		Debug.DrawRay(transform.position + Vector3.up, enemyDiff);
+		facingEnemy = Vector3.Dot(enemyDiff.normalized, transform.forward) >= 0.9f;
+
 		if(weapon != null && weapon.flashLight != null) {
 			weapon.flashLight.enabled = lightLevel <= minLightLevel ? true : (lightLevel >= maxLightLevel ? false : weapon.flashLight.enabled);
 		}
@@ -643,6 +665,7 @@ public class PlanningNPC : MonoBehaviour {
 		if(collision.gameObject.tag == "Player") {
 			curFov = 360;
 			//noticeTimer = noticeTime;
+			//target = collision.gameObject.transform;
 		}
 	}
 
