@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class RaptorHUD : MonoBehaviour {
 
@@ -12,9 +13,19 @@ public class RaptorHUD : MonoBehaviour {
 	public UILabel keycard;
 	public UILabel timer;
 
+	public UILabel usePrompt;
+
+	private List<string> useMessages = new List<string>();
+
 	// Use this for initialization
 	void Start () {
 		player = GameObject.Find("Player").GetComponent<RaptorInteraction>();
+
+		useMessages.Add("Press E to enter your ship");
+		useMessages.Add("Press E to pick up the item");
+		useMessages.Add("Press E to begin hacking");
+		useMessages.Add("Hold E to defuse the trap");
+		useMessages.Add("Press E to toggle the trap");
 	}
 	
 	// Update is called once per frame
@@ -57,6 +68,25 @@ public class RaptorHUD : MonoBehaviour {
 		if(defuse.value >= 1.0f) {
 			RaptorInteraction.defusing = false;
 			defuse.gameObject.SetActive(false);
+		}
+	}
+
+	public void UsePromptUpdate(bool enable, int index, GameObject hit) {
+		usePrompt.enabled = enable;
+		if(!enable) {
+			return;
+		}
+
+		if (hit.GetComponent<Mine>() != null){
+			if(!hit.GetComponent<Mine>().hacked) {
+				usePrompt.text = useMessages[3];
+			}
+			else {
+				usePrompt.text = useMessages[4];
+			}
+		}
+		else{
+			usePrompt.text = useMessages[index];
 		}
 	}
 }

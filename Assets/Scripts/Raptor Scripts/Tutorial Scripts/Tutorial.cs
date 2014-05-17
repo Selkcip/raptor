@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class Tutorial : MonoBehaviour {
 
 	public UILabel textBox;
+	private RaptorInteraction player;
 
 	//Room 1
 	List<string> movement = new List<string>();//0
@@ -30,6 +31,9 @@ public class Tutorial : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		player = GameObject.Find("Player").GetComponent<RaptorInteraction>();
+		player.health = 50;
+
 		//Room 1
 		movement.Add("This tutorial is based around the default controls. You can change the key bindings at any time by pausing the game and going into the options.");
 		movement.Add("Use WASD to move and the mouse to look around. ");
@@ -87,8 +91,7 @@ public class Tutorial : MonoBehaviour {
 		hacking.Add("Combining tiles will give you map data.");
 		hacking.Add("Press SPACE or E to stop hacking.");
 		hacking.Add("Try to combine as many tiles as you can. The meter indicates how much more data you can steal.");
-		hacking.Add("If you try to steal more data while the meter is full, you will activate the alarm.");
-		hacking.Add("When you are done hacking, return to your ship in the first room, and press E to complete the tutorial.  ");
+		hacking.Add("When you are done hacking, return to your ship in the first room, and press E to complete the tutorial.");
 		textLists.Add(hacking);
 
 		currentList = textLists[0];
