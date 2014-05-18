@@ -56,6 +56,8 @@ public class PlayerShipController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
+		Time.timeScale = 1;
+		Screen.lockCursor = false;
 		levelSelector = this.GetComponent<LevelSelector>();
 		health = maxHealth;
 		cloakCharge = 1;

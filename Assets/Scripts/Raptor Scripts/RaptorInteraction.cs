@@ -133,6 +133,8 @@ public class RaptorInteraction : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
+		Time.timeScale = 1;
+		LockMouse.lockMouse = true;
 		LevelSelector.coastIsClear = false;
 		ShipDoor.escaping = false;
 		fpc = gameObject.GetComponent<FirstPersonCharacter>();
@@ -150,7 +152,7 @@ public class RaptorInteraction : MonoBehaviour {
 		useTable.Add("terminal", 2);
 		useTable.Add("trap", 3);
 
-		hud = GameObject.Find("HUD").GetComponent<RaptorHUD>();
+		hud = GameObject.FindObjectOfType<RaptorHUD>();//.Find("HUD").GetComponent<RaptorHUD>();
 	}
 
 	// Update is called once per frame
@@ -556,7 +558,9 @@ public class RaptorInteraction : MonoBehaviour {
 				return true;
 			}
 		}
-		hud.UsePromptUpdate(false, 0, null);
+		if(hud != null) {
+			hud.UsePromptUpdate(false, 0, null);
+		}
 		return false;
 	}
 
