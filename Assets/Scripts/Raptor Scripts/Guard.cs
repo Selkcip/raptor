@@ -27,6 +27,7 @@ public class Guard : PlanningNPC {
 				actionName = "Chase Player";
 
 				running = true;
+				usingObject = false;
 
 				agent.SetDestination(enemyPos);
 				// update the agents posiiton 
@@ -68,6 +69,8 @@ public class Guard : PlanningNPC {
 			},
 			delegate() {
 				actionName = "Shoot Player";
+
+				usingObject = false;
 
 				Vector3 targetDir = (enemyPos - transform.position).normalized;
 
