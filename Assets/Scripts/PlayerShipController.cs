@@ -37,6 +37,8 @@ public class PlayerShipController : MonoBehaviour {
     public GameObject bullet;
     public float bulletSpeed, reloadTime;
 
+	public GameObject explosion;
+
 	public LevelSelector levelSelector;
 
 	public static float damage = 10;
@@ -188,6 +190,9 @@ public class PlayerShipController : MonoBehaviour {
 		print(health);
 
 		if(health <= 0) {
+			if(explosion != null) {
+				Instantiate(explosion, transform.position, Quaternion.identity);
+			}
 			gameObject.SetActive(false);
 		}
 

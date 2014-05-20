@@ -23,6 +23,9 @@ public class LevelSelector : MonoBehaviour {
 	public float deliveryShipSpawnDis = 10;
 	public Texture2D deliveryShipIndicator;
 
+	public GameObject explosion;
+	public GameObject cargoExplosion;
+
 	public List<CollectibleUpgrade> upgradPrefabs = new List<CollectibleUpgrade>();
 	public bool upgradeSpawned = false;
 
@@ -147,6 +150,7 @@ public class LevelSelector : MonoBehaviour {
             //print(ship.GetComponent<PoliceShip>().searchTimer);
 			// check health is less than 0
 			if (ship.GetComponent<PoliceShip>().health <= 0) {
+				if(explosion) Instantiate(explosion, ship.transform.position, Quaternion.identity);
 				toBeRemoved.Add(ship);
 				continue;
 			}
@@ -176,13 +180,17 @@ public class LevelSelector : MonoBehaviour {
         toBeRemoved.Clear();
         foreach (GameObject ship in cargoShips)
         {
-			if(Vector3.Distance(transform.position, ship.transform.position) > despawnRadius || ship.GetComponent<CargoShip>().health <= 0)
-                toBeRemoved.Add(ship);
-            else if (ship.GetComponent<CargoShip>().isPlayerSpotted())
-            {
-                isPlayerSpotted = true;
-                lastDetectedLocation = transform.position;
-            }
+			if(Vector3.Distance(transform.position, ship.transform.position) > despawnRadius) {
+				toBeRemoved.Add(ship);
+			}
+			else if(ship.GetComponent<CargoShip>().health <= 0) {
+				if(cargoExplosion) Instantiate(cargoExplosion, ship.transform.position, ship.transform.rotation);
+				toBeRemoved.Add(ship);
+			}
+			else if(ship.GetComponent<CargoShip>().isPlayerSpotted()) {
+				isPlayerSpotted = true;
+				lastDetectedLocation = transform.position;
+			}
         }
 
         foreach (GameObject ship in toBeRemoved)
