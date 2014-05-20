@@ -630,7 +630,9 @@ public class RaptorInteraction : MonoBehaviour {
 		indicator.dontDestroy = false;
 
 		//print(health);
-		SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
+		if(health > 0) {
+			SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
+		}
 	}
 
 	public void SellCollectibles() {
