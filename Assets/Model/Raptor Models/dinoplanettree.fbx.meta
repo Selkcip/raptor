@@ -1,0 +1,147 @@
+fileFormatVersion: 2
+guid: 6a67bbb57e6d6fa4fa79507a1bf6a1b9
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Cylinder_0
+    100002: //RootNode
+    100004: Plane_2
+    100006: Plane_3
+    100008: Plane_4
+    100010: Plane_5
+    100012: Plane_6
+    100014: Plane_7
+    100016: Plane_8
+    100018: Plane_9
+    100020: Cylinder
+    100022: Plane_000
+    100024: Plane_001
+    100026: Plane_002
+    100028: Plane_003
+    100030: Plane_004
+    100032: Plane_005
+    100034: Plane_006
+    400000: Cylinder_0
+    400002: //RootNode
+    400004: Plane_2
+    400006: Plane_3
+    400008: Plane_4
+    400010: Plane_5
+    400012: Plane_6
+    400014: Plane_7
+    400016: Plane_8
+    400018: Plane_9
+    400020: Cylinder
+    400022: Plane_000
+    400024: Plane_001
+    400026: Plane_002
+    400028: Plane_003
+    400030: Plane_004
+    400032: Plane_005
+    400034: Plane_006
+    2300000: Cylinder_0
+    2300002: Plane_2
+    2300004: Plane_3
+    2300006: Plane_4
+    2300008: Plane_5
+    2300010: Plane_6
+    2300012: Plane_7
+    2300014: Plane_8
+    2300016: Plane_9
+    2300018: Cylinder
+    2300020: Plane_000
+    2300022: Plane_001
+    2300024: Plane_002
+    2300026: Plane_003
+    2300028: Plane_004
+    2300030: Plane_005
+    2300032: Plane_006
+    3300000: Cylinder_0
+    3300002: Plane_2
+    3300004: Plane_3
+    3300006: Plane_4
+    3300008: Plane_5
+    3300010: Plane_6
+    3300012: Plane_7
+    3300014: Plane_8
+    3300016: Plane_9
+    3300018: Cylinder
+    3300020: Plane_000
+    3300022: Plane_001
+    3300024: Plane_002
+    3300026: Plane_003
+    3300028: Plane_004
+    3300030: Plane_005
+    3300032: Plane_006
+    4300000: Plane_9
+    4300002: Plane_8
+    4300004: Plane_7
+    4300006: Plane_6
+    4300008: Plane_5
+    4300010: Plane_4
+    4300012: Plane_3
+    4300014: Plane_2
+    4300016: Cylinder_0
+    4300018: Plane_006
+    4300020: Plane_005
+    4300022: Plane_004
+    4300024: Plane_002
+    4300026: Plane_001
+    4300028: Plane_000
+    4300030: Plane_003
+    4300032: Cylinder
+    7400000: Default Take
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

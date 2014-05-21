@@ -1,0 +1,132 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Dino Planet
+  m_Shader: {fileID: 4800000, guid: 3ad0c2f3204d7814d924acd61b4aafe8, type: 3}
+  m_ShaderKeywords:
+  - DIFFCUBE_OFF
+  - SPECCUBE_OFF
+  - LUX_AO_OFF
+  m_CustomRenderQueue: -1
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+      data:
+        first:
+          name: _MainTex
+        second:
+          m_Texture: {fileID: 2800000, guid: a23907299bc834442a8f346c547da94a, type: 3}
+          m_Scale: {x: 5, y: 5}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _BumpMap
+        second:
+          m_Texture: {fileID: 2800000, guid: e4f83646f9ab6414d96661d8f781283e, type: 3}
+          m_Scale: {x: 5, y: 5}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _ParallaxMap
+        second:
+          m_Texture: {fileID: 2800000, guid: 3d6bc9066c970f241a219d6a01721e70, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _SpecTex
+        second:
+          m_Texture: {fileID: 2800000, guid: dc6b1febeeec7364da145d90bb1827bf, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _DiffCubeIBL
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _SpecCubeIBL
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _AO
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _BRDFTex
+        second:
+          m_Texture: {fileID: 2800000, guid: 963f28e21f7ba1340ae2f8610506f1ac, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+    m_Floats:
+      data:
+        first:
+          name: _Cutoff
+        second: .5
+      data:
+        first:
+          name: _Shininess
+        second: .474808842
+      data:
+        first:
+          name: _Parallax
+        second: .0799999982
+      data:
+        first:
+          name: _PrimaryShift
+        second: .200000003
+      data:
+        first:
+          name: _Roughness1
+        second: .5
+      data:
+        first:
+          name: _SecondaryShift
+        second: .5
+      data:
+        first:
+          name: _Roughness2
+        second: .5
+      data:
+        first:
+          name: _RimStrength
+        second: .5
+      data:
+        first:
+          name: _CurvatureScale
+        second: .0199999996
+      data:
+        first:
+          name: _BumpBias
+        second: 1.5
+    m_Colors:
+      data:
+        first:
+          name: _Color
+        second: {r: 1, g: 1, b: 1, a: 1}
+      data:
+        first:
+          name: _SpecColor
+        second: {r: 1, g: .713235259, b: .713235259, a: 1}
+      data:
+        first:
+          name: _SpecularColor1
+        second: {r: .150000006, g: .150000006, b: .150000006, a: 1}
+      data:
+        first:
+          name: _SpecularColor2
+        second: {r: .150000006, g: .150000006, b: .150000006, a: 1}
