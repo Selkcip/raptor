@@ -76,7 +76,13 @@ public class BuyMenu : MonoBehaviour {
 		upgrades.Add(new Upgrade(2000, "Stealth", "Stealth Buy", "Stealth Upgrade", 6, 30, 10));
 		stats.Add("Stealth", (int)RaptorInteraction.stealthTime);
 
-		upgrades.Add(new Upgrade(999999, "Space Cowboy", "Space Cowboy Buy", "Space Cowboy Upgrade", 0, 1, 0));
+		upgrades.Add(new Upgrade(100000, "EMP", "EMP Buy", "Space EMP Upgrade", 0, 1, 0));
+		stats.Add("EMP", PlayerShipController.consumables.Count);
+
+		upgrades.Add(new Upgrade(100000, "Mine", "Mine Buy", "Space Mine Upgrade", 0, 1, 0));
+		stats.Add("Mine", PlayerShipController.consumables.Count);
+
+		upgrades.Add(new Upgrade(100000, "Space Cowboy", "Space Cowboy Buy", "Space Cowboy Upgrade", 0, 1, 0));
 		stats.Add("Space Cowboy", PlayerShipController.consumables.Count);
 
 		foreach(Upgrade upgrade in upgrades) {
