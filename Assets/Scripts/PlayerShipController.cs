@@ -69,6 +69,7 @@ public class PlayerShipController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update() {
+		LockMouse.lockMouse = false;
 		if (!isDead)
 		{
 			//print(cloakTrans);

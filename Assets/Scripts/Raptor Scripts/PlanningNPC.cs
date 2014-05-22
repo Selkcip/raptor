@@ -11,6 +11,7 @@ public class PlanningNPC : MonoBehaviour {
 
 	public float walkSpeed = 0.25f;
 	public float runSpeed = 1.0f;
+	public bool forceRun = false;
 	public float maxStamina = 5;
 	public float viewDis = 10f;
 	public float fov = 45f;
@@ -509,7 +510,7 @@ public class PlanningNPC : MonoBehaviour {
 				actionName = "Wander";
 
 				usingObject = false;
-				running = false;
+				running = false || forceRun;
 				wanderTimer += Time.deltaTime;
 
 				agent.SetDestination(wanderPos);
@@ -524,7 +525,7 @@ public class PlanningNPC : MonoBehaviour {
 				if(wanderTimer >= wanderTime || agent.remainingDistance <= targetChangeTolerance) {// || agent.pathStatus == NavMeshPathStatus.PathPartial) {
 					actionName = "Rethinking Wander";
 
-					wanderPos = transform.position + transform.forward * 10;
+					wanderPos = transform.position + (transform.forward+transform.right*Random.Range(-1f,1f)) * 10;
 					NavMesh.SamplePosition(wanderPos, out hit, 10, 0);
 					if(hit.hit) {
 						wanderPos = hit.position;
@@ -679,7 +680,7 @@ public class PlanningNPC : MonoBehaviour {
 	protected void LookForEnemy() {
 		enemyVisible = false;
 		if(!knockedOut) {
-			if(player.active && player != null && player.health > 0) {
+			if(player != null && player.active && player.health > 0) {
 				Transform enemyHead = Camera.main.transform;
 				if(enemyHead != null) {
 					enemyVisibility = 1;
@@ -970,7 +971,7 @@ public class PlanningNPC : MonoBehaviour {
 				continue;
 			}
 
-			child.tag = "enemy";
+			//child.tag = "enemy";
 			if(child.rigidbody != null) {
 				child.rigidbody.isKinematic = !on;
 
@@ -982,6 +983,7 @@ public class PlanningNPC : MonoBehaviour {
 
 			if(child.collider != null) {
 				child.collider.enabled = on;
+				child.tag = "enemy";
 			}
 			//RagDoll(child, on);
 		}

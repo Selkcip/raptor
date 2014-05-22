@@ -19,7 +19,7 @@ public class RaptorHUD : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		player = GameObject.Find("Player").GetComponent<RaptorInteraction>();
+		player = GameObject.FindObjectOfType<RaptorInteraction>();
 
 		useMessages.Add("Press E to enter your ship");
 		useMessages.Add("Press E to pick up the item");
@@ -30,8 +30,10 @@ public class RaptorHUD : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		health.value = player.health / RaptorInteraction.maxHealth;
-		stamina.value = player.stamina;
+		if(player != null) {
+			health.value = player.health / RaptorInteraction.maxHealth;
+			stamina.value = player.stamina;
+		}
 
 		keycard.text = "Key Cards: " + RaptorInteraction.keyCount;
 

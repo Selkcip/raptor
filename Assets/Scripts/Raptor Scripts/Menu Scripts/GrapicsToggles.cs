@@ -65,68 +65,70 @@ public class GrapicsToggles : MonoBehaviour {
 	}
 
 	void Update() {
-		ScreenSpaceReflections ssr = Camera.main.GetComponent<ScreenSpaceReflections>();
-		if(ssr != null) {
-			if(_SSRQuality < 1) {
-				ssr.enabled = false;
+		if(Camera.main != null) {
+			ScreenSpaceReflections ssr = Camera.main.GetComponent<ScreenSpaceReflections>();
+			if(ssr != null) {
+				if(_SSRQuality < 1) {
+					ssr.enabled = false;
+				}
+				else {
+					ssr.enabled = true;
+					ssr.m_Downsampling = _SSRQuality;
+				}
 			}
-			else {
-				ssr.enabled = true;
-				ssr.m_Downsampling = _SSRQuality;
-			}
-		}
 
-		TiltShiftHdr tilt = Camera.main.GetComponent<TiltShiftHdr>();
-		if(tilt != null) {
-			if(_TiltShiftQuality < 0) {
-				tilt.enabled = false;
+			TiltShiftHdr tilt = Camera.main.GetComponent<TiltShiftHdr>();
+			if(tilt != null) {
+				if(_TiltShiftQuality < 0) {
+					tilt.enabled = false;
+				}
+				else {
+					tilt.enabled = true;
+					tilt.quality = (TiltShiftHdr.TiltShiftQuality)_TiltShiftQuality;
+				}
 			}
-			else {
-				tilt.enabled = true;
-				tilt.quality = (TiltShiftHdr.TiltShiftQuality)_TiltShiftQuality;
-			}
-		}
 
-		Glow11.Glow11 glow = Camera.main.GetComponent<Glow11.Glow11>();
-		if(glow != null) {
-			if(_GlowQuality < 1) {
-				glow.enabled = false;
+			Glow11.Glow11 glow = Camera.main.GetComponent<Glow11.Glow11>();
+			if(glow != null) {
+				if(_GlowQuality < 1) {
+					glow.enabled = false;
+				}
+				else {
+					glow.enabled = true;
+					glow.rerenderResolution = (Glow11.Resolution)_GlowQuality;
+				}
 			}
-			else {
-				glow.enabled = true;
-				glow.rerenderResolution = (Glow11.Resolution)_GlowQuality;
-			}
-		}
 
-		AntialiasingAsPostEffect aa = Camera.main.GetComponent<AntialiasingAsPostEffect>();
-		if(aa != null) {
-			if(_AAQuality < 0) {
-				aa.enabled = false;
+			AntialiasingAsPostEffect aa = Camera.main.GetComponent<AntialiasingAsPostEffect>();
+			if(aa != null) {
+				if(_AAQuality < 0) {
+					aa.enabled = false;
+				}
+				else {
+					aa.enabled = true;
+				}
 			}
-			else {
-				aa.enabled = true;
-			}
-		}
 
-		SSAOEffect ssao = Camera.main.GetComponent<SSAOEffect>();
-		if(ssao != null) {
-			if(_SSAOQuality < 0) {
-				ssao.enabled = false;
+			SSAOEffect ssao = Camera.main.GetComponent<SSAOEffect>();
+			if(ssao != null) {
+				if(_SSAOQuality < 0) {
+					ssao.enabled = false;
+				}
+				else {
+					ssao.enabled = true;
+					ssao.m_SampleCount = (SSAOEffect.SSAOSamples)_SSAOQuality;
+				}
 			}
-			else {
-				ssao.enabled = true;
-				ssao.m_SampleCount = (SSAOEffect.SSAOSamples)_SSAOQuality;
-			}
-		}
 
-		Bloom bloom = Camera.main.GetComponent<Bloom>();
-		if(bloom != null) {
-			if(_BloomQuality < 0) {
-				bloom.enabled = false;
-			}
-			else {
-				bloom.enabled = true;
-				bloom.quality = (Bloom.BloomQuality)_BloomQuality;
+			Bloom bloom = Camera.main.GetComponent<Bloom>();
+			if(bloom != null) {
+				if(_BloomQuality < 0) {
+					bloom.enabled = false;
+				}
+				else {
+					bloom.enabled = true;
+					bloom.quality = (Bloom.BloomQuality)_BloomQuality;
+				}
 			}
 		}
 	}

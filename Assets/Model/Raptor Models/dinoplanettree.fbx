@@ -386,45 +386,7 @@ Objects:  {
 			Version: 100
 			LayerElement:  {
 				Type: "LayerElementNormal"
-				TypedIndex: 0
-			}
-			LayerElement:  {
-				Type: "LayerElementSmoothing"
-				TypedIndex: 0
-			}
-			LayerElement:  {
-				Type: "LayerElementMaterial"
-				TypedIndex: 0
-			}
-		}
-	}
-	Model: "Model::Plane_004", "Mesh" {
-		Version: 232
-		Properties60:  {
-			Property: "QuaternionInterpolate", "bool", "",0
-			Property: "Visibility", "Visibility", "A+",1
-			Property: "Lcl Translation", "Lcl Translation", "A+",0.742936789989471,5.228676319122314,-0.184973016381264
-			Property: "Lcl Rotation", "Lcl Rotation", "A+",-96.495143574806463,-26.475157062650585,-25.926368438313773
-			Property: "Lcl Scaling", "Lcl Scaling", "A+",0.999999880790710,1.000000000000000,1.000000000000000
-			Property: "RotationOffset", "Vector3D", "",0,0,0
-			Property: "RotationPivot", "Vector3D", "",0,0,0
-			Property: "ScalingOffset", "Vector3D", "",0,0,0
-			Property: "ScalingPivot", "Vector3D", "",0,0,0
-			Property: "TranslationActive", "bool", "",0
-			Property: "TranslationMin", "Vector3D", "",0,0,0
-			Property: "TranslationMax", "Vector3D", "",0,0,0
-			Property: "TranslationMinX", "bool", "",0
-			Property: "TranslationMinY", "bool", "",0
-			Property: "TranslationMinZ", "bool", "",0
-			Property: "TranslationMaxX", "bool", "",0
-			Property: "TranslationMaxY", "bool", "",0
-			Property: "TranslationMaxZ", "bool", "",0
-			Property: "RotationOrder", "enum", "",0
-			Property: "RotationSpaceForLimitOnly", "bool", "",0
-			Property: "AxisLen", "double", "",10
-			Property: "PreRotation", "Vector3D", "",0,0,0
-			Property: "PostRotation", "Vector3D", "",0,0,0
-			Property: "RotationActive", "bool", "",0
+
 			Property: "RotationMin", "Vector3D", "",0,0,0
 			Property: "RotationMax", "Vector3D", "",0,0,0
 			Property: "RotationMinX", "bool", "",0
@@ -463,6 +425,45 @@ Objects:  {
 			Property: "ScalingMaxZ", "bool", "",0
 			Property: "GeometricTranslation", "Vector3D", "",0,0,0
 			Property: "GeometricRotation", "Vector3D", "",0,0,0
+			Property: "GeometricScaling", "Vector3D", "",1,1,1
+			Property: "LookAtProperty", "object", ""
+			Property: "UpVectorProperty", "object", ""
+			Property: "Show", "bool", "",1
+			Property: "NegativePercentShapeSupport", "bool", "",1
+			Property: "DefaultAttributeIndex", "int", "",0
+			Property: "Color", "Color", "A",0.8,0.8,0.8
+			Property: "Size", "double", "",100
+			Property: "Look", "enum", "",1
+			Property: "LightType", "enum", "",0
+			Property: "CastLightOnObject", "bool", "",1
+			Property: "DrawVolumetricLight", "bool", "",1
+			Property: "DrawGroundProjection", "bool", "",1
+			Property: "DrawFrontFacingVolumetricLight", "bool", "",0
+			Property: "GoboProperty", "object", ""
+			Property: "Color", "Color", "A+",1,1,1
+			Property: "Fog", "Fog", "A+",50
+			Property: "Color", "Color", "A",1.00,1.00,1.00
+			Property: "Intensity", "Intensity", "A+",100.00
+			Property: "Fog", "Fog", "A+",50
+			Property: "LightType", "enum", "",0
+			Property: "CastLightOnObject", "bool", "",1
+			Property: "DrawGroundProjection", "bool", "",1
+			Property: "DrawFrontFacingVolumetricLight", "bool", "",0
+			Property: "DrawVolumetricLight", "bool", "",1
+			Property: "GoboProperty", "object", ""
+			Property: "DecayType", "enum", "",2
+			Property: "EnableFarAttenuation", "bool", "",1
+			Property: "FarAttenuationEnd", "double", "",50.00
+			Property: "CastShadows", "bool", "",0
+			Property: "ShadowColor", "ColorRGBA", "",0,0,0,1
+		}
+		MultiLayer: 0
+		MultiTake: 0
+		Shading: Y
+		Culling: "CullingOff"
+		TypeFlags: "Light"
+		GeometryVersion: 124
+	}etricRotation", "Vector3D", "",0,0,0
 			Property: "GeometricScaling", "Vector3D", "",1,1,1
 			Property: "LookAtProperty", "object", ""
 			Property: "UpVectorProperty", "object", ""

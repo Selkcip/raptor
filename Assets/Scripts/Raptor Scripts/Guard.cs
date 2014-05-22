@@ -102,7 +102,9 @@ public class Guard : PlanningNPC {
 	// Update is called once per frame
 	public override void Update () {
 		//Set bools and stuff up here
-		playerDead = player.health <= 0;
+		if(player != null) {
+			playerDead = player.health <= 0;
+		}
 		canPunch = punchTime <= 0;
 		//enemyPos = enemyVisible ? Camera.main.transform.position : enemyPos;
 		nearEnemy = (enemyPos - transform.position).magnitude <= punchDistance;
