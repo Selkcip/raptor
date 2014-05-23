@@ -30334,7 +30334,7 @@ MonoBehaviour:
   useTarget: {fileID: 0}
   droppable: 1
   keyCard: 0
-  value: 100000
+  value: 100
 --- !u!54 &853309904
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -54478,6 +54478,10 @@ Prefab:
     - target: {fileID: 100000, guid: ab39ec3e437f71848a12607490f4eeac, type: 2}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400002, guid: ab39ec3e437f71848a12607490f4eeac, type: 2}
+      propertyPath: value
+      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ab39ec3e437f71848a12607490f4eeac, type: 2}
