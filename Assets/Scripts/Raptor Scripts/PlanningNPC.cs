@@ -967,7 +967,7 @@ public class PlanningNPC : MonoBehaviour {
 	protected void RagDoll(Transform obj, bool on) {
 		Transform[] children = transform.GetAllComponentsInChildren<Transform>();
 		foreach(Transform child in children) {
-			if(child.name == "Gun") {
+			if(child.tag == "Collectible" || child.name == "Gun") {
 				continue;
 			}
 
