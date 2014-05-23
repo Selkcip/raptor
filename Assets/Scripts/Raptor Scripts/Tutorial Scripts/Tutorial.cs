@@ -33,6 +33,7 @@ public class Tutorial : MonoBehaviour {
 	void Start () {
 		player = GameObject.Find("Player").GetComponent<RaptorInteraction>();
 		player.health = 50;
+		Timer.sTime = 3600;
 
 		//Room 1
 		movement.Add("This tutorial is based around the default controls. You can change the key bindings at any time by pausing the game and going into the options.");
@@ -91,7 +92,7 @@ public class Tutorial : MonoBehaviour {
 		hacking.Add("Combining tiles will give you map data.");
 		hacking.Add("Press SPACE or E to stop hacking.");
 		hacking.Add("Try to combine as many tiles as you can. The meter indicates how much more data you can steal.");
-		hacking.Add("When you are done hacking, return to your ship in the first room, and press E to complete the tutorial.");
+		hacking.Add("When you are done hacking, return to your ship in the first room, and press E to complete this part of the tutorial.");
 		textLists.Add(hacking);
 
 		currentList = textLists[0];
@@ -100,11 +101,15 @@ public class Tutorial : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetKeyDown(KeyCode.Return)) {
+		if(Input.GetKeyDown(KeyCode.Return) && index < currentList.Count - 1) {
 			index++;
-			if(index > currentList.Count - 1) {
+			/*if(index > currentList.Count - 1) {
 				index = 0;
-			}
+			}*/
+			textBox.text = currentList[index];
+		}
+		else if(Input.GetKeyDown(KeyCode.Backspace) && index > 0) {
+			index--;
 			textBox.text = currentList[index];
 		}
 	}
