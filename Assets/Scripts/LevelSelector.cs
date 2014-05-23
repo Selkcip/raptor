@@ -4,6 +4,7 @@ using System.Collections.Generic;
 // attach this to the player's ship object
 
 public class LevelSelector : MonoBehaviour {
+	public string targetScene;
 
 	public float despawnRadius;
 	public float spawnRadius;
@@ -295,14 +296,20 @@ public class LevelSelector : MonoBehaviour {
             if (spawnBack) { 
                 GameObject newShip = (GameObject)Instantiate(cargoShip, spawnOriginBack, Quaternion.FromToRotation(Vector2.up, lane.direction));
                 newShip.rigidbody2D.velocity = (Vector2)newShip.transform.up * (lane.initialSpeed.x + Random.value * (lane.initialSpeed.y - lane.initialSpeed.x));
-                cargoShips.Add(newShip);
+
+				newShip.GetComponentInChildren<DockTrigger>().targetScene = targetScene;
+				
+				cargoShips.Add(newShip);
                 lane.CalculateNextSpawnDistance();
             }
             else if (spawnFront)
             {
                 GameObject newShip = (GameObject)Instantiate(cargoShip, spawnOriginFront, Quaternion.FromToRotation(Vector2.up, lane.direction));
                 newShip.rigidbody2D.velocity = (Vector2)newShip.transform.up * (lane.initialSpeed.x + Random.value * (lane.initialSpeed.y - lane.initialSpeed.x));
-                cargoShips.Add(newShip);
+
+				newShip.GetComponentInChildren<DockTrigger>().targetScene = targetScene;
+
+				cargoShips.Add(newShip);
                 lane.CalculateNextSpawnDistance();
             }
         }

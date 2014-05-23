@@ -91,7 +91,7 @@ public class Tutorial : MonoBehaviour {
 		hacking.Add("Combining tiles will give you map data.");
 		hacking.Add("Press SPACE or E to stop hacking.");
 		hacking.Add("Try to combine as many tiles as you can. The meter indicates how much more data you can steal.");
-		hacking.Add("When you are done hacking, return to your ship in the first room, and press E to complete the tutorial.");
+		hacking.Add("When you are done hacking, return to your ship in the first room, and press E to complete this part of the tutorial.");
 		textLists.Add(hacking);
 
 		currentList = textLists[0];

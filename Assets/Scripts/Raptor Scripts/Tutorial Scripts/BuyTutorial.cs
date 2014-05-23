@@ -23,9 +23,6 @@ public class BuyTutorial : MonoBehaviour {
 
 		currentList = movement;
 		textBox.text = currentList[0];
-
-		GameObject.Find("Mine").SetActive(false);
-		GameObject.Find("Space Cowboy").SetActive(false);
 	}
 
 	// Update is called once per frame
