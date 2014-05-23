@@ -66,7 +66,7 @@ public class PlayerShipController : MonoBehaviour {
 	void Update() {
 		if (!isDead)
 		{
-			//print(cloakTrans);
+			print(cloakTrans);
 			renderer.material.SetFloat("_CloakAmt", cloakTrans * 128);
 			// rotate ship to point at current mouse position on screen
 			/*float distance = transform.position.z - Camera.main.transform.position.z;
@@ -175,6 +175,8 @@ public class PlayerShipController : MonoBehaviour {
 			shot.layer = LayerMask.NameToLayer("Player");
 			shot.rigidbody2D.velocity = rigidbody2D.velocity + (Vector2)(transform.up * bulletSpeed);
 			reload = reloadTime;
+			if (isCloaked)
+				cloakCharge = 0;
 		}
 	}
 
@@ -192,5 +194,11 @@ public class PlayerShipController : MonoBehaviour {
 
 		//print(health);
 		//SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
+	}
+
+	void OnCollision2D(Collision2D col)
+	{
+		if (col.gameObject.tag == "enemy" && isCloaked)
+			cloakCharge = 0;
 	}
 }
