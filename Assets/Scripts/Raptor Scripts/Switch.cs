@@ -15,9 +15,12 @@ public class Switch : Triggerable {
 	bool inUse = false;
 	bool doneUsing = true;
 
+	ShipGridItem gridItem;
+
 	// Use this for initialization
 	void Start () {
 		switches.Add(this);
+		gridItem = GetComponent<ShipGridItem>();
 	}
 	
 	// Update is called once per frame
@@ -37,6 +40,15 @@ public class Switch : Triggerable {
 			}
 			lever.localEulerAngles = rotation;
 		}
+
+		if(gridItem) {
+			if(isTriggered) {
+				gridItem.interestLevel = 0;
+			}
+			else {
+				gridItem.interestLevel = Mathf.Infinity;
+			}
+		}
 	}
 
 	public void Use(GameObject user) {
@@ -45,7 +57,7 @@ public class Switch : Triggerable {
 		if(doneUsing) {
 			doneUsing = false;
 			isTriggered = !isTriggered;
-			print("toggling: " + isTriggered);
+			//print("toggling: " + isTriggered);
 
 			foreach(Switch lSwitch in switches) {
 				if(lSwitch.room == room) {
