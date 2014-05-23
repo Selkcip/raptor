@@ -99,7 +99,7 @@ public class RaptorInteraction : MonoBehaviour {
 
 	//Slashing melee detection
 	private RaycastHit hit;
-	private float meleeRange = 1.0f;
+	private float meleeRange = 1.5f;
 
 	//Collection data
 	public static float _mapAmountAcquired = 0;
@@ -148,7 +148,8 @@ public class RaptorInteraction : MonoBehaviour {
 		useTable.Add("ship", 0);
 		useTable.Add("collectible", 1);
 		useTable.Add("terminal", 2);
-		useTable.Add("trap", 3);
+		useTable.Add("lightswitch", 3);
+		useTable.Add("trap", 4);
 
 		hud = GameObject.Find("HUD").GetComponent<RaptorHUD>();
 	}

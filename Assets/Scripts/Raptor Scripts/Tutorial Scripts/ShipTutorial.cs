@@ -19,15 +19,15 @@ public class ShipTutorial : MonoBehaviour {
 		movement.Add("If you escape a level while the ship is alerted, you will also have to escape police ships in this mode.");
 		movement.Add("You can try to fight them off or you run away.");
 		movement.Add("Press SPACEBAR to shoot your basic weapon.");
-		movement.Add("Press E will fire your current consumable weapon.");
-		movement.Add("Press R will cycle through your consumable weapons.");
+		movement.Add("Press E to fire your current consumable weapon.");
+		movement.Add("Press R to cycle through your consumable weapons.");
 		movement.Add("While combat is an option, destroying police ships will raise your notoriety.");
 		movement.Add("You can use EMP Grenades or just run away in order to avoid raising your notoriety.");
 		movement.Add("Once the police have stopped searching for you, you can save the game by pressing ESCAPE and pressing the Save button. (Saving is disabled for the tutorial)");
 		movement.Add("To spend money, click on the SHOP button in the lower right corner.");
 		movement.Add("Use A and D to rotate your ship.");
 		movement.Add("Use W to move forward and S to move backward.");
-		movement.Add("Use Q to activate your cloak. ");
+		movement.Add("Use Q to activate your cloak.");
 		movement.Add("If you approach a ship while uncloaked, they will shoot you. Cloaking allows you to get near ships safely. ");
 		movement.Add("To board a ship, you must cloak and collide with the back of the ship. ");
 		movement.Add("Find and board a ship to complete the tutorial and return to the Main Menu.");

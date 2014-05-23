@@ -75,7 +75,7 @@ public class Tutorial : MonoBehaviour {
 		traps.Add("For tutorial purposes, this is a dummy mine, but mines are one type of trap that can spawn if your notoriety is high.");
 		traps.Add("Approach it and hold E to defuse it.");
 		traps.Add("You can choose to keep it active (blue) so it will hurt enemies who walk over it or just turn it off (black) by pressing E once it is defused.");
-		traps.Add("Other traps include tripwires, cameras and sentry guns, so be sure to look out for them if you are very notorious. ");
+		traps.Add("There are also trip wires and security cameras, so be sure to look out for them if you are very notorious. ");
 		textLists.Add(traps);
 
 		collectibles.Add("There is now a collectible on the floor.");

@@ -21,10 +21,11 @@ public class RaptorHUD : MonoBehaviour {
 	void Start () {
 		player = GameObject.Find("Player").GetComponent<RaptorInteraction>();
 
-		useMessages.Add("Press E to enter your ship");
-		useMessages.Add("Press E to pick up the item");
-		useMessages.Add("Press E to begin hacking");
-		useMessages.Add("Hold E to defuse the trap");
+		useMessages.Add("Press E to enter your ship");//0
+		useMessages.Add("Press E to pick up the item");//1
+		useMessages.Add("Press E to begin hacking");//2
+		useMessages.Add("Press E to use the light switch");//3
+		useMessages.Add("Hold E to defuse the trap");//4
 		useMessages.Add("Press E to toggle the trap");
 	}
 	
@@ -79,10 +80,10 @@ public class RaptorHUD : MonoBehaviour {
 
 		if (hit.GetComponent<Mine>() != null){
 			if(!hit.GetComponent<Mine>().hacked) {
-				usePrompt.text = useMessages[3];
+				usePrompt.text = useMessages[index];
 			}
 			else {
-				usePrompt.text = useMessages[4];
+				usePrompt.text = useMessages[index+1];
 			}
 		}
 		else{
