@@ -33,6 +33,7 @@ public class Tutorial : MonoBehaviour {
 	void Start () {
 		player = GameObject.Find("Player").GetComponent<RaptorInteraction>();
 		player.health = 50;
+		Timer.sTime = 3600;
 
 		//Room 1
 		movement.Add("This tutorial is based around the default controls. You can change the key bindings at any time by pausing the game and going into the options.");

@@ -27685,6 +27685,10 @@ Prefab:
       propertyPath: isLocked
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: c6b0b620041a24441ad30793a57cec98, type: 2}
+      propertyPath: guardsCanUnlock
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c6b0b620041a24441ad30793a57cec98, type: 2}
   m_RootGameObject: {fileID: 1954029093}
@@ -67118,7 +67122,7 @@ MonoBehaviour:
   closeAfter: 5
   keyCardsToUnlock: 2
   notorietyToLock: 1e+07
-  guardsCanUnlock: 1
+  guardsCanUnlock: 0
   openOnTrigger: 1
   openOnTriggerable: 1
   keysUsed: 0
