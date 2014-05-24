@@ -18,14 +18,14 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 2800000, guid: 5c3e86bf74c60034782e37a5a383193f, type: 3}
+          m_Texture: {fileID: 2800000, guid: 8a1d1fc97c2ccfa4d97783ee4e7562af, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _BumpMap
         second:
-          m_Texture: {fileID: 2800000, guid: 4b8d081e9d114c7f1100f5ab44295342, type: 3}
+          m_Texture: {fileID: 2800000, guid: d0c09b214bda542409800f1b9a9e7c4f, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -42,16 +42,16 @@ Material:
         second: .078125
       data:
         first:
-          name: _BumpAmt
-        second: 128
-      data:
-        first:
           name: _GlowStrength
         second: 0
       data:
         first:
-          name: _CloakAmt
+          name: _BumpAmt
         second: 128
+      data:
+        first:
+          name: _CloakAmt
+        second: 0
     m_Colors:
       data:
         first:
