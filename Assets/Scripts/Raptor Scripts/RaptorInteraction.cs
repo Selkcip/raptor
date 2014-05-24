@@ -20,13 +20,13 @@ public class RaptorInteraction : MonoBehaviour {
 	public static string level = "PrisonShip";
 	public static float maxHealth = 100f;
 	public static float attack = 20f;
-	public static float stealthTime = 180f; //time in seconds
+	public static float stealthTime = 300f; //time in seconds
 
 	//Defaults
 	public static string defaultLevel = "PrisonShip";
 	public static float defaultMaxHealth = 100f;
 	public static float defaultAttack = 20f;
-	public static float defaultStealthTime = 180f; //time in seconds
+	public static float defaultStealthTime = 300f; //time in seconds
 
 	public Transform eatTarget;
 
@@ -135,6 +135,8 @@ public class RaptorInteraction : MonoBehaviour {
 	void Start() {
 		LevelSelector.coastIsClear = false;
 		ShipDoor.escaping = false;
+		RaptorInteraction.keyCount = 0;
+
 		fpc = gameObject.GetComponent<FirstPersonCharacter>();
 		arms = gameObject.GetComponentInChildren<Animator>();
 

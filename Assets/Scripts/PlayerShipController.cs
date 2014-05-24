@@ -156,6 +156,13 @@ public class PlayerShipController : MonoBehaviour {
 					}
 				}
 			}
+			//CYCLE THROUGH WEAPONS
+			else if(Input.GetKeyDown(KeyCode.R)) {
+				currentConsumable++;
+				if(currentConsumable >= consumables.Count) {
+					currentConsumable = 0;
+				}
+			}
 		}
 
 		if (reload > 0)

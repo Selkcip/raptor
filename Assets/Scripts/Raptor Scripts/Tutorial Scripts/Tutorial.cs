@@ -66,7 +66,7 @@ public class Tutorial : MonoBehaviour {
 
 		climbing.Add("Pouncing on walls or ceilings will cause you to stick to them.");
 		climbing.Add("You can pounce from wall to wall to climb rooms.");
-		climbing.Add("Pressing SPACE while clinging will let you drop down.");
+		climbing.Add("Pressing SPACE or LEFT CLICK while clinging will let you drop down.");
 		climbing.Add("Use wall clinging to find a keycard.");
 		textLists.Add(climbing);
 
