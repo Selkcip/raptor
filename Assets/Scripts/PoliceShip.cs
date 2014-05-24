@@ -44,7 +44,7 @@ public class PoliceShip : MonoBehaviour {
 			}
 
 			// if the player is spotted reset search timer
-			if(IsPlayerSpotted() && searchTimer < maxSearchTime)
+			if(player.GetComponent<LevelSelector>().isPlayerSpotted && searchTimer < maxSearchTime)
 				searchTimer = maxSearchTime;
 			else
 				searchTimer -= Time.deltaTime;
@@ -62,6 +62,12 @@ public class PoliceShip : MonoBehaviour {
 		float distance = Vector3.Distance(player.transform.position, transform.position);
 		return !player.GetComponent<PlayerShipController>().isCloaked && distance <= detectionRange;
 	}
+
+    // calculates the max search time based on the number of police (notoriety).
+    public float SetSearchTime(float numPoPo) {
+        maxSearchTime = Mathf.Sqrt(Mathf.Pow(maxSearchTime, 2) + Mathf.Pow(10 / numPoPo, 2)) - 10 / numPoPo;
+        return maxSearchTime;
+    }
 
     // police leaves in predetermined direction
     void LeaveArea() {

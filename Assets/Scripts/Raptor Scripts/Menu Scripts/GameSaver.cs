@@ -136,6 +136,19 @@ public class GameSaver : MonoBehaviour {
 		GrapicsToggles.SSAOQuality = ssaoQ;
 		GrapicsToggles.BloomQuality = bloomQ;
 
+		UpgradeSpawner.upgrades.Clear();
+		string purchasesString;
+		GetValue("purchases", out purchasesString);
+		if(purchasesString != null && purchasesString != "") {
+			print(purchasesString);
+			string[] consumables = purchasesString.Split(new char[] { '+' });
+			foreach(string conString in consumables) {
+				UpgradeSpawner.upgrades.Add(Resources.Load<CollectibleUpgrade>("Prefabs/Upgrades/" + conString));
+				UpgradeSpawner.upgrades[UpgradeSpawner.upgrades.Count - 1].name = conString;
+			}
+		}
+
+		PlayerShipController.consumables.Clear();
 		string consumablesString;
 		GetValue("consumables", out consumablesString);
 		if(consumablesString != null && consumablesString != "") {
@@ -165,12 +178,12 @@ public class GameSaver : MonoBehaviour {
 		SetValue("attack", RaptorInteraction.defaultAttack);
 		SetValue("stealth", RaptorInteraction.defaultStealthTime);
 
-		SetValue("ssrQ", GrapicsToggles.SSRQuality);
-		SetValue("tiltQ", GrapicsToggles.TiltShiftQuality);
-		SetValue("glowQ", GrapicsToggles.GlowQuality);
-		SetValue("aaQ", GrapicsToggles.AAQuality);
-		SetValue("ssaoQ", GrapicsToggles.SSAOQuality);
-		SetValue("bloomQ", GrapicsToggles.BloomQuality);
+		SetValue("ssrQ", -1);
+		SetValue("tiltQ", -1);
+		SetValue("glowQ", 1);
+		SetValue("aaQ", -1);
+		SetValue("ssaoQ", -1);
+		SetValue("bloomQ", -1);
 
 		Save(saveName, currentSave);
 	}
@@ -192,8 +205,22 @@ public class GameSaver : MonoBehaviour {
 		SetValue("ssaoQ", GrapicsToggles.SSAOQuality);
 		SetValue("bloomQ", GrapicsToggles.BloomQuality);
 
-		string consumables = "";
+		string purchases = "";
 		bool first = true;
+		foreach(CollectibleUpgrade upgrade in UpgradeSpawner.upgrades) {
+			if(first) {
+				first = false;
+			}
+			else {
+				purchases += "+";
+			}
+			purchases += upgrade.name;
+		}
+		//print(consumables);
+		SetValue("purchases", purchases);
+
+		string consumables = "";
+		first = true;
 		foreach(UpgradeCount count in PlayerShipController.consumables) {
 			if(first){
 				first = false;

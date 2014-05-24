@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class LockMouse : MonoBehaviour {
+	public bool mouseLocked = false;
 
 	public static bool lockMouse = true;
 
@@ -17,11 +18,7 @@ public class LockMouse : MonoBehaviour {
 			Application.LoadLevel(Application.loadedLevel);
 		}
 
-		if(lockMouse) {
-			Screen.lockCursor = true;
-		}
-		else {
-			Screen.lockCursor = false;
-		}
+		Screen.lockCursor = lockMouse;
+		mouseLocked = Screen.lockCursor;
 	}
 }

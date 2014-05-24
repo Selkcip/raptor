@@ -16,6 +16,7 @@ public class UpgradeCount {
 public class PlayerShipController : MonoBehaviour {
 
 	public Texture2D painIndicator;
+	public MeshRenderer shipMesh;
 
     public float forwardForce, reverseForce, sideForce;
 	public float turnRate; // deg/s
@@ -36,6 +37,8 @@ public class PlayerShipController : MonoBehaviour {
     public GameObject bullet;
     public float bulletSpeed, reloadTime;
 
+	public GameObject explosion;
+
 	public LevelSelector levelSelector;
 
 	public static float damage = 10;
@@ -55,6 +58,8 @@ public class PlayerShipController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
+		Time.timeScale = 1;
+		Screen.lockCursor = false;
 		levelSelector = this.GetComponent<LevelSelector>();
 		health = maxHealth;
 		cloakCharge = 1;
@@ -64,10 +69,13 @@ public class PlayerShipController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update() {
+		LockMouse.lockMouse = false;
 		if (!isDead)
 		{
 			//print(cloakTrans);
-			renderer.material.SetFloat("_CloakAmt", cloakTrans * 128);
+			if(shipMesh != null) {
+				shipMesh.material.SetFloat("_CloakAmt", cloakTrans * 128);
+			}
 			// rotate ship to point at current mouse position on screen
 			/*float distance = transform.position.z - Camera.main.transform.position.z;
 			Vector3 mouse = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance));
@@ -190,6 +198,9 @@ public class PlayerShipController : MonoBehaviour {
 		print(health);
 
 		if(health <= 0) {
+			if(explosion != null) {
+				Instantiate(explosion, transform.position, Quaternion.identity);
+			}
 			gameObject.SetActive(false);
 		}
 

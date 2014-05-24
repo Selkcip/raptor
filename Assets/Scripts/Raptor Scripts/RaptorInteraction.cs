@@ -133,6 +133,8 @@ public class RaptorInteraction : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
+		Time.timeScale = 1;
+		LockMouse.lockMouse = true;
 		LevelSelector.coastIsClear = false;
 		ShipDoor.escaping = false;
 		RaptorInteraction.keyCount = 0;
@@ -153,7 +155,7 @@ public class RaptorInteraction : MonoBehaviour {
 		useTable.Add("lightswitch", 3);
 		useTable.Add("trap", 4);
 
-		hud = GameObject.Find("HUD").GetComponent<RaptorHUD>();
+		hud = GameObject.FindObjectOfType<RaptorHUD>();//.Find("HUD").GetComponent<RaptorHUD>();
 	}
 
 	// Update is called once per frame
@@ -347,7 +349,7 @@ public class RaptorInteraction : MonoBehaviour {
 			}
 		
 			//Stop climbing
-			if(RebindableInput.GetKeyDown("Jump") && climbing) {
+			if((RebindableInput.GetKeyDown("Jump") || RebindableInput.GetKeyDown("Slash")) && climbing) {
 				climbing = false;
 				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 				rigidbody.isKinematic = false;
@@ -506,7 +508,7 @@ public class RaptorInteraction : MonoBehaviour {
 				int mask = ~(1 << LayerMask.NameToLayer("Player"));
 				//check if the raptor is facing the wall
 				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 0.5f, mask)) {
-					//if(hit.collider.gameObject == other.gameObject) {
+					if(hit.collider.tag != "wood") {
 						climbing = true;
 						//armRotation = raptorArms.rotation;//Camera.main.transform.rotation;
 						rigidbody.constraints = RigidbodyConstraints.FreezePosition;
@@ -519,7 +521,7 @@ public class RaptorInteraction : MonoBehaviour {
 						Vector3 angles = transform.localEulerAngles;
 						angles.x -= 90;
 						transform.localEulerAngles = angles;*/
-					//}
+					}
 				}
 			}
 		}
@@ -559,7 +561,9 @@ public class RaptorInteraction : MonoBehaviour {
 				return true;
 			}
 		}
-		hud.UsePromptUpdate(false, 0, null);
+		if(hud != null) {
+			hud.UsePromptUpdate(false, 0, null);
+		}
 		return false;
 	}
 
@@ -629,7 +633,9 @@ public class RaptorInteraction : MonoBehaviour {
 		indicator.dontDestroy = false;
 
 		//print(health);
-		SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
+		if(health > 0) {
+			SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
+		}
 	}
 
 	public void SellCollectibles() {

@@ -2389,7 +2389,7 @@ MonoBehaviour:
   useTarget: {fileID: 0}
   droppable: 1
   keyCard: 0
-  value: 10
+  value: 4000
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1

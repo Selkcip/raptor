@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: prop_computerStation_B_fx
-  m_Shader: {fileID: 12, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: 66661dced810241d1915b8f6415fd66d, type: 3}
   m_ShaderKeywords: []
   m_CustomRenderQueue: -1
   m_SavedProperties:
@@ -34,6 +34,13 @@ Material:
           m_Texture: {fileID: 2800000, guid: e86550c8af6f9b24d9bdba74aa84b465, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _GlowTex
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
@@ -43,6 +50,10 @@ Material:
         first:
           name: _EmissionLM
         second: 0
+      data:
+        first:
+          name: _GlowStrength
+        second: 1
     m_Colors:
       data:
         first:
@@ -52,3 +63,7 @@ Material:
         first:
           name: _SpecColor
         second: {r: .93097502, g: .940298498, b: .806972563, a: 1}
+      data:
+        first:
+          name: _GlowColor
+        second: {r: 1, g: 1, b: 1, a: 1}

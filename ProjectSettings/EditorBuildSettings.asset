@@ -8,6 +8,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
   - enabled: 1
+    path: Assets/Scenes/Tutorial.unity
+  - enabled: 1
     path: Assets/Scenes/PrisonShip.unity
   - enabled: 1
     path: Assets/Scenes/Space.unity
@@ -15,3 +17,5 @@ EditorBuildSettings:
     path: Assets/Scenes/CargoShip.unity
   - enabled: 1
     path: Assets/Scenes/DeliveryShip.unity
+  - enabled: 1
+    path: Assets/Scenes/SpaceTutorial.unity

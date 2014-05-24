@@ -11,6 +11,7 @@ public class State {
 	public int priority;
 	public StateCondition Condition;
 	public StateUpdate Update;
+	public StateUpdate Enter;
 	public StateUpdate Exit;
 	public List<State> states;
 
@@ -51,23 +52,29 @@ public class StateMachine {
 	public void Update() {
 		if(states.Count > 0) {
 			states.Sort(delegate(State a, State b) {
-				return a.priority - b.priority;
+				return b.priority - a.priority;
 			});
 
 			foreach(State state in states) {
-				if(state.Condition()) {
-					if(cur != null && cur.Exit != null) {
-						cur.Exit();
+				if(state == cur || state.Condition()) {
+					if(state != cur){
+						if(cur != null && cur.Exit != null) {
+							cur.Exit();
+						}
+						if(state.Enter != null) {
+							state.Enter();
+						}
 					}
 					cur = state;
-				}
-				else if(state == cur) {
 					break;
 				}
 			}
 
 			if(cur != null) {
 				if(cur.Update()) {
+					if(cur.Exit != null) {
+						cur.Exit();
+					}
 					cur = null;
 				}
 			}

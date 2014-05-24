@@ -11,14 +11,17 @@ public class PlanningNPC : MonoBehaviour {
 
 	public float walkSpeed = 0.25f;
 	public float runSpeed = 1.0f;
+	public bool forceRun = false;
 	public float maxStamina = 5;
 	public float viewDis = 10f;
 	public float fov = 45f;
 	public float noticeTime = 2;
 	public float health = 100f;
 	public float fleeHealth = 25f;
+	public float fleeTime = 10;
 	public float standTime = 5f;
 	public float lookTime = 1f;
+	public Vector3 lookDis = new Vector3(1, 0.25f, 1);
 	public float inspectTime = 5f;
 	public float useTime = 5f;
 	public float wanderTime = 5f;
@@ -55,6 +58,7 @@ public class PlanningNPC : MonoBehaviour {
 	public bool enemyVisible = false;
 	//public bool enemyNoticed = false;
 	public bool enemySeen = false;
+	public bool facingEnemy = false;
 	public bool alertShip = false;
 	public bool alarmFound = false;
 	public bool alarmActivated = false;
@@ -107,7 +111,6 @@ public class PlanningNPC : MonoBehaviour {
 
 	// Use this for initialization
 	public virtual void Start() {
-
 		// get the components on the object we need ( should not be null due to require component so no need to check )
 		character = GetComponent<ThirdPersonCharacter>();
 		animator = GetComponent<Animator>();
@@ -119,18 +122,27 @@ public class PlanningNPC : MonoBehaviour {
 		ragdollHelper = GetComponent<RagdollHelper>();
 
 		player = GameObject.FindObjectOfType<RaptorInteraction>();
+		stamina = maxStamina;
 
-		//InitGoals();
-		//InitActions();
+		transform.eulerAngles = new Vector3(0, Random.Range(0f, 360f), 0);
 
-		//Plan();
+		Move(Vector3.zero, head.position + head.forward*5);
 
 		InitStates();
 
 		RagDoll(transform, false);
 	}
 
-	protected State stand, sleep, moveToTarget, useObject, activateAlarm, flee, inspect, wander, followNoise, chaseNoise;
+	NavMeshHit nearestHit;
+	Vector3 NearestNavPoint(Vector3 pos) {
+		NavMesh.SamplePosition(pos, out nearestHit, 10, 0);
+		if(nearestHit.hit) {
+			pos = nearestHit.position;
+		}
+		return pos;
+	}
+
+	protected State stand, sleep, moveToTarget, useObject, activateAlarm, flee, inspect, wander, followNoise, facePlayer;
 	public virtual void InitStates() {
 		states = new StateMachine();
 
@@ -146,21 +158,20 @@ public class PlanningNPC : MonoBehaviour {
 
 				lookTimer += Time.deltaTime;
 
-				Move(Vector3.zero, targetPos);
-
 				if(targetPos != lookPos) {
 					targetPos = Vector3.Lerp(targetPos, lookPos, lookTimer / lookTime);
 				}
 				else {
 					if(lookTimer >= lookTime) {
-						float lookDis = 0.25f;
-						lookPos.x += Random.Range(-lookDis, lookDis);
-						lookPos.y += Random.Range(-lookDis, lookDis);
-						lookPos.z += Random.Range(-lookDis, lookDis);
+						lookPos.x += Random.Range(-lookDis.x, lookDis.x);
+						lookPos.y += Random.Range(-lookDis.y, lookDis.y);
+						lookPos.z += Random.Range(-lookDis.z, lookDis.z);
 
 						lookTimer = 0;
 					}
 				}
+
+				Move(Vector3.zero, targetPos);
 
 				standTimer += Time.deltaTime;
 				if(standTimer >= standTime) {
@@ -172,6 +183,11 @@ public class PlanningNPC : MonoBehaviour {
 				return false;
 			}
 		);
+		stand.Enter = delegate() {
+			lookPos = head.position + head.forward * 1;
+			targetPos = head.position + head.forward * 2;
+			return true;
+		};
 
 		sleep = new State(
 			delegate() {
@@ -187,6 +203,8 @@ public class PlanningNPC : MonoBehaviour {
 					RagDoll(transform, true);
 					GetComponent<CapsuleCollider>().enabled = false;
 					animator.enabled = false;
+
+					DropEverything();
 
 					gameObject.GetComponent<ShipGridItem>().interestLevel = 0.001f;
 
@@ -268,6 +286,10 @@ public class PlanningNPC : MonoBehaviour {
 			delegate() {
 				actionName = "Use Object";
 
+				running = false;
+
+				Move(Vector3.zero, targetPos);
+
 				animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1.0f);
 
 				useTimer += Time.deltaTime;
@@ -302,10 +324,14 @@ public class PlanningNPC : MonoBehaviour {
 				return !hasUseTarget || !usingObject;
 			}
 		);
+		useObject.Exit = delegate() {
+			usingObject = false;
+			return true;
+		};
 
 		activateAlarm = new State(
 			delegate() {
-				return alertShip && !enemyVisible;
+				return alertShip && !alarmFound && !enemyVisible;
 			},
 			delegate() {
 				actionName = "Activate Alarm";
@@ -351,32 +377,58 @@ public class PlanningNPC : MonoBehaviour {
 			}
 		);
 
+		float fleeTimer = 0;
 		flee = new State(
 			delegate() {
-				return healthLow && enemySeen;
+				return healthLow && enemySeen && enemyVisible;
 			},
 			delegate() {
 				actionName = "Flee";
 
 				running = true;
 
-				targetPos = transform.position + (transform.position - player.transform.position);
-				agent.SetDestination(targetPos);
+				target = null;
 
-				if(agent.pathStatus == NavMeshPathStatus.PathPartial || agent.remainingDistance < targetChangeTolerance) {
-					return true;
-				}
+				fleeTimer += Time.deltaTime;
+
+				agent.SetDestination(targetPos);
 
 				// update the agents posiiton 
 				agent.transform.position = transform.position;
-				//print(agent.desiredVelocity);
 
 				// use the values to move the character
 				Move(agent.desiredVelocity, targetPos);
 
-				return false;
+				if(agent.pathStatus == NavMeshPathStatus.PathPartial || agent.remainingDistance < targetChangeTolerance) {
+					flee.Enter();
+				}
+
+				return fleeTimer >= fleeTime;
 			}
 		);
+		flee.Enter = delegate() {
+			if(enemyVisible) {
+				fleeTimer = 0;
+			}
+
+			List<Vector3> positions = new List<Vector3>();
+			positions.Add(NearestNavPoint(transform.position + transform.forward * 10));
+			positions.Add(NearestNavPoint(transform.position - transform.forward * 10));
+			positions.Add(NearestNavPoint(transform.position + transform.right * 10));
+			positions.Add(NearestNavPoint(transform.position - transform.right * 10));
+
+			float maxDis = 0;
+			targetPos = positions[0];
+			foreach(Vector3 pos in positions) {
+				float dis = (player.transform.position - pos).magnitude;
+				if(dis > maxDis) {
+					targetPos = pos;
+					maxDis = dis;
+				}
+			}
+
+			return false;
+		};
 
 		float inspectTimer = 0;
 		inspect = new State(
@@ -402,19 +454,16 @@ public class PlanningNPC : MonoBehaviour {
 
 					lookTimer += Time.deltaTime;
 
-					Move(Vector3.zero, targetPos);
-
 					if(targetPos != lookPos) {
 						targetPos = Vector3.Lerp(targetPos, lookPos, lookTimer / lookTime);
 					}
 					else {
 						inspectTimer += Time.deltaTime;
 						if(lookTimer >= lookTime) {
-							float lookDis = 0.25f;
 							if(mostInteresting != null) {
-								lookPos.x = mostInteresting.transform.position.x + Random.Range(-lookDis, lookDis);
-								lookPos.y = mostInteresting.transform.position.y + Random.Range(-lookDis, lookDis);
-								lookPos.z = mostInteresting.transform.position.z + Random.Range(-lookDis, lookDis);
+								lookPos.x = mostInteresting.transform.position.x +Random.Range(-lookDis.x, lookDis.x);
+								lookPos.y = mostInteresting.transform.position.y +Random.Range(-lookDis.y, lookDis.y);
+								lookPos.z = mostInteresting.transform.position.z +Random.Range(-lookDis.z, lookDis.z);
 
 								if(mostInteresting.useTarget != null) {
 									useTarget = mostInteresting.useTarget;
@@ -427,6 +476,8 @@ public class PlanningNPC : MonoBehaviour {
 						}
 					}
 
+					Move(Vector3.zero, targetPos);
+
 					if(inspectTimer >= inspectTime) {
 						inspectTimer = 0;
 						mostInteresting = null;
@@ -438,17 +489,25 @@ public class PlanningNPC : MonoBehaviour {
 				return !bored;
 			}
 		);
+		inspect.Enter = delegate() {
+			if(mostInteresting != null) {
+				lookPos = mostInteresting.transform.position;
+			}
+			targetPos = head.position + head.forward * 2;
+			return true;
+		};
 
 		float wanderTimer = wanderTime;
 		Vector3 wanderPos = new Vector3();
 		wander = new State(
 			delegate() {
-				return !enemySeen && !enemyVisible && !tired;
+				return wanderTime > 0 && !enemySeen && !enemyVisible && !tired;
 			},
 			delegate() {
 				actionName = "Wander";
 
-				running = false;
+				usingObject = false;
+				running = false || forceRun;
 				wanderTimer += Time.deltaTime;
 
 				agent.SetDestination(wanderPos);
@@ -456,100 +515,76 @@ public class PlanningNPC : MonoBehaviour {
 				// update the agents posiiton 
 				agent.transform.position = transform.position;
 
-				NavMeshHit hit;
-				agent.Raycast(transform.position + transform.forward, out hit);
+				// use the values to move the character
+				Move(agent.desiredVelocity);
 
-				if(hit.hit || wanderTimer >= wanderTime || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
-					//Vector3 randomDir = Random.insideUnitSphere * 10;
-					//NavMesh.SamplePosition(transform.position + randomDir, out hit, 10, 1);
-					//patrolPos = hit.position;// transform.position + transform.forward * 10;
-					wanderPos = transform.position + transform.forward * 10;
+				NavMeshHit hit;
+				if(wanderTimer >= wanderTime || agent.remainingDistance <= targetChangeTolerance) {// || agent.pathStatus == NavMeshPathStatus.PathPartial) {
+					actionName = "Rethinking Wander";
+
+					wanderPos = transform.position + (transform.forward+transform.right*Random.Range(-1f,1f)) * 10;
+					NavMesh.SamplePosition(wanderPos, out hit, 10, 0);
+					if(hit.hit) {
+						wanderPos = hit.position;
+					}
 					wanderTimer = 0;
 					return true;
 				}
-
-				// use the values to move the character
-				Move(agent.desiredVelocity);
 
 				return false;// sleeping || enemySeen || alertShip || canInspect;
 			}
 		);
 
-		bool initNoise = true;
 		followNoise = new State(
 			delegate() {
-				return followsNoise && curious && !alarmed && !enemyVisible;
+				return followsNoise && curious && !enemyVisible && (noisePos - transform.position).magnitude > targetChangeTolerance;
 			},
 			delegate() {
-				running = true;
+				actionName = "Follow Noise";
 
-				if(initNoise) {
-					noisePos = transform.position + noiseDir * 10;
-					initNoise = false;
-				}
+				running = alarmed;
 
-				agent.SetDestination(noisePos);
+				agent.SetDestination(NearestNavPoint(noisePos));
 
 				// update the agents posiiton 
 				agent.transform.position = transform.position;
 
-				NavMeshHit hit;
-				agent.Raycast(transform.position + transform.forward, out hit);
-
-
-				if(hit.hit || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
-					initNoise = true;
-					return true;
-				}
-
 				// use the values to move the character
 				Move(agent.desiredVelocity);
+
+				if(agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
+					return true;
+				}
 
 				return false;
 			}
 		);
+		followNoise.Enter = delegate() {
+			//noisePos = transform.position + noiseDir * 10;
+			return true;
+		};
 
-		chaseNoise = new State(
+		facePlayer = new State(
 			delegate() {
-				return followsNoise && curious && alarmed && !enemyVisible;
+				return enemyVisible && !facingEnemy;
 			},
 			delegate() {
-				running = true;
+				actionName = "Face Player";
 
-				if(initNoise) {
-					noisePos = transform.position + noiseDir * 10;
-					initNoise = false;
-				}
+				Move(Vector3.zero, enemyPos);
 
-				agent.SetDestination(noisePos);
-
-				// update the agents posiiton 
-				agent.transform.position = transform.position;
-
-				NavMeshHit hit;
-				agent.Raycast(transform.position + transform.forward, out hit);
-
-
-				if(hit.hit || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
-					initNoise = true;
-					return true;
-				}
-
-				// use the values to move the character
-				Move(agent.desiredVelocity);
-
-				return false;
+				return facingEnemy;
 			}
 		);
 
 		sleep.priority = 100;
 		flee.priority = 90;
+		facePlayer.priority = 85;
 		useObject.priority = 80;
 		activateAlarm.priority = 70;
-		inspect.priority = 60;
-		chaseNoise.priority = 55;
+		moveToTarget.priority = 60;
 		followNoise.priority = 50;
-		moveToTarget.priority = 40;
+		inspect.priority = 40;
 		wander.priority = 10;
 
 		states.Add(stand);
@@ -561,171 +596,13 @@ public class PlanningNPC : MonoBehaviour {
 		states.Add(inspect);
 		states.Add(wander);
 		states.Add(followNoise);
-		states.Add(chaseNoise);
-	}
-
-	//Actions
-	protected PlanAction aPassOut, aSleep, aWakeUp, aStand, aMoveToTarget, aWalk, aRun, aUseObject, aFindAlarm, aActivateAlarm, aFlee, aInspect, aFindInteresting, aFollowNoise, aChaseNoise, aEnableLight, aDisableLight, aWander;
-	public virtual void InitActions() {
-
-		bool initNoise = true;
-		//Maybe these should do a short path search and choose a cell to move to using the nav mesh
-		aFollowNoise = new PlanAction(
-			new PlanState() {
-				{ "followsNoise", true },
-				{ "curious", true },
-				{ "alarmed", false },
-				{ "enemyVisible", false },
-				{ "knockedOut", false },
-				{ "sleeping", false }
-			},
-			new PlanState() {
-				{ "curious", false },
-				{ "playerVisible", true }
-			},
-			delegate() {
-				agent.SetDestination(noisePos);
-
-				// update the agents posiiton 
-				agent.transform.position = transform.position;
-
-				NavMeshHit hit;
-				agent.Raycast(transform.position + transform.forward, out hit);
-
-				if(initNoise || hit.hit || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
-					noisePos = transform.position + noiseDir * 10;
-					initNoise = false;
-				}
-
-				// use the values to move the character
-				Move(agent.desiredVelocity);
-
-				return false;
-			});
-		aFollowNoise.name = "follow noise";
-		planner.Add(aFollowNoise);
-
-		aChaseNoise = new PlanAction(
-			new PlanState() {
-				{ "followsNoise", true },
-				{ "alarmed", true },
-				{ "enemyVisible", false },
-				{ "running", true },
-				{ "knockedOut", false },
-				{ "sleeping", false }
-			},
-			new PlanState() {
-				{ "alarmed", false },
-				{ "playerVisible", true }
-			},
-			delegate() {
-				agent.SetDestination(noisePos);
-
-				// update the agents posiiton 
-				agent.transform.position = transform.position;
-
-				NavMeshHit hit;
-				agent.Raycast(transform.position + transform.forward, out hit);
-
-				if(initNoise || hit.hit || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
-					noisePos = transform.position + noiseDir * 10;
-					initNoise = false;
-				}
-
-				// use the values to move the character
-				Move(agent.desiredVelocity);
-
-				return false;
-			});
-		aChaseNoise.name = "chase noise";
-		planner.Add(aChaseNoise);
-
-		aEnableLight = new PlanAction(
-			new PlanState() {
-				{ "hasFlashlight", true },
-				{ "flashLightOn", false },
-				{ "needLight", true },
-				{ "knockedOut", false },
-				{ "sleeping", false }
-			},
-			new PlanState() {
-				{ "flashLightOn", true },
-				{ "needLight", false }
-			},
-			delegate() {
-				weapon.flashLight.enabled = true;
-
-				return false;
-			});
-		aEnableLight.name = "enable light";
-		//planner.Add(aEnableLight);
-
-		aDisableLight = new PlanAction(
-			new PlanState() {
-				{ "hasFlashlight", true },
-				{ "flashLightOn", true },
-				{ "needLight", false },
-				{ "knockedOut", false },
-				{ "sleeping", false }
-			},
-			new PlanState() {
-				{ "flashLightOn", false }
-			},
-			delegate() {
-				weapon.flashLight.enabled = false;
-
-				return false;
-			});
-		aDisableLight.name = "disable light";
-		//planner.Add(aDisableLight);
-
-		float wanderTimer = wanderTime;
-		Vector3 wanderPos = new Vector3();
-		aWander = new PlanAction(
-			new PlanState() {
-				{ "enemySeen", false },
-				{ "enemyVisible", false },
-				{ "curious", false },
-				{ "alarmed", false },
-				{ "canInspect", false },
-				{ "alertShip", false },
-				{ "running", false },
-				{ "knockedOut", false },
-				{ "dead", false }
-			},
-			new PlanState() {
-				{ "canInspect", true }
-			},
-			delegate() {
-				wanderTimer += Time.deltaTime;
-
-				agent.SetDestination(wanderPos);
-
-				// update the agents posiiton 
-				agent.transform.position = transform.position;
-
-				NavMeshHit hit;
-				agent.Raycast(transform.position + transform.forward, out hit);
-
-				if(hit.hit || wanderTimer >= wanderTime || agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
-					//Vector3 randomDir = Random.insideUnitSphere * 10;
-					//NavMesh.SamplePosition(transform.position + randomDir, out hit, 10, 1);
-					//patrolPos = hit.position;// transform.position + transform.forward * 10;
-					wanderPos = transform.position + transform.forward * 10;
-					wanderTimer = 0;
-				}
-
-				// use the values to move the character
-				Move(agent.desiredVelocity);
-
-				return false;
-			});
-		aWander.name = "wander";
-		planner.Add(aWander);
+		states.Add(facePlayer);
 	}
 
 	// Update is called once per frame
 	public virtual void Update() {
+		Debug.DrawRay(targetPos, Vector3.up);
+
 		bool justDied = false;
 		if(!dead && health <= 0) {
 			dead = true;
@@ -750,6 +627,12 @@ public class PlanningNPC : MonoBehaviour {
 		flashLightOn = hasFlashlight && weapon.flashLight.enabled == true;
 		needLight = lightLevel <= minLightLevel ? true : (lightLevel >= maxLightLevel ? false : needLight);
 
+		enemyPos = enemyVisible ? Camera.main.transform.position : enemyPos;
+		Vector3 enemyDiff = enemyPos - transform.position;
+		enemyDiff.y *= 0;
+		Debug.DrawRay(transform.position + Vector3.up, enemyDiff);
+		facingEnemy = Vector3.Dot(enemyDiff.normalized, transform.forward) >= 0.9f;
+
 		if(weapon != null && weapon.flashLight != null) {
 			weapon.flashLight.enabled = lightLevel <= minLightLevel ? true : (lightLevel >= maxLightLevel ? false : weapon.flashLight.enabled);
 		}
@@ -770,8 +653,17 @@ public class PlanningNPC : MonoBehaviour {
 			CheckGrid();
 		}
 
+		actionName = "No Action";
 		//Plan();
 		states.Update();
+	}
+
+	void OnCollisionEnter(Collision collision) {
+		if(collision.gameObject.tag == "Player") {
+			curFov = 360;
+			//noticeTimer = noticeTime;
+			//target = collision.gameObject.transform;
+		}
 	}
 
 	protected void Move(Vector3 moveDir, Vector3 lookPos) {
@@ -785,7 +677,7 @@ public class PlanningNPC : MonoBehaviour {
 	protected void LookForEnemy() {
 		enemyVisible = false;
 		if(!knockedOut) {
-			if(player.active && player != null && player.health > 0) {
+			if(player != null && player.active && player.health > 0) {
 				Transform enemyHead = Camera.main.transform;
 				if(enemyHead != null) {
 					enemyVisibility = 1;
@@ -806,7 +698,7 @@ public class PlanningNPC : MonoBehaviour {
 								if(hit.collider.tag == "Player" || (hit.collider.transform.parent != null && hit.collider.transform.parent.tag == "Player")) {
 									enemyVisible = true;
 									noticeTimer += enemyVisibility * Mathf.Max(0, (1.0f - hit.distance / curViewDis)) * Time.deltaTime;
-									print("noticing");
+									//print("noticing");
 									if(noticeTimer >= noticeTime) {
 										enemySeen = true;
 										alertShip = true;
@@ -856,6 +748,7 @@ public class PlanningNPC : MonoBehaviour {
 			ShipGridFluid noise;
 			cell.fluids.TryGetValue("noise", out noise);
 			if(noise != null) {
+				float curNoiseLevel = noise.level;
 				noiseLevel = noise.level;
 				//noiseDir.Set(0, 0, 0);
 				/*foreach(ShipGridCell neigh in cell.neighbors) {
@@ -868,17 +761,28 @@ public class PlanningNPC : MonoBehaviour {
 					}
 				}*/
 				Vector3 diff = new Vector3();
-				foreach(ShipGridCell neigh in cell.neighbors) {
-					neigh.fluids.TryGetValue("noise", out noise);
-					if(noise != null) {
-						diff.x = neigh.x - cell.x;
-						diff.y = neigh.y - cell.y;
-						diff.z = neigh.z - cell.z;
-						noiseDir += (diff * (noise.level-noiseLevel)).normalized * Mathf.Abs(noise.level);
+				ShipGridCell cur = cell;
+				noisePos = ShipGrid.IndexToPosI(cur.x, cur.y, cur.z);
+				for(int i = 0; i < 5; i++) {
+					List<ShipGridCell> neighs = cur.neighbors;
+					foreach(ShipGridCell neigh in neighs) {
+						neigh.fluids.TryGetValue("noise", out noise);
+						if(noise != null) {
+							if(noise.level > curNoiseLevel) {
+								curNoiseLevel = noise.level;
+								cur = neigh;
+							}
+							/*diff.x = neigh.x - cell.x;
+							diff.y = neigh.y - cell.y;
+							diff.z = neigh.z - cell.z;
+							noiseDir += (diff * (noise.level - noiseLevel)).normalized * Mathf.Abs(noise.level);*/
+
+						}
 					}
 				}
-				noiseDir.Normalize();
-				Debug.DrawRay(transform.position, noiseDir, Color.blue);
+				noisePos = ShipGrid.IndexToPosI(cur.x, cur.y, cur.z);
+				//noiseDir.Normalize();
+				Debug.DrawLine(transform.position, noisePos, Color.blue);
 			}
 
 			ShipGridFluid cellLight;
@@ -932,7 +836,7 @@ public class PlanningNPC : MonoBehaviour {
 					}
 					else {
 						player.eatTarget = null;
-						DropEverything();
+						//DropEverything();
 						Destroy(gameObject);
 					}
 				}
@@ -947,7 +851,7 @@ public class PlanningNPC : MonoBehaviour {
 	}
 
 	public void KnockOut(float time) {
-		if(!enemyVisible && sleepTime <= 0) {
+		if(!facingEnemy && sleepTime <= 0) {
 			sleepTime = time;
 			standing = false;
 		}
@@ -1060,11 +964,11 @@ public class PlanningNPC : MonoBehaviour {
 	protected void RagDoll(Transform obj, bool on) {
 		Transform[] children = transform.GetAllComponentsInChildren<Transform>();
 		foreach(Transform child in children) {
-			if(child.name == "Gun") {
+			if(child.tag == "Collectible" || child.name == "Gun") {
 				continue;
 			}
 
-			child.tag = "enemy";
+			//child.tag = "enemy";
 			if(child.rigidbody != null) {
 				child.rigidbody.isKinematic = !on;
 
@@ -1076,6 +980,7 @@ public class PlanningNPC : MonoBehaviour {
 
 			if(child.collider != null) {
 				child.collider.enabled = on;
+				child.tag = "enemy";
 			}
 			//RagDoll(child, on);
 		}

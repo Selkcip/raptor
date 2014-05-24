@@ -24,16 +24,19 @@ public class LevelSelector : MonoBehaviour {
 	public float deliveryShipSpawnDis = 10;
 	public Texture2D deliveryShipIndicator;
 
+	public GameObject explosion;
+	public GameObject cargoExplosion;
+
 	public List<CollectibleUpgrade> upgradPrefabs = new List<CollectibleUpgrade>();
 	public bool upgradeSpawned = false;
 
     public Vector2 debrisRadius;
     public Vector2 debrisDepth; // min/max depth of debris
+    public float debrisSpin;
     public GameObject debrisObject;
 
     public bool isPlayerSpotted;
     public Vector3 lastDetectedLocation;
-    bool leave = false;
 
     ArrayList features; // list of spawned space features
 
@@ -63,9 +66,9 @@ public class LevelSelector : MonoBehaviour {
             if (notorietyPerShip > 0)
                 for (float i = 0; i < RaptorInteraction.notoriety; i += notorietyPerShip) {
                     GameObject ship = (GameObject)Instantiate(policeShip, spawnLocation, Quaternion.identity);
-					ship.GetComponent<PoliceShip>().searchTimer = Timer.pTime + ship.GetComponent<PoliceShip>().maxSearchTime;
+					ship.GetComponent<PoliceShip>().searchTimer = Timer.pTime + ship.GetComponent<PoliceShip>().SetSearchTime(RaptorInteraction.notoriety / notorietyPerShip);
                     policeShips.Add(ship);
-                    spawnLocation += Random.insideUnitCircle * Mathf.Max(policeSpawnProximity, 1); // using max for possible spawn crash
+                    spawnLocation += Random.insideUnitCircle * Mathf.Max(policeSpawnProximity, 1); // using max due to possible spawn crash
                 }
         }
     }
@@ -142,26 +145,27 @@ public class LevelSelector : MonoBehaviour {
 		ArrayList toBeRemoved = new ArrayList();
 
 		coastIsClear = true;
+     
         // update police ships
 		foreach (GameObject ship in policeShips) {
+            //print(ship.GetComponent<PoliceShip>().searchTimer);
 			// check health is less than 0
 			if (ship.GetComponent<PoliceShip>().health <= 0) {
+				if(explosion) Instantiate(explosion, ship.transform.position, Quaternion.identity);
 				toBeRemoved.Add(ship);
 				continue;
 			}
 			//stop searching when time is 0
 			if (ship.GetComponent<PoliceShip>().searchTimer <= 0) {
-				leave = true;
 				//coastIsClear = true;
 				// check far enough away
 				if (Vector3.Distance(transform.position, ship.transform.position) > despawnRadius)
 					toBeRemoved.Add(ship);
 			}
 			//reset timer if spotted again
-			else if (ship.GetComponent<PoliceShip>().IsPlayerSpotted())
+			if (ship.GetComponent<PoliceShip>().IsPlayerSpotted())
 			{
 				isPlayerSpotted = true;
-				leave = false;
 				lastDetectedLocation = transform.position;
 				coastIsClear = false;
 			}
@@ -177,13 +181,17 @@ public class LevelSelector : MonoBehaviour {
         toBeRemoved.Clear();
         foreach (GameObject ship in cargoShips)
         {
-			if(Vector3.Distance(transform.position, ship.transform.position) > despawnRadius || ship.GetComponent<CargoShip>().health <= 0)
-                toBeRemoved.Add(ship);
-            else if (ship.GetComponent<CargoShip>().isPlayerSpotted())
-            {
-                isPlayerSpotted = true;
-                lastDetectedLocation = transform.position;
-            }
+			if(Vector3.Distance(transform.position, ship.transform.position) > despawnRadius) {
+				toBeRemoved.Add(ship);
+			}
+			else if(ship.GetComponent<CargoShip>().health <= 0) {
+				if(cargoExplosion) Instantiate(cargoExplosion, ship.transform.position, ship.transform.rotation);
+				toBeRemoved.Add(ship);
+			}
+			else if(ship.GetComponent<CargoShip>().isPlayerSpotted()) {
+				isPlayerSpotted = true;
+				lastDetectedLocation = transform.position;
+			}
         }
 
         foreach (GameObject ship in toBeRemoved)
@@ -191,13 +199,6 @@ public class LevelSelector : MonoBehaviour {
             cargoShips.Remove(ship);
             Destroy(ship);
         }
-
-		/*while (policeShips.Count < maxShips) {
-			Vector2 position = Random.insideUnitCircle.normalized * spawnRadius;
-			float rotation = Random.value * 360;
-			GameObject ship = (GameObject)Instantiate(policeShip, transform.position + (Vector3)position, Quaternion.Euler(new Vector3(0, 0, rotation)));
-			policeShips.Add(ship);
-		}*/
     }
 
     void UpdateBackground() {
@@ -219,8 +220,9 @@ public class LevelSelector : MonoBehaviour {
             // place one near center if none yet
             Vector2 position = Random.insideUnitCircle.normalized * debrisRadius.x / 4;
             float z = Random.value * (debrisDepth.y - debrisDepth.x) + debrisDepth.x; // random depth
-
-            GameObject derb = (GameObject)Instantiate(debrisObject, new Vector3(position.x, position.y, z), Quaternion.identity);
+            
+            GameObject derb = (GameObject)Instantiate(debrisObject, new Vector3(position.x, position.y, z), Random.rotation);
+            derb.rigidbody.AddTorque(Random.insideUnitCircle * debrisSpin);
             debris.Add(derb);
         }
         ArrayList newDerbs = new ArrayList(debris);
@@ -251,7 +253,8 @@ public class LevelSelector : MonoBehaviour {
             if (add)
             {
                 float z = Random.value * (debrisDepth.y - debrisDepth.x) + debrisDepth.x; // random depth
-                GameObject newDerb = (GameObject)Instantiate(debrisObject, new Vector3(position.x, position.y, z), Quaternion.identity);
+                GameObject newDerb = (GameObject)Instantiate(debrisObject, new Vector3(position.x, position.y, z), Random.rotation);
+                newDerb.rigidbody.AddTorque(Random.insideUnitCircle * debrisSpin);
                 toBeAdded.Add(newDerb);
             }
         }

@@ -11,8 +11,10 @@ ModelImporter:
     400004: //RootNode
     2300000: Cone_023
     2300002: Cube_001
+    2300004: //RootNode
     3300000: Cone_023
     3300002: Cube_001
+    3300004: //RootNode
     4300000: Cone_023
     4300002: Cube_001
     7400000: Default Take

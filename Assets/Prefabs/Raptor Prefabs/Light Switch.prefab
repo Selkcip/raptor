@@ -10,6 +10,7 @@ GameObject:
   - 4: {fileID: 400000}
   - 65: {fileID: 6500000}
   - 114: {fileID: 11400000}
+  - 114: {fileID: 11400002}
   m_Layer: 0
   m_Name: Light Switch
   m_TagString: Untagged
@@ -284,6 +285,20 @@ MonoBehaviour:
   useTarget: {fileID: 400004}
   lever: {fileID: 400002}
   leverSpeed: 135
+--- !u!114 &11400002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a97c4ec85c032a44a9b4b40a26a041b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interestLevel: 15
+  carryable: 0
+  useTarget: {fileID: 400002}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

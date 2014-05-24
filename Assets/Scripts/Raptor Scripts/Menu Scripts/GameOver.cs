@@ -15,7 +15,7 @@ public class GameOver : MonoBehaviour {
 	void Start () {
 		hud = GameObject.Find("HUD");
 
-		player = GameObject.Find("Player").GetComponent<RaptorInteraction>();
+		player = GameObject.FindObjectOfType<RaptorInteraction>();//.Find("Player").GetComponent<RaptorInteraction>();
 
 		gameOverPanel = transform.FindChild("Panel - GameOver");
 		gameOverPanel.gameObject.SetActive(false);
@@ -23,7 +23,7 @@ public class GameOver : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(player.health <= 0 && !gameOver) {
+		if(player != null && player.health <= 0 && !gameOver) {
 			StartCoroutine("GameOverPanel", 5);
 		}
 		
