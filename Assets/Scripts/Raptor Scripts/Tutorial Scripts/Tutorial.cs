@@ -25,6 +25,8 @@ public class Tutorial : MonoBehaviour {
 	//Room 5
 	List<string> hacking = new List<string>();//7
 
+	List<string> upgrades = new List<string>();//8
+
 	List<List<string>> textLists = new List<List<string>>();
 	List<string> currentList;
 	int index = 0;
@@ -84,6 +86,8 @@ public class Tutorial : MonoBehaviour {
 		collectibles.Add("Money can be used to lower your notoriety or buy upgrades while in space.");
 		textLists.Add(collectibles);
 
+
+
 		//Room 5
 		hacking.Add("This room has a map terminal");
 		hacking.Add("Sometimes getting to a terminal may be too risky to your survival, but your primary goal is to find one, hack it for map data, and escape.");
@@ -94,6 +98,12 @@ public class Tutorial : MonoBehaviour {
 		hacking.Add("Try to combine as many tiles as you can. The meter indicates how much more data you can steal.");
 		hacking.Add("When you are done hacking, return to your ship in the first room, and press E to complete this part of the tutorial.");
 		textLists.Add(hacking);
+
+		upgrades.Add("There are now two upgrades on the floor.");
+		upgrades.Add("You can pick up upgrades by pressing E.");
+		upgrades.Add("These upgrades will give you consumable weapons when you are in space.");
+		upgrades.Add("Other types of upgrades will permanently increase your health or attack power.");
+		textLists.Add(upgrades);
 
 		currentList = textLists[0];
 		textBox.text = currentList[index];

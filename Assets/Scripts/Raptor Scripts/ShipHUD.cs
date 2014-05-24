@@ -21,6 +21,15 @@ public class ShipHUD : MonoBehaviour {
 		health.value = player.health / player.maxHealth;
 		cloak.value = player.cloakCharge;
 
-		spacecowboys.text = "Space Cowboys: " + PlayerShipController.consumables.Count;
+		if(PlayerShipController.consumables.Count > 0) {
+			spacecowboys.enabled = true;
+			if(PlayerShipController.consumables[PlayerShipController.currentConsumable] != null) {
+				spacecowboys.text = PlayerShipController.consumables[PlayerShipController.currentConsumable].type + ": " +
+									PlayerShipController.consumables[PlayerShipController.currentConsumable].count;//"Space Cowboys: " + PlayerShipController.consumables.Count;
+			}
+		}
+		else {
+			spacecowboys.enabled = false;
+		}
 	}
 }

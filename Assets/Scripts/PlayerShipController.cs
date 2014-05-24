@@ -10,6 +10,7 @@ public class UpgradeCount {
 
 	public UpgradeCount(ConsumableUpgrade upgrade) {
 		this.upgrade = upgrade;
+		this.type = upgrade.name;
 	}
 }
 
@@ -47,7 +48,7 @@ public class PlayerShipController : MonoBehaviour {
 
 	public static void AddConsumable(ConsumableUpgrade upgrade) {
 		UpgradeCount count = consumables.Find(delegate(UpgradeCount cur) {
-			return cur.upgrade = upgrade;
+			return cur.type == upgrade.name;
 		});
 		if(count == null) {
 			count = new UpgradeCount(upgrade);
