@@ -72,7 +72,7 @@ public class PlayerShipController : MonoBehaviour {
 		LockMouse.lockMouse = false;
 		if (!isDead)
 		{
-			//print(cloakTrans);
+			print(cloakTrans);
 			if(shipMesh != null) {
 				shipMesh.material.SetFloat("_CloakAmt", cloakTrans * 128);
 			}
@@ -183,6 +183,8 @@ public class PlayerShipController : MonoBehaviour {
 			shot.layer = LayerMask.NameToLayer("Player");
 			shot.rigidbody2D.velocity = rigidbody2D.velocity + (Vector2)(transform.up * bulletSpeed);
 			reload = reloadTime;
+			if (isCloaked)
+				cloakCharge = 0;
 		}
 	}
 
@@ -203,5 +205,11 @@ public class PlayerShipController : MonoBehaviour {
 
 		//print(health);
 		//SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
+	}
+
+	void OnCollision2D(Collision2D col)
+	{
+		if (col.gameObject.tag == "enemy" && isCloaked)
+			cloakCharge = 0;
 	}
 }
