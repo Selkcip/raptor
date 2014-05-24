@@ -124,10 +124,7 @@ public class PlanningNPC : MonoBehaviour {
 		player = GameObject.FindObjectOfType<RaptorInteraction>();
 		stamina = maxStamina;
 
-		//InitGoals();
-		//InitActions();
-
-		//Plan();
+		transform.eulerAngles = new Vector3(0, Random.Range(0f, 360f), 0);
 
 		Move(Vector3.zero, head.position + head.forward*5);
 
@@ -854,7 +851,7 @@ public class PlanningNPC : MonoBehaviour {
 	}
 
 	public void KnockOut(float time) {
-		if(!enemyVisible && sleepTime <= 0) {
+		if(!facingEnemy && sleepTime <= 0) {
 			sleepTime = time;
 			standing = false;
 		}

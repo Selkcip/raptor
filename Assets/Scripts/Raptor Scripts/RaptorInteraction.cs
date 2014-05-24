@@ -346,7 +346,7 @@ public class RaptorInteraction : MonoBehaviour {
 			}
 		
 			//Stop climbing
-			if(RebindableInput.GetKeyDown("Jump") && climbing) {
+			if((RebindableInput.GetKeyDown("Jump") || RebindableInput.GetKeyDown("Slash")) && climbing) {
 				climbing = false;
 				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 				rigidbody.isKinematic = false;
@@ -505,7 +505,7 @@ public class RaptorInteraction : MonoBehaviour {
 				int mask = ~(1 << LayerMask.NameToLayer("Player"));
 				//check if the raptor is facing the wall
 				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 0.5f, mask)) {
-					//if(hit.collider.gameObject == other.gameObject) {
+					if(hit.collider.tag != "wood") {
 						climbing = true;
 						//armRotation = raptorArms.rotation;//Camera.main.transform.rotation;
 						rigidbody.constraints = RigidbodyConstraints.FreezePosition;
@@ -518,7 +518,7 @@ public class RaptorInteraction : MonoBehaviour {
 						Vector3 angles = transform.localEulerAngles;
 						angles.x -= 90;
 						transform.localEulerAngles = angles;*/
-					//}
+					}
 				}
 			}
 		}
