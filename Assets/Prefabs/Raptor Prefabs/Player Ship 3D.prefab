@@ -45,6 +45,7 @@ GameObject:
   - 65: {fileID: 6500000}
   - 65: {fileID: 6500004}
   - 65: {fileID: 6500002}
+  - 64: {fileID: 6400000}
   m_Layer: 0
   m_Name: Cube_001
   m_TagString: ship
@@ -110,7 +111,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2, z: 46}
+  m_LocalPosition: {x: 7.15255453e-07, y: 1.88201332, z: 3.81469772e-06}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400002}
@@ -127,7 +128,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: c821d4ff8a16f4f409ee3ff97a07a3eb, type: 2}
+  - {fileID: 2100000, guid: c9d6be6bd39dcb841857274f4692de0d, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -149,9 +150,9 @@ Renderer:
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
   - {fileID: 2100000, guid: c9d6be6bd39dcb841857274f4692de0d, type: 2}
-  - {fileID: 2100000, guid: 04623e718654a2d40a2dd85a56849233, type: 2}
+  - {fileID: 2100000, guid: c9d6be6bd39dcb841857274f4692de0d, type: 2}
   - {fileID: 2100000, guid: 72509cb581d8c2d4f87f5822affe5a7f, type: 2}
-  - {fileID: 2100000, guid: b0eb61d4c232e89439df76fd54b71a24, type: 2}
+  - {fileID: 2100000, guid: c9d6be6bd39dcb841857274f4692de0d, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -173,6 +174,19 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
+  m_Mesh: {fileID: 4300002, guid: 6aadf1354bcfbca4c8c9677abf88e105, type: 3}
+--- !u!64 &6400000
+MeshCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100004}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_SmoothSphereCollisions: 0
+  m_Convex: 0
   m_Mesh: {fileID: 4300002, guid: 6aadf1354bcfbca4c8c9677abf88e105, type: 3}
 --- !u!65 &6500000
 BoxCollider:

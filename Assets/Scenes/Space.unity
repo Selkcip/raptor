@@ -17850,8 +17850,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 253428890}
-  - 33: {fileID: 253428889}
-  - 23: {fileID: 253428887}
   - 114: {fileID: 253428886}
   - 50: {fileID: 253428888}
   - 95: {fileID: 253428893}
@@ -17897,28 +17895,6 @@ MonoBehaviour:
   reloadTime: .5
   explosion: {fileID: 100008, guid: 3455fe69f7ddc4604b95bf9b0a1e88d7, type: 2}
   levelSelector: {fileID: 0}
---- !u!23 &253428887
-Renderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 2300000, guid: 4d1295d6989650e40bc0fdf93c913fb2,
-    type: 2}
-  m_PrefabInternal: {fileID: 1467525608}
-  m_GameObject: {fileID: 253428885}
-  m_Enabled: 0
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_LightmapIndex: 255
-  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
-  m_Materials:
-  - {fileID: 2100000, guid: e6dd5cc2d5de0a54987a99707a029992, type: 2}
-  m_SubsetIndices: 
-  m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 0
-  m_LightProbeAnchor: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_SortingLayerID: 0
 --- !u!50 &253428888
 Rigidbody2D:
   m_ObjectHideFlags: 0
@@ -17935,14 +17911,6 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
---- !u!33 &253428889
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 3300000, guid: 4d1295d6989650e40bc0fdf93c913fb2,
-    type: 2}
-  m_PrefabInternal: {fileID: 1467525608}
-  m_GameObject: {fileID: 253428885}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &253428890
 Transform:
   m_ObjectHideFlags: 0
@@ -17994,7 +17962,7 @@ MonoBehaviour:
   cargoSpawnSpeed: {x: 10, y: 15}
   maxNearbyLanes: 3
   deliveryShip: {fileID: 11400000, guid: 368257f2ff522c84ab2ea211d6d43f92, type: 2}
-  deliveryShipSpawnDis: 10
+  deliveryShipSpawnDis: 100
   deliveryShipIndicator: {fileID: 2800000, guid: 039029b80919b75469427191d7a33680,
     type: 3}
   explosion: {fileID: 100008, guid: 3455fe69f7ddc4604b95bf9b0a1e88d7, type: 2}
@@ -114303,6 +114271,10 @@ Prefab:
     - target: {fileID: 400004, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
       propertyPath: m_LocalPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400002, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
+      propertyPath: deliveryShipSpawnDis
+      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6500004, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}

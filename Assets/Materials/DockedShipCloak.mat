@@ -42,7 +42,7 @@ Material:
       data:
         first:
           name: _Shininess
-        second: 1
+        second: .0545552261
       data:
         first:
           name: _GlowStrength
@@ -54,7 +54,7 @@ Material:
       data:
         first:
           name: _CloakAmt
-        second: 0
+        second: 128
     m_Colors:
       data:
         first:

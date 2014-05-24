@@ -12,6 +12,7 @@ public class DeliveryShip : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		playerShip = GameObject.Find("PlayerShip").transform;
+		transform.eulerAngles = new Vector3(0, 0, Random.Range(0f, 360f));
 		/*SceneTransition transition = GameObject.FindObjectOfType<SceneTransition>();
 		if(transition != null) {
 			transition.triggerList.Add(dock);
@@ -20,7 +21,7 @@ public class DeliveryShip : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//rigidbody2D.AddForce(transform.up * speed);
+		rigidbody2D.velocity = transform.up * speed;
 	}
 
 	public void Hurt(Damage damage) {

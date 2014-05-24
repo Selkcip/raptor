@@ -334,7 +334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db99448da384a2f419c17952e9b0e4f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  speed: 5
   dock: {fileID: 11400002}
   health: 100
 --- !u!114 &11400002
