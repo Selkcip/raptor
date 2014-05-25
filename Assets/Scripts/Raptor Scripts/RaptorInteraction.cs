@@ -20,13 +20,13 @@ public class RaptorInteraction : MonoBehaviour {
 	public static string level = "PrisonShip";
 	public static float maxHealth = 100f;
 	public static float attack = 20f;
-	public static float stealthTime = 180f; //time in seconds
+	public static float stealthTime = 300f; //time in seconds
 
 	//Defaults
 	public static string defaultLevel = "PrisonShip";
 	public static float defaultMaxHealth = 100f;
 	public static float defaultAttack = 20f;
-	public static float defaultStealthTime = 180f; //time in seconds
+	public static float defaultStealthTime = 300f; //time in seconds
 
 	public Transform eatTarget;
 
@@ -99,7 +99,7 @@ public class RaptorInteraction : MonoBehaviour {
 
 	//Slashing melee detection
 	private RaycastHit hit;
-	private float meleeRange = 1.0f;
+	private float meleeRange = 1.5f;
 
 	//Collection data
 	public static float _mapAmountAcquired = 0;
@@ -137,6 +137,8 @@ public class RaptorInteraction : MonoBehaviour {
 		LockMouse.lockMouse = true;
 		LevelSelector.coastIsClear = false;
 		ShipDoor.escaping = false;
+		RaptorInteraction.keyCount = 0;
+
 		fpc = gameObject.GetComponent<FirstPersonCharacter>();
 		arms = gameObject.GetComponentInChildren<Animator>();
 
@@ -150,7 +152,8 @@ public class RaptorInteraction : MonoBehaviour {
 		useTable.Add("ship", 0);
 		useTable.Add("collectible", 1);
 		useTable.Add("terminal", 2);
-		useTable.Add("trap", 3);
+		useTable.Add("lightswitch", 3);
+		useTable.Add("trap", 4);
 
 		hud = GameObject.FindObjectOfType<RaptorHUD>();//.Find("HUD").GetComponent<RaptorHUD>();
 	}

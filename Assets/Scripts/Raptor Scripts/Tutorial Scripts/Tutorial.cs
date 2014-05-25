@@ -25,6 +25,8 @@ public class Tutorial : MonoBehaviour {
 	//Room 5
 	List<string> hacking = new List<string>();//7
 
+	List<string> upgrades = new List<string>();//8
+
 	List<List<string>> textLists = new List<List<string>>();
 	List<string> currentList;
 	int index = 0;
@@ -66,7 +68,7 @@ public class Tutorial : MonoBehaviour {
 
 		climbing.Add("Pouncing on walls or ceilings will cause you to stick to them.");
 		climbing.Add("You can pounce from wall to wall to climb rooms.");
-		climbing.Add("Pressing SPACE while clinging will let you drop down.");
+		climbing.Add("Pressing SPACE or LEFT CLICK while clinging will let you drop down.");
 		climbing.Add("Use wall clinging to find a keycard.");
 		textLists.Add(climbing);
 
@@ -75,7 +77,7 @@ public class Tutorial : MonoBehaviour {
 		traps.Add("For tutorial purposes, this is a dummy mine, but mines are one type of trap that can spawn if your notoriety is high.");
 		traps.Add("Approach it and hold E to defuse it.");
 		traps.Add("You can choose to keep it active (blue) so it will hurt enemies who walk over it or just turn it off (black) by pressing E once it is defused.");
-		traps.Add("Other traps include tripwires, cameras and sentry guns, so be sure to look out for them if you are very notorious. ");
+		traps.Add("There are also trip wires and security cameras, so be sure to look out for them if you are very notorious. ");
 		textLists.Add(traps);
 
 		collectibles.Add("There is now a collectible on the floor.");
@@ -83,6 +85,8 @@ public class Tutorial : MonoBehaviour {
 		collectibles.Add("Collectibles will distract guards and enemies for a while, but any collectibles you keep when you escape a ship will be converted to money.");
 		collectibles.Add("Money can be used to lower your notoriety or buy upgrades while in space.");
 		textLists.Add(collectibles);
+
+
 
 		//Room 5
 		hacking.Add("This room has a map terminal");
@@ -94,6 +98,12 @@ public class Tutorial : MonoBehaviour {
 		hacking.Add("Try to combine as many tiles as you can. The meter indicates how much more data you can steal.");
 		hacking.Add("When you are done hacking, return to your ship in the first room, and press E to complete this part of the tutorial.");
 		textLists.Add(hacking);
+
+		upgrades.Add("There are now two upgrades on the floor.");
+		upgrades.Add("You can pick up upgrades by pressing E.");
+		upgrades.Add("These upgrades will give you consumable weapons when you are in space.");
+		upgrades.Add("Other types of upgrades will permanently increase your health or attack power.");
+		textLists.Add(upgrades);
 
 		currentList = textLists[0];
 		textBox.text = currentList[index];
