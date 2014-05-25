@@ -19,7 +19,7 @@ public class PlayerShipController : MonoBehaviour {
 	public Texture2D painIndicator;
 	public MeshRenderer shipMesh;
 
-    public float forwardForce, reverseForce, sideForce;
+	public float forwardForce, reverseForce, sideForce, velocityDamp;
 	public float turnRate; // deg/s
     public float maxSpeed;
 
@@ -93,11 +93,11 @@ public class PlayerShipController : MonoBehaviour {
 			Vector2 force = new Vector2(0, 0);
 			if (Input.GetKey(KeyCode.W))
 			{
-				force.y += forwardForce;
+				//force.y += forwardForce;
 			}
 			if (Input.GetKey(KeyCode.S))
 			{
-				force.y -= reverseForce;
+				//force.y -= reverseForce;
 			}
 			if (Input.GetKey(KeyCode.A))
 			{
@@ -109,6 +109,7 @@ public class PlayerShipController : MonoBehaviour {
 				transform.eulerAngles += new Vector3(0, 0, -turnRate * Time.deltaTime);
 				//force.x += sideForce;
 			}
+
 			if (Input.GetKeyDown(KeyCode.Q))
 			{ // cloak
 				if (isCloaked)
@@ -125,6 +126,13 @@ public class PlayerShipController : MonoBehaviour {
 				Shoot();
 			}
 
+			Vector2.Lerp(rigidbody2D.velocity, Vector2.zero, velocityDamp);
+			if(Input.GetKey(KeyCode.W)) {
+				rigidbody2D.velocity = Vector2.Lerp(rigidbody2D.velocity, new Vector2(transform.up.x, transform.up.y) * forwardForce, 0.5f);
+			}
+			if(Input.GetKey(KeyCode.S)) {
+				rigidbody2D.velocity = Vector2.Lerp(rigidbody2D.velocity, new Vector2(transform.up.x, transform.up.y) * -reverseForce, 0.5f);
+			}
 			force = Quaternion.Euler(transform.eulerAngles) * force;
 			rigidbody2D.AddForce(force);
 
@@ -157,7 +165,8 @@ public class PlayerShipController : MonoBehaviour {
 				if(consumables.Count > 0) {
 					UpgradeCount count = consumables[currentConsumable];
 					if(count.count > 0) {
-						Instantiate(count.upgrade, transform.position, transform.rotation);
+						ConsumableUpgrade weapon = (ConsumableUpgrade)Instantiate(count.upgrade, transform.position, transform.rotation);
+						weapon.rigidbody2D.velocity += rigidbody2D.velocity;
 						count.count--;
 						if(count.count <= 0) {
 							consumables.Remove(count);

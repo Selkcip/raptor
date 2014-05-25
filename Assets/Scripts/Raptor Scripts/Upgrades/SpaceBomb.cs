@@ -10,9 +10,11 @@ public class SpaceBomb : ConsumableUpgrade {
 
 	protected float fuse = 0;
 	protected bool attached = false;
+	protected Vector2 velocity;
 
 	protected virtual void Start() {
 		attached = !sticky;
+		velocity = rigidbody2D.velocity;
 	}
 
 	protected virtual void OnTriggerEnter2D(Collider2D col) {

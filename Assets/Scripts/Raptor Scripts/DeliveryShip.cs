@@ -4,6 +4,7 @@ using System.Collections;
 public class DeliveryShip : MonoBehaviour {
 	public float speed = 1;
 	public TaggedTriggerable dock;
+	public float stunTime = 0;
 
 	public float health = 100;
 
@@ -21,10 +22,17 @@ public class DeliveryShip : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		rigidbody2D.velocity = transform.up * speed;
+		stunTime = Mathf.Max(stunTime - Time.deltaTime, 0);
+		if(stunTime <= 0) {
+			rigidbody2D.velocity = transform.up * speed;
+		}
 	}
 
 	public void Hurt(Damage damage) {
 		health -= damage.amount;
+	}
+
+	public void Stun(Damage damage) {
+		stunTime += damage.amount;
 	}
 }

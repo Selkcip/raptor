@@ -9,6 +9,7 @@ public class CargoShip : MonoBehaviour {
     public float bulletSpeed;
 	public float reloadTime;
 	float reload = 0;
+	public float stunTime = 0;
 
 	public float health = 100;
 
@@ -21,7 +22,8 @@ public class CargoShip : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update() {
-		if(player != null) {
+		stunTime = Mathf.Max(stunTime - Time.deltaTime, 0);
+		if(player != null && stunTime <= 0) {
 			if(isPlayerSpotted()) {
 				Shoot();
 			}
@@ -59,5 +61,9 @@ public class CargoShip : MonoBehaviour {
 
 	public void Hurt(Damage damage) {
 		health -= damage.amount;
+	}
+
+	public void Stun(Damage damage) {
+		stunTime += damage.amount;
 	}
 }

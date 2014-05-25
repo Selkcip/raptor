@@ -9,6 +9,7 @@ public class PoliceShip : MonoBehaviour {
 	public float fireAngle;
     public float maxSpeed;
     public float maxSearchTime; // max time spent searching for player
+	public float stunTime = 0;
 
 	public GameObject bullet;
 	public float bulletSpeed;
@@ -32,30 +33,33 @@ public class PoliceShip : MonoBehaviour {
 	// Update is called once per frame
 	void Update()
 	{
-		if(player != null) {
-			if (searchTimer < 0)
-				LeaveArea();
-			else
-				InterceptPlayer();
-			//gameObject.renderer.material.color = Color.green;
+		stunTime = Mathf.Max(stunTime - Time.deltaTime, 0);
+		if(stunTime <= 0) {
+			if(player != null) {
+				if(searchTimer < 0)
+					LeaveArea();
+				else
+					InterceptPlayer();
+				//gameObject.renderer.material.color = Color.green;
 
-			if(reload > 0) {
-				reload -= Time.deltaTime;
+				if(reload > 0) {
+					reload -= Time.deltaTime;
+				}
+
+				// if the player is spotted reset search timer
+				if(player.GetComponent<LevelSelector>().isPlayerSpotted && searchTimer < maxSearchTime)
+					searchTimer = maxSearchTime;
+				else
+					searchTimer -= Time.deltaTime;
 			}
-
-			// if the player is spotted reset search timer
-			if(player.GetComponent<LevelSelector>().isPlayerSpotted && searchTimer < maxSearchTime)
-				searchTimer = maxSearchTime;
-			else
-				searchTimer -= Time.deltaTime;
+			// add movement force
+			Vector2 force = new Vector2(0, baseForce);
+			force = Quaternion.Euler(transform.eulerAngles) * force;
+			rigidbody2D.AddForce(force);
+			// limit maxspeed
+			if(rigidbody2D.velocity.magnitude > maxSpeed)
+				rigidbody2D.velocity = rigidbody2D.velocity.normalized * maxSpeed;
 		}
-		// add movement force
-        Vector2 force = new Vector2(0, baseForce);
-        force = Quaternion.Euler(transform.eulerAngles) * force;
-        rigidbody2D.AddForce(force);
-		// limit maxspeed
-        if (rigidbody2D.velocity.magnitude > maxSpeed)
-            rigidbody2D.velocity = rigidbody2D.velocity.normalized * maxSpeed;
 	}
 
 	public bool IsPlayerSpotted() {
@@ -128,5 +132,9 @@ public class PoliceShip : MonoBehaviour {
 
 	public void Hurt(Damage damage) {
 		health -= damage.amount;
+	}
+
+	public void Stun(Damage damage) {
+		stunTime += damage.amount;
 	}
 }

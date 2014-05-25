@@ -386,7 +386,7 @@ Objects:  {
 			Version: 100
 			LayerElement:  {
 				Type: "LayerElementNormal"
-
+				T
 			Property: "RotationMin", "Vector3D", "",0,0,0
 			Property: "RotationMax", "Vector3D", "",0,0,0
 			Property: "RotationMinX", "bool", "",0
@@ -463,7 +463,7 @@ Objects:  {
 		Culling: "CullingOff"
 		TypeFlags: "Light"
 		GeometryVersion: 124
-	}etricRotation", "Vector3D", "",0,0,0
+	}Rotation", "Vector3D", "",0,0,0
 			Property: "GeometricScaling", "Vector3D", "",1,1,1
 			Property: "LookAtProperty", "object", ""
 			Property: "UpVectorProperty", "object", ""

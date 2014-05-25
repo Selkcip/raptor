@@ -13,7 +13,8 @@ public class SpaceCowboy : SpaceBomb {
 			Detonate();
 		}
 		if(!attached) {
-			transform.position += transform.up * speed;
+			//transform.position += transform.up * speed;
+			rigidbody2D.velocity = velocity + new Vector2(transform.up.x, transform.up.y) * speed;
 		}
 	}
 }
