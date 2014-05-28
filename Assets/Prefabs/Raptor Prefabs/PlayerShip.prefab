@@ -13,6 +13,7 @@ GameObject:
   - 95: {fileID: 9500000}
   - 114: {fileID: 11400002}
   - 61: {fileID: 6100000}
+  - 60: {fileID: 6000000}
   m_Layer: 10
   m_Name: PlayerShip
   m_TagString: Player
@@ -46,9 +47,6 @@ GameObject:
   - 4: {fileID: 400004}
   - 33: {fileID: 3300002}
   - 23: {fileID: 2300002}
-  - 65: {fileID: 6500004}
-  - 65: {fileID: 6500002}
-  - 65: {fileID: 6500000}
   m_Layer: 0
   m_Name: Cube_001
   m_TagString: ship
@@ -120,7 +118,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
   m_LocalRotation: {x: -.707106888, y: 0, z: -0, w: .707106769}
-  m_LocalPosition: {x: 0, y: -1.04146481, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.27981007, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400008}
@@ -193,8 +191,8 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
---- !u!61 &6100000
-BoxCollider2D:
+--- !u!60 &6000000
+PolygonCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -202,44 +200,25 @@ BoxCollider2D:
   m_Enabled: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Size: {x: 1, y: 1}
+  m_Poly:
+    m_Paths:
+    - - {x: -.531127214, y: .676292539}
+      - {x: 0, y: .646744251}
+      - {x: .532917023, y: .712737799}
+      - {x: 1.05638981, y: -.484598517}
+      - {x: .00337744132, y: -.809016943}
+      - {x: -1.0736146, y: -.484006107}
+--- !u!61 &6100000
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 0
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Size: {x: 1.26999998, y: 1.19000006}
   m_Center: {x: 0, y: 0}
---- !u!65 &6500000
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100004}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.07785439, y: 1.77309203, z: .379149765}
-  m_Center: {x: -2.63785267, y: .558452666, z: -.00263718702}
---- !u!65 &6500002
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100004}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.03117108, y: 1.81912112, z: .373741597}
-  m_Center: {x: 2.57840753, y: .574859679, z: -.0527794771}
---- !u!65 &6500004
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100004}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 4.17317057, y: 5.93029022, z: 2.268291}
-  m_Center: {x: -.0113977268, y: -.296596646, z: .227450058}
 --- !u!95 &9500000
 Animator:
   serializedVersion: 2
@@ -267,10 +246,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   painIndicator: {fileID: 2800000, guid: 039029b80919b75469427191d7a33680, type: 3}
   shipMesh: {fileID: 2300002}
-  forwardForce: 5
-  reverseForce: 5
-  sideForce: 2
-  turnRate: 100
+  forwardForce: 50
+  reverseForce: 50
+  sideForce: 5
+  velocityDamp: .5
+  turnRate: 200
   maxSpeed: 25
   isCloaked: 0
   isDead: 0
@@ -310,8 +290,8 @@ MonoBehaviour:
   cargoSpawnSpeed: {x: 10, y: 15}
   maxNearbyLanes: 3
   deliveryShip: {fileID: 11400000, guid: 368257f2ff522c84ab2ea211d6d43f92, type: 2}
-  deliveryShipSpawnDis: 10
-  deliveryShipIndicator: {fileID: 2800000, guid: 039029b80919b75469427191d7a33680,
+  deliveryShipSpawnDis: 100
+  deliveryShipIndicator: {fileID: 2800000, guid: eef9e685cfc17e9468be6c6b33b5f550,
     type: 3}
   explosion: {fileID: 100008, guid: 3455fe69f7ddc4604b95bf9b0a1e88d7, type: 2}
   cargoExplosion: {fileID: 100112, guid: a988377d455b66d4cb43573621602e40, type: 2}
