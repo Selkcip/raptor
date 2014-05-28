@@ -331,7 +331,7 @@ public class PlanningNPC : MonoBehaviour {
 
 		activateAlarm = new State(
 			delegate() {
-				return alertShip && !alarmFound && !enemyVisible;
+				return alertShip && Alarm.alarms.Count > 0 && !alarmFound && !enemyVisible;
 			},
 			delegate() {
 				actionName = "Activate Alarm";
@@ -360,10 +360,10 @@ public class PlanningNPC : MonoBehaviour {
 						target = minAlarm.transform;
 						alarmFound = true;
 					}
-					else {
+					/*else {
 						Alarm.activated = true;
 						alarmActivated = true;
-					}
+					}*/
 				}
 				else {
 					usingObject = true;

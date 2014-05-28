@@ -16,6 +16,8 @@ public class HackGame : MonoBehaviour {
 	public float mapPerLevel = 0;
 	public float notorietyToLock = 10000;
 
+	public Vector3 hackPos;
+
 	public float tileSize = 0;
 	public Vector3 offset;
 	List<List<int>> spaces = new List<List<int>>();
@@ -296,6 +298,10 @@ public class HackGame : MonoBehaviour {
 				}
 			}
 		}*/
+
+		if(hacking) {
+			fpc.transform.position = Vector3.Lerp(fpc.transform.position, hackPos, 0.1f);
+		}
 
 		if(movingTiles.Count > 0) {
 			//print("moving tiles");
