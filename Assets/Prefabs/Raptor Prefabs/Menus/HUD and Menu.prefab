@@ -3051,7 +3051,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &100736
 GameObject:
   m_ObjectHideFlags: 1
@@ -3191,7 +3191,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -27.5404339, y: .167236328, z: -27.3126564}
+  m_LocalPosition: {x: -44, y: 0, z: -28}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400322}
@@ -5159,7 +5159,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100328}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 623.000305, y: 337, z: 0}
+  m_LocalPosition: {x: 623.200806, y: 337, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400340}
@@ -5170,7 +5170,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100330}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: .100250244, y: 0, z: 0}
   m_LocalScale: {x: .982812583, y: 1, z: 1}
   m_Children:
   - {fileID: 400326}
@@ -5183,7 +5183,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100332}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5, y: 338, z: -67.4436951}
+  m_LocalPosition: {x: 5.10025024, y: 338, z: -67.4436951}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 400340}
@@ -5447,7 +5447,7 @@ Camera:
   m_GameObject: {fileID: 100274}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 4
+  m_ClearFlags: 3
   m_BackGroundColor: {r: .421875, g: .421875, b: .421875, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
@@ -7935,7 +7935,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3004
+  startingRenderQueue: 3006
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 0, w: 0}
@@ -10955,6 +10955,7 @@ MonoBehaviour:
   musicSlider: {fileID: 100068}
   sfxSlider: {fileID: 100226}
   dialogueSlider: {fileID: 100276}
+  guiCamera: {fileID: 2000000}
 --- !u!114 &11400268
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -14549,7 +14550,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3005
+  startingRenderQueue: 3006
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
@@ -15570,7 +15571,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3004
+  startingRenderQueue: 3006
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}

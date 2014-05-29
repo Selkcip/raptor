@@ -9,6 +9,9 @@ public class HackGame : MonoBehaviour {
 	public HackGameTile tile;
 	public UISlider progressBar;
 	public UILabel alarmLabel;
+	public LocationMap map;
+	public MapOpenTrigger mapTrigger;
+	public GameObject terminal;
 	public List<Texture2D> textures = new List<Texture2D>();
 
 	public float mapAvailable = 1;
@@ -16,7 +19,7 @@ public class HackGame : MonoBehaviour {
 	public float mapPerLevel = 0;
 	public float notorietyToLock = 10000;
 
-	public Vector3 hackPos;
+	float hackDis = -2.0f;
 
 	public float tileSize = 0;
 	public Vector3 offset;
@@ -291,6 +294,18 @@ public class HackGame : MonoBehaviour {
 
 		progressBar.value = mapAvailable / initAmount;
 		alarmLabel.enabled = !hackable;
+		if(!hackable) {
+			if(map != null){
+				map.open = false;
+				map.light.color = Color.red;
+			}
+			if(mapTrigger != null) {
+				mapTrigger.collider.enabled = false;
+			}
+			if(terminal != null) {
+				terminal.renderer.materials[1].color = Color.red;
+			}
+		}
 		/*for(int x = 0; x < tileCount; x++) {
 			for(int y = 0; y < tileCount; y++) {
 				if(tiles[x][y] != null) {
@@ -299,8 +314,12 @@ public class HackGame : MonoBehaviour {
 			}
 		}*/
 
-		if(hacking) {
-			fpc.transform.position = Vector3.Lerp(fpc.transform.position, hackPos, 0.1f);
+		if(fpc != null && hacking) {
+			Vector3 hackPos = transform.TransformPoint(0, 0, hackDis);
+			hackPos.y = fpc.transform.position.y;
+			if((hackPos - fpc.transform.position).magnitude > 0.25f) {
+				fpc.transform.position = Vector3.Lerp(fpc.transform.position, hackPos, 0.1f * Time.timeScale);
+			}
 		}
 
 		if(movingTiles.Count > 0) {
@@ -311,7 +330,7 @@ public class HackGame : MonoBehaviour {
 				//print("moving tile");
 				Vector3 diff = cur.pos - cur.transform.localPosition;
 				if(diff.magnitude > 0.05f) {
-					cur.transform.localPosition += diff * Time.deltaTime / moveTime;
+					cur.transform.localPosition += diff * (moveTime > 0 ? Time.deltaTime / moveTime : 0);
 				}
 				else {
 					//cur.renderer.material.color = Color.green;

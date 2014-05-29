@@ -208,7 +208,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: -.707106888, y: 1.12005327e-15, z: -5.38036599e-16, w: .707106769}
-  m_LocalPosition: {x: -0, y: .5, z: -93}
+  m_LocalPosition: {x: 0, y: -3.20884132, z: 3.79151154}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400004}
@@ -233,7 +233,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.75142781e-11, y: 215.999863, z: -26.5942879}
+  m_LocalPosition: {x: -9.41708725e-11, y: 215.997665, z: -18.8442822}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400018}
@@ -547,12 +547,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f7a23954f89a04480e6c58968309d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveTime: .0500000007
+  moveTime: .0250000004
   tileCount: 4
   zOffset: .00999999978
   tile: {fileID: 11400000}
   progressBar: {fileID: 11400014}
   alarmLabel: {fileID: 11400006}
+  map: {fileID: 0}
+  mapTrigger: {fileID: 0}
+  terminal: {fileID: 100002}
   textures:
   - {fileID: 2800000, guid: c66e422a089180c438ddf77a25fbb697, type: 3}
   - {fileID: 2800000, guid: 6c4ee102d675d38438e1f3a6de174e70, type: 3}
@@ -577,7 +580,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9d0b5f3bbe925a408bd595c79d0bf63, type: 3}
   m_Name: 
@@ -600,17 +603,21 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 0, b: 0, a: 1}
   mPivot: 4
-  mWidth: 239
-  mHeight: 78
+  mWidth: 336
+  mHeight: 255
   mDepth: 4
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.06410265
+  aspectRatio: 1.3176471
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 0}
   mFont: {fileID: 11400000, guid: 7a48ea22e80d1ac4b97fdd87f9009546, type: 2}
-  mText: ACCESS DENIED
+  mText: '====================
+
+    ! ACCESS DENIED !
+
+    ===================='
   mFontSize: 28
   mFontStyle: 0
   mEncoding: 1
@@ -624,7 +631,7 @@ MonoBehaviour:
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
-  mSpacingX: 0
+  mSpacingX: 2
   mSpacingY: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
@@ -918,7 +925,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3006
+  startingRenderQueue: 3003
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}

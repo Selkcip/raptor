@@ -6,6 +6,7 @@ public class RaptorDoor : Triggerable {
 	public float closeAfter = 5;
 	private float openTime = 0;
 	public int keyCardsToUnlock = 1;
+	public bool locksRandomly = true;
 	public float notorietyToLock = 10000;
 	public bool guardsCanUnlock = true;
 	public bool openOnTrigger = true;
@@ -22,8 +23,11 @@ public class RaptorDoor : Triggerable {
 	public bool isOpen = false;
 	public bool isLocked = false;
 
-	private bool tweening = false;//Prevents the doors from tweening while tweening, dawg. 
+	private bool tweening = false;//Prevents the doors from tweening while tweening, dawg.
 
+	void Start() {
+		notorietyToLock = locksRandomly ? Random.Range(RaptorInteraction.minTrapNotoriety, RaptorInteraction.maxTrapNotoriety) : notorietyToLock;
+	}
 
 	public void LockDoor(bool locked) {
 		isLocked = locked;

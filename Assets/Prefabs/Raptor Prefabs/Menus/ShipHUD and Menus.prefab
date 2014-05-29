@@ -5590,7 +5590,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100184}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -27.8689938, y: .198889762, z: -27.3093605}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400474}
@@ -7683,7 +7683,7 @@ Camera:
   m_GameObject: {fileID: 100212}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 4
+  m_ClearFlags: 3
   m_BackGroundColor: {r: .421875, g: .421875, b: .421875, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
@@ -7741,7 +7741,7 @@ Camera:
   m_GameObject: {fileID: 100470}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 4
+  m_ClearFlags: 3
   m_BackGroundColor: {r: .421875, g: .421875, b: .421875, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
@@ -21196,6 +21196,7 @@ MonoBehaviour:
   musicSlider: {fileID: 100282}
   sfxSlider: {fileID: 100080}
   dialogueSlider: {fileID: 100372}
+  guiCamera: {fileID: 0}
 --- !u!114 &11400680
 MonoBehaviour:
   m_ObjectHideFlags: 1

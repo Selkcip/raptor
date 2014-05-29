@@ -9,7 +9,8 @@ public class SecurityCamera : MonoBehaviour {
 	public float fov = 45f;
 	public float viewDis = 10f;
 	public float noticeTime = 2;
-	public float notorietyToSpawn = 10000;
+	public bool spawnsRandomly = true;
+	//public float notorietyToSpawn = 10000;
 
 	float curFov = 0;
 	float curViewDis = 0;
@@ -33,7 +34,7 @@ public class SecurityCamera : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
-		if(RaptorInteraction.notoriety < notorietyToSpawn) Destroy(gameObject);
+		if(spawnsRandomly && RaptorInteraction.notoriety < Random.Range(RaptorInteraction.minTrapNotoriety, RaptorInteraction.maxTrapNotoriety)) Destroy(gameObject);
 
 		player = GameObject.FindObjectOfType<RaptorInteraction>();
 		startingRotation = transform.localEulerAngles;

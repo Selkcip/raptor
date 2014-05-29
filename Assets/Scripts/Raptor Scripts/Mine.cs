@@ -9,7 +9,8 @@ public class Mine : MonoBehaviour {
 	public bool hacked = false;
 	public bool activated = true;
 
-	public float notorietyToSpawn = 10000;
+	public bool spawnsRandomly = true;
+	//public float notorietyToSpawn = 10000;
 
 	public Explosion explosionPrefab;
 
@@ -18,7 +19,7 @@ public class Mine : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		if(RaptorInteraction.notoriety < notorietyToSpawn) Destroy(gameObject);
+		if(spawnsRandomly && RaptorInteraction.notoriety < Random.Range(RaptorInteraction.minTrapNotoriety, RaptorInteraction.maxTrapNotoriety)) Destroy(gameObject);
 
 		defuse = GameObject.Find("HUD-Defuse").GetComponent<UISlider>();
 		center = transform.FindChild("center");

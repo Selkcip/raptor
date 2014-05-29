@@ -8,7 +8,8 @@ public class Tripwire : Triggerable {
 	public bool hacked = false;
 	public bool explosive = true;
 
-	public float notorietyToSpawn = 10000;
+	public bool spawnsRandomly = true;
+	//public float notorietyToSpawn = 10000;
 
 	public Transform emitter1;
 	public Transform emitter2;
@@ -18,7 +19,7 @@ public class Tripwire : Triggerable {
 
 	// Use this for initialization
 	void Start() {
-		if(RaptorInteraction.notoriety < notorietyToSpawn) Destroy(gameObject);
+		if(spawnsRandomly && RaptorInteraction.notoriety < Random.Range(RaptorInteraction.minTrapNotoriety, RaptorInteraction.maxTrapNotoriety)) Destroy(gameObject);
 
 		defuse = GameObject.Find("HUD-Defuse").GetComponent<UISlider>();
 

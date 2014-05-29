@@ -108,6 +108,10 @@ public class RaptorInteraction : MonoBehaviour {
 	public static float notorietyStep = 2000;
 	public static int keyCount = 0;
 
+	//Trap spawning
+	public static float minTrapNotoriety = 2000;
+	public static float maxTrapNotoriety = 50000;
+
 	public static bool cutscene = false;
 
 	public static float notoriety {

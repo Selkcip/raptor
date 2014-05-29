@@ -50,7 +50,7 @@ GameObject:
   - 65: {fileID: 6500008}
   m_Layer: 0
   m_Name: Door Right
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -104,7 +104,7 @@ GameObject:
   - 65: {fileID: 6500010}
   m_Layer: 0
   m_Name: Door Left
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -185,8 +185,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: -4.37113883e-08}
+  m_LocalPosition: {x: 0, y: 0, z: -12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400010}
@@ -525,7 +525,8 @@ MonoBehaviour:
   triggerList: []
   closeAfter: 5
   keyCardsToUnlock: 1
-  notorietyToLock: 1e+07
+  locksRandomly: 1
+  notorietyToLock: 10000
   guardsCanUnlock: 1
   openOnTrigger: 1
   openOnTriggerable: 1
