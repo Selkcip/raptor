@@ -6,6 +6,7 @@ public class Tutorial : MonoBehaviour {
 
 	public UILabel textBox;
 	private RaptorInteraction player;
+	private bool textSwitch = true;
 
 	//Room 1
 	List<string> movement = new List<string>();//0
@@ -43,6 +44,7 @@ public class Tutorial : MonoBehaviour {
 		movement.Add("Press SPACE to jump.");
 		movement.Add("Moving while holding LEFT SHIFT will make you sprint. Sprinting makes your movement louder.");
 		movement.Add("Pressing LEFT CTRL will make you crouch. Crouching allows you to move through tighter areas and makes your movement quieter.");
+		movement.Add("Pressing TAB will show your current objective.");
 		movement.Add("The door to the next room is locked. Look around the room and find the key card to proceed.");
 		textLists.Add(movement);
 
@@ -111,16 +113,23 @@ public class Tutorial : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetKeyDown(KeyCode.Return) && index < currentList.Count - 1) {
+		if(Input.GetAxis("Mouse ScrollWheel") < 0 && index < currentList.Count - 1) {
 			index++;
 			/*if(index > currentList.Count - 1) {
 				index = 0;
 			}*/
 			textBox.text = currentList[index];
 		}
-		else if(Input.GetKeyDown(KeyCode.Backspace) && index > 0) {
+		else if(Input.GetAxis("Mouse ScrollWheel") > 0 && index > 0) {
 			index--;
 			textBox.text = currentList[index];
+		}
+
+		if(Input.GetKeyDown(KeyCode.Tab)) {
+			textSwitch = !textSwitch;
+			foreach(Transform child in transform) {
+				child.gameObject.SetActive(textSwitch);
+			}
 		}
 	}
 

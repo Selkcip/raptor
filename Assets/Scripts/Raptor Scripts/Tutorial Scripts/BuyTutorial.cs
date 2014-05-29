@@ -27,14 +27,14 @@ public class BuyTutorial : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update() {
-		if(Input.GetKeyDown(KeyCode.Return) && index < currentList.Count - 1) {
+		if(Input.GetAxis("Mouse ScrollWheel") < 0 && index < currentList.Count - 1) {
 			index++;
 			/*if(index > currentList.Count - 1) {
 				index = 0;
 			}*/
 			textBox.text = currentList[index];
 		}
-		else if(Input.GetKeyDown(KeyCode.Backspace) && index > 0) {
+		else if(Input.GetAxis("Mouse ScrollWheel") > 0 && index > 0) {
 			index--;
 			textBox.text = currentList[index];
 		}

@@ -15,6 +15,9 @@ public class RaptorHUD : MonoBehaviour {
 
 	public UILabel usePrompt;
 
+	public GameObject goal;
+	private bool goalSwitch = false;
+
 	private List<string> useMessages = new List<string>();
 
 	// Use this for initialization
@@ -40,6 +43,11 @@ public class RaptorHUD : MonoBehaviour {
 
 		TimerUpdate();
 		DefuseUpdate();
+
+		if(Input.GetKeyDown(KeyCode.Tab)) {
+			goalSwitch = !goalSwitch;
+			goal.SetActive(goalSwitch);
+		}
 	}
 
 	void TimerUpdate() {
