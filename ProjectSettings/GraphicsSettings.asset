@@ -5,3 +5,4 @@ GraphicsSettings:
   m_ObjectHideFlags: 0
   m_AlwaysIncludedShaders:
   - {fileID: 7, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 4800000, guid: 980b559b0c9b03f42b05ae3ed262e429, type: 3}

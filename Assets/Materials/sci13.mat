@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: sci13
-  m_Shader: {fileID: 4800000, guid: 3ad0c2f3204d7814d924acd61b4aafe8, type: 3}
+  m_Shader: {fileID: 4800000, guid: f8384e2bf1ccf6640bc2bf3ab8e4c62f, type: 3}
   m_ShaderKeywords:
   - DIFFCUBE_OFF
   - SPECCUBE_OFF
