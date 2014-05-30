@@ -182,6 +182,15 @@ public class RaptorInteraction : MonoBehaviour {
 			rigidbody.isKinematic = false;
 			rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
 			toggleRotator(false);
+
+			//Disables being able to look around after dying
+			GetComponent<SimpleMouseRotator>().enabled = false;
+			SimpleMouseRotator[] smrs = GetComponentsInChildren<SimpleMouseRotator>();
+			foreach(SimpleMouseRotator smr in smrs) {
+				smr.enabled = false;
+			}
+
+			//Animation and sounds
 			arms.SetBool("isDead", true);
 			if(!dieSoundPlaying) {
 				dieSoundPlaying = true;
