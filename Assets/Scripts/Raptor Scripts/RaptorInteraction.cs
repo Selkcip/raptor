@@ -307,20 +307,27 @@ public class RaptorInteraction : MonoBehaviour {
 			}
 
 			if(RebindableInput.GetKey("Use")) {
-				RaycastHit hit;
 				int mask = ~(1 << LayerMask.NameToLayer("Player"));
-				if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2, mask)) {
-					if(hit.transform.tag == "trap") {
-						hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
-					}
-
-					else { 
-					ikControl.UseObject(hit.point+Camera.main.transform.up, hit.transform);
-					//if(hit.transform.tag != "trap") {
-					defusing = false;
+				RaycastHit[] hits = Physics.SphereCastAll(Camera.main.transform.position, 0.25f, Camera.main.transform.forward, meleeRange, mask);
+				if(hits != null) {//if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2, mask)) {
+					foreach(RaycastHit hit in hits) {
+						if(hit.transform.tag == "trap") {
+							hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+							break;
+						}
+						else if (hit.transform.tag != "Untagged") {
+							print(hit.transform.tag + " : ok");
+							ikControl.UseObject(hit.point + Camera.main.transform.up, hit.transform);
+							//if(hit.transform.tag != "trap") {
+							defusing = false;
+							break;
+						}
+						else {
+							defusing = false;
+						}
 					}
 				}
-				else {
+				if (hits == null) {
 					defusing = false;
 				}
 				if(eatTarget != null) {
@@ -549,16 +556,21 @@ public class RaptorInteraction : MonoBehaviour {
 	bool InAttackRange() {
 		Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * range, Color.cyan);
 		Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * meleeRange, Color.red);
-		if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out inRange, meleeRange)) {
-			//print(inRange.collider.tag + " : " + useTable.ContainsKey(inRange.collider.tag));
-			if(useTable.ContainsKey(inRange.collider.tag)) {
-				int value;
-				useTable.TryGetValue(inRange.collider.tag, out value);
-				hud.UsePromptUpdate(true, value, inRange.collider.gameObject);
-				return true;
-			}
-			else if (inRange.collider.tag == "enemy") {
-				return true;
+	
+		//if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out inRange, meleeRange)) {
+		RaycastHit[] hits = Physics.SphereCastAll(Camera.main.transform.position, 0.25f, Camera.main.transform.forward, meleeRange);
+		if (hits != null){
+			foreach(RaycastHit hit in hits) {
+			//	print(hit.collider.tag + " : " + useTable.ContainsKey(hit.collider.tag));
+				if(useTable.ContainsKey(hit.collider.tag)) {
+					int value;
+					useTable.TryGetValue(hit.collider.tag, out value);
+					hud.UsePromptUpdate(true, value, hit.collider.gameObject);
+					return true;
+				}
+				else if(hit.collider.tag == "enemy") {
+					return true;
+				}
 			}
 		}
 		if(hud != null) {
