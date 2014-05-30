@@ -2777,8 +2777,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 253428890}
-  - 33: {fileID: 253428889}
-  - 23: {fileID: 253428887}
   - 114: {fileID: 253428886}
   - 50: {fileID: 253428888}
   - 95: {fileID: 253428893}
@@ -2804,11 +2802,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   painIndicator: {fileID: 2800000, guid: 039029b80919b75469427191d7a33680, type: 3}
-  shipMesh: {fileID: 1624534255}
-  forwardForce: 5
-  reverseForce: 5
-  sideForce: 2
-  turnRate: 100
+  shipMesh: {fileID: 257770098}
+  forwardForce: 50
+  reverseForce: 50
+  sideForce: 5
+  velocityDamp: .5
+  turnRate: 200
   maxSpeed: 25
   isCloaked: 0
   isDead: 0
@@ -2824,28 +2823,6 @@ MonoBehaviour:
   reloadTime: .5
   explosion: {fileID: 100008, guid: 3455fe69f7ddc4604b95bf9b0a1e88d7, type: 2}
   levelSelector: {fileID: 0}
---- !u!23 &253428887
-Renderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 2300000, guid: 4d1295d6989650e40bc0fdf93c913fb2,
-    type: 2}
-  m_PrefabInternal: {fileID: 584016351}
-  m_GameObject: {fileID: 253428885}
-  m_Enabled: 0
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_LightmapIndex: 255
-  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
-  m_Materials:
-  - {fileID: 2100000, guid: e6dd5cc2d5de0a54987a99707a029992, type: 2}
-  m_SubsetIndices: 
-  m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 0
-  m_LightProbeAnchor: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_SortingLayerID: 0
 --- !u!50 &253428888
 Rigidbody2D:
   m_ObjectHideFlags: 0
@@ -2862,14 +2839,6 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
---- !u!33 &253428889
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 3300000, guid: 4d1295d6989650e40bc0fdf93c913fb2,
-    type: 2}
-  m_PrefabInternal: {fileID: 584016351}
-  m_GameObject: {fileID: 253428885}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &253428890
 Transform:
   m_ObjectHideFlags: 0
@@ -2880,9 +2849,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 1624534254}
   - {fileID: 1609654443}
   - {fileID: 8369730}
-  - {fileID: 1624534254}
   m_Father: {fileID: 0}
 --- !u!61 &253428891
 BoxCollider2D:
@@ -2959,9 +2928,12 @@ GameObject:
   - 4: {fileID: 257770094}
   - 33: {fileID: 257770099}
   - 23: {fileID: 257770098}
+  - 65: {fileID: 257770097}
+  - 65: {fileID: 257770096}
+  - 65: {fileID: 257770095}
   m_Layer: 10
-  m_Name: Engine
-  m_TagString: Untagged
+  m_Name: Cube_001
+  m_TagString: ship
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2972,23 +2944,50 @@ Transform:
   m_PrefabParentObject: {fileID: 400004, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
   m_PrefabInternal: {fileID: 584016351}
   m_GameObject: {fileID: 257770093}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -.707106888, y: 0, z: -0, w: .707106769}
+  m_LocalPosition: {x: 0, y: -1.04146481, z: 0}
+  m_LocalScale: {x: 1.27981007, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1624534254}
---- !u!61 &257770095
-BoxCollider2D:
+--- !u!65 &257770095
+BoxCollider:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 6100002, guid: 4d1295d6989650e40bc0fdf93c913fb2,
+  m_PrefabParentObject: {fileID: 6500000, guid: 4d1295d6989650e40bc0fdf93c913fb2,
     type: 2}
   m_PrefabInternal: {fileID: 584016351}
-  m_GameObject: {fileID: 1624534253}
-  m_Enabled: 1
+  m_GameObject: {fileID: 257770093}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Size: {x: 10.4877796, y: 14.6092815}
-  m_Center: {x: 0, y: .708557844}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.07785439, y: 1.77309203, z: .379149765}
+  m_Center: {x: -2.63785267, y: .558452666, z: -.00263718702}
+--- !u!65 &257770096
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 6500002, guid: 4d1295d6989650e40bc0fdf93c913fb2,
+    type: 2}
+  m_PrefabInternal: {fileID: 584016351}
+  m_GameObject: {fileID: 257770093}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.03117108, y: 1.81912112, z: .373741597}
+  m_Center: {x: 2.57840753, y: .574859679, z: -.0527794771}
+--- !u!65 &257770097
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 6500004, guid: 4d1295d6989650e40bc0fdf93c913fb2,
+    type: 2}
+  m_PrefabInternal: {fileID: 584016351}
+  m_GameObject: {fileID: 257770093}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 4.17317057, y: 5.93029022, z: 2.268291}
+  m_Center: {x: -.0113977268, y: -.296596646, z: .227450058}
 --- !u!23 &257770098
 Renderer:
   m_ObjectHideFlags: 0
@@ -3002,7 +3001,10 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: f0ca5f1bf4071614182d39ad48f6a34e, type: 2}
+  - {fileID: 2100000, guid: e6dd5cc2d5de0a54987a99707a029992, type: 2}
+  - {fileID: 2100000, guid: e6dd5cc2d5de0a54987a99707a029992, type: 2}
+  - {fileID: 2100000, guid: 72509cb581d8c2d4f87f5822affe5a7f, type: 2}
+  - {fileID: 2100000, guid: e6dd5cc2d5de0a54987a99707a029992, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -3018,7 +3020,7 @@ MeshFilter:
     type: 2}
   m_PrefabInternal: {fileID: 584016351}
   m_GameObject: {fileID: 257770093}
-  m_Mesh: {fileID: 4300000, guid: 316edee521afe3c48bfec2f2880b1d5a, type: 3}
+  m_Mesh: {fileID: 4300002, guid: 6aadf1354bcfbca4c8c9677abf88e105, type: 3}
 --- !u!1 &268623798
 GameObject:
   m_ObjectHideFlags: 0
@@ -6163,6 +6165,66 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 100332, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400134, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: mText
+      value: '[MOUSE WHEEL DOWN to continue]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400134, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: mWidth
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400134, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: aspectRatio
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 400094, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 145.638504
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400778, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: mText
+      value: '[MOUSE WHEEL UP to go back]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 100474, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100280, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400780, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: mText
+      value: '[MOUSE WHEEL DOWN to continue]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400780, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: mWidth
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400780, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: aspectRatio
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 400496, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 148.971466
+      objectReference: {fileID: 0}
+    - target: {fileID: 400496, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -71.7903595
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400170, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: mText
+      value: '[MOUSE WHEEL UP to go back]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 400094, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -71.7878571
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 28846c1455228224fb69b8408f68e434, type: 2}
   m_RootGameObject: {fileID: 938629174}
@@ -6586,7 +6648,7 @@ Transform:
   m_PrefabInternal: {fileID: 462773364}
   m_GameObject: {fileID: 504399538}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 166.870026, y: -69.5505829, z: 0}
+  m_LocalPosition: {x: 145.638504, y: -71.7878571, z: 0}
   m_LocalScale: {x: .75, y: .75, z: .75}
   m_Children: []
   m_Father: {fileID: 668494494}
@@ -6620,17 +6682,17 @@ MonoBehaviour:
     absolute: -8
   mColor: {r: 1, g: 1, b: 1, a: .447058827}
   mPivot: 0
-  mWidth: 200
+  mWidth: 260
   mHeight: 20
   mDepth: 1
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 10
+  aspectRatio: 13
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 0}
   mFont: {fileID: 11400000, guid: ac44b8a25154a9d40a172ab5851e0986, type: 2}
-  mText: '[Press ENTER to continue]'
+  mText: '[MOUSE WHEEL DOWN to continue]'
   mFontSize: 20
   mFontStyle: 0
   mEncoding: 1
@@ -7521,6 +7583,26 @@ Prefab:
       propertyPath: targetScene
       value: MainMenu
       objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
+      propertyPath: forwardForce
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
+      propertyPath: reverseForce
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
+      propertyPath: sideForce
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
+      propertyPath: velocityDamp
+      value: .5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
+      propertyPath: turnRate
+      value: 200
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
   m_RootGameObject: {fileID: 253428885}
@@ -7593,7 +7675,7 @@ MonoBehaviour:
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 0}
   mFont: {fileID: 11400000, guid: ac44b8a25154a9d40a172ab5851e0986, type: 2}
-  mText: '[Press BACKSPACE to go back]'
+  mText: '[MOUSE WHEEL UP to go back]'
   mFontSize: 20
   mFontStyle: 0
   mEncoding: 1
@@ -12526,7 +12608,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3002
+  startingRenderQueue: 3003
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
@@ -15580,7 +15662,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3002
+  startingRenderQueue: 3003
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
@@ -21656,7 +21738,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3002
+  startingRenderQueue: 3003
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 0, w: 0}
@@ -21911,12 +21993,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1624534254}
-  - 33: {fileID: 1624534256}
-  - 23: {fileID: 1624534255}
-  - 61: {fileID: 257770095}
   m_Layer: 10
-  m_Name: Ship
-  m_TagString: enemy
+  m_Name: Raptor Ship
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -21927,42 +22006,12 @@ Transform:
   m_PrefabParentObject: {fileID: 400008, guid: 4d1295d6989650e40bc0fdf93c913fb2, type: 2}
   m_PrefabInternal: {fileID: 584016351}
   m_GameObject: {fileID: 1624534253}
-  m_LocalRotation: {x: 1, y: 0, z: 0, w: -4.37113883e-08}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .0500000007, y: .0500000007, z: .0500000007}
+  m_LocalRotation: {x: .707106829, y: 0, z: 0, w: -.707106829}
+  m_LocalPosition: {x: 0, y: -.0780314505, z: .165258437}
+  m_LocalScale: {x: .25, y: .25, z: .25}
   m_Children:
   - {fileID: 257770094}
   m_Father: {fileID: 253428890}
---- !u!23 &1624534255
-Renderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 2300004, guid: 4d1295d6989650e40bc0fdf93c913fb2,
-    type: 2}
-  m_PrefabInternal: {fileID: 584016351}
-  m_GameObject: {fileID: 1624534253}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_LightmapIndex: 255
-  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
-  m_Materials:
-  - {fileID: 2100000, guid: e6dd5cc2d5de0a54987a99707a029992, type: 2}
-  m_SubsetIndices: 
-  m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 0
-  m_LightProbeAnchor: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_SortingLayerID: 0
---- !u!33 &1624534256
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 3300004, guid: 4d1295d6989650e40bc0fdf93c913fb2,
-    type: 2}
-  m_PrefabInternal: {fileID: 584016351}
-  m_GameObject: {fileID: 1624534253}
-  m_Mesh: {fileID: 4300002, guid: 316edee521afe3c48bfec2f2880b1d5a, type: 3}
 --- !u!1 &1635958541
 GameObject:
   m_ObjectHideFlags: 0
@@ -25793,7 +25842,7 @@ MonoBehaviour:
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 0}
   mFont: {fileID: 11400000, guid: ac44b8a25154a9d40a172ab5851e0986, type: 2}
-  mText: '[Press BACKSPACE to go back]'
+  mText: '[MOUSE WHEEL UP to go back]'
   mFontSize: 20
   mFontStyle: 0
   mEncoding: 1
@@ -25882,7 +25931,7 @@ Transform:
   m_PrefabInternal: {fileID: 462773364}
   m_GameObject: {fileID: 1987735673}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 166.870026, y: -69.5505829, z: 0}
+  m_LocalPosition: {x: 148.971466, y: -71.7903595, z: 0}
   m_LocalScale: {x: .75, y: .75, z: .75}
   m_Children: []
   m_Father: {fileID: 1154212352}
@@ -25916,17 +25965,17 @@ MonoBehaviour:
     absolute: -8
   mColor: {r: 1, g: 1, b: 1, a: .447058827}
   mPivot: 0
-  mWidth: 200
+  mWidth: 260
   mHeight: 20
   mDepth: 26
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 10
+  aspectRatio: 13
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 0}
   mFont: {fileID: 11400000, guid: ac44b8a25154a9d40a172ab5851e0986, type: 2}
-  mText: '[Press ENTER to continue]'
+  mText: '[MOUSE WHEEL DOWN to continue]'
   mFontSize: 20
   mFontStyle: 0
   mEncoding: 1

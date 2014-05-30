@@ -74,7 +74,7 @@ public class PlayerShipController : MonoBehaviour {
 		LockMouse.lockMouse = false;
 		if (!isDead)
 		{
-			print(cloakTrans);
+			//print(cloakTrans);
 			if(shipMesh != null) {
 				shipMesh.material.SetFloat("_CloakAmt", cloakTrans * 128);
 			}
