@@ -319,6 +319,12 @@ public class RaptorInteraction : MonoBehaviour {
 				Crouch(isCrouching);
 			}
 
+			if(Input.GetKeyDown(KeyCode.L)) {
+				print("Is Using: " + ikControl.isUsing + "\nIs Eating: " + ikControl.isEating);
+				if (eatTarget != null)
+					print("EatTarget: " + eatTarget.name);
+			}
+
 			if(RebindableInput.GetKey("Use")) {
 				int mask = ~(1 << LayerMask.NameToLayer("Player"));
 				RaycastHit[] hits = Physics.SphereCastAll(Camera.main.transform.position, 0.25f, Camera.main.transform.forward, meleeRange, mask);
@@ -328,12 +334,15 @@ public class RaptorInteraction : MonoBehaviour {
 							hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 							break;
 						}
+						else if(hit.transform.tag == "enemy") {
+							hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+						}
 						else if (hit.transform.tag != "Untagged") {
-							print(hit.transform.tag + " : ok");
+							print(hit.transform.tag + " : " + hit.transform.name);
 							ikControl.UseObject(hit.point + Camera.main.transform.up, hit.transform);
 							//if(hit.transform.tag != "trap") {
 							defusing = false;
-							break;
+							//break;
 						}
 						else {
 							defusing = false;
@@ -343,22 +352,23 @@ public class RaptorInteraction : MonoBehaviour {
 				if (hits == null) {
 					defusing = false;
 				}
-				if(eatTarget != null) {
+
+				/*if(eatTarget != null) {
 					eatTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 				}
 				else {
-					toggleRotator(true);
+					//toggleRotator(true);
 					rigidbody.freezeRotation = false;
 					rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-					//arms.SetBool("isEating", false);
+					arms.SetBool("isEating", false);
 					eatSoundPlaying = false;
-				}
+				}*/
 			}
 			//animation stuff
 			else if(RebindableInput.GetKeyUp("Use")) {
 				//eating stuff
 				eatTarget = null;
-				toggleRotator(true);
+				//toggleRotator(true); not used anymore
 				rigidbody.freezeRotation = false;
 				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 				arms.SetBool("isEating", false);

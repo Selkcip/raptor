@@ -828,7 +828,7 @@ public class PlanningNPC : MonoBehaviour {
 					health = 0;
 				}
 				else {
-					bodyRemaining -= 0.1f * Time.deltaTime;
+					bodyRemaining -= 0.05f * Time.deltaTime;
 					player.SendMessage("Eat", 1, SendMessageOptions.DontRequireReceiver);
 					if(bodyRemaining > 0.25) {
 						player.eatTarget = transform;
