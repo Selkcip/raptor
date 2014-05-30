@@ -73,6 +73,10 @@ ModelImporter:
     100134: Left_Eye
     100136: Point
     100138: Right_Eye
+    100140: Cube_003
+    100142: Cube_004
+    100144: Cube_005
+    100146: Plane
     400000: 0-base-cube_003
     400002: 0-base-cube_004
     400004: chest
@@ -143,6 +147,10 @@ ModelImporter:
     400134: Left_Eye
     400136: Point
     400138: Right_Eye
+    400140: Cube_003
+    400142: Cube_004
+    400144: Cube_005
+    400146: Plane
     4300000: Cube_001
     4300002: 0-base-cube_004
     4300004: 0-base-cube_003
@@ -151,6 +159,10 @@ ModelImporter:
     4300010: Right_Eye
     4300012: Left_Eye
     4300014: Ears
+    4300016: Cube_005
+    4300018: Cube_004
+    4300020: Plane
+    4300022: Cube_003
     7400000: Default Take
     9500000: //RootNode
     13700000: 0-base-cube_003
@@ -161,6 +173,10 @@ ModelImporter:
     13700010: Ears
     13700012: Left_Eye
     13700014: Right_Eye
+    13700016: Cube_003
+    13700018: Cube_004
+    13700020: Cube_005
+    13700022: Plane
   materials:
     importMaterials: 1
     materialName: 0
