@@ -18,6 +18,7 @@ public class PlayerShipController : MonoBehaviour {
 
 	public Texture2D painIndicator;
 	public MeshRenderer shipMesh;
+	public ParticleSystem engineGFX;
 
 	public float forwardForce, reverseForce, sideForce, velocityDamp;
 	public float turnRate; // deg/s
@@ -126,9 +127,17 @@ public class PlayerShipController : MonoBehaviour {
 				Shoot();
 			}
 
+
+			if(engineGFX) {
+				engineGFX.gameObject.SetActive(false);
+			}
+
 			Vector2.Lerp(rigidbody2D.velocity, Vector2.zero, velocityDamp);
 			if(Input.GetKey(KeyCode.W)) {
 				rigidbody2D.velocity = Vector2.Lerp(rigidbody2D.velocity, new Vector2(transform.up.x, transform.up.y) * forwardForce, 0.5f);
+				if(engineGFX) {
+					engineGFX.gameObject.SetActive(true);
+				}
 			}
 			if(Input.GetKey(KeyCode.S)) {
 				rigidbody2D.velocity = Vector2.Lerp(rigidbody2D.velocity, new Vector2(transform.up.x, transform.up.y) * -reverseForce, 0.5f);

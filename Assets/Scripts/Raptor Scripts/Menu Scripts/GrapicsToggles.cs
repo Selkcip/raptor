@@ -94,8 +94,13 @@ public class GrapicsToggles : MonoBehaviour {
 					glow.enabled = false;
 				}
 				else {
-					glow.enabled = true;
-					glow.rerenderResolution = (Glow11.Resolution)_GlowQuality;
+					if(!glow.enabled){
+						glow.enabled = true;
+					}
+					Glow11.Resolution res = (Glow11.Resolution)_GlowQuality;
+					if(glow.rerenderResolution != res) {
+						glow.rerenderResolution = res;
+					}
 				}
 			}
 

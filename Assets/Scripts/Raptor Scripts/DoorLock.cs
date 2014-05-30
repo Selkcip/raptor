@@ -79,13 +79,13 @@ public class DoorLock : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Material[] mats = mr.materials;
+		Material[] mats = mr.sharedMaterials;
 		for(int m = 0; m < mats.Length; m++) {
 			mats[m] = closedMat;
 			if(!door.isLocked || door.keysUsed-1 >= m) {
 				mats[m] = openMat;
 			}
 		}
-		mr.materials = mats;
+		mr.sharedMaterials = mats;
 	}
 }
