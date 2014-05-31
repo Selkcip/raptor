@@ -330,16 +330,18 @@ public class RaptorInteraction : MonoBehaviour {
 				RaycastHit[] hits = Physics.SphereCastAll(Camera.main.transform.position, 0.25f, Camera.main.transform.forward, meleeRange, mask);
 				if(hits != null) {//if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2, mask)) {
 					foreach(RaycastHit hit in hits) {
+						hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+						ikControl.UseObject(hit.point + Camera.main.transform.up, hit.transform);
 						if(hit.transform.tag == "trap") {
-							hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+							//hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 							break;
 						}
 						else if(hit.transform.tag == "enemy") {
-							hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+							//hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 						}
 						else if (hit.transform.tag != "Untagged") {
 							print(hit.transform.tag + " : " + hit.transform.name);
-							ikControl.UseObject(hit.point + Camera.main.transform.up, hit.transform);
+							//ikControl.UseObject(hit.point + Camera.main.transform.up, hit.transform);
 							//if(hit.transform.tag != "trap") {
 							defusing = false;
 							//break;

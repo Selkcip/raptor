@@ -583,7 +583,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!208 &20800002
 NavMeshObstacle:
   m_ObjectHideFlags: 1
@@ -594,7 +594,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
