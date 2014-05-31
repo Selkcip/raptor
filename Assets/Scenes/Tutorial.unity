@@ -1381,7 +1381,7 @@ GameObject:
   - 114: {fileID: 52224139}
   m_Layer: 0
   m_Name: 2048
-  m_TagString: Untagged
+  m_TagString: terminal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1411,12 +1411,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f7a23954f89a04480e6c58968309d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveTime: .0500000007
+  moveTime: .0250000004
   tileCount: 4
   zOffset: .00999999978
   tile: {fileID: 1819442978}
   progressBar: {fileID: 738427644}
   alarmLabel: {fileID: 152088687}
+  map: {fileID: 0}
+  mapTrigger: {fileID: 0}
+  terminal: {fileID: 2086280656}
   textures:
   - {fileID: 2800000, guid: c66e422a089180c438ddf77a25fbb697, type: 3}
   - {fileID: 2800000, guid: 6c4ee102d675d38438e1f3a6de174e70, type: 3}
@@ -3934,7 +3937,7 @@ Transform:
   m_PrefabInternal: {fileID: 745679572}
   m_GameObject: {fileID: 152088685}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.75142781e-11, y: 215.999863, z: -26.5942879}
+  m_LocalPosition: {x: -9.41708725e-11, y: 215.997665, z: -18.8442822}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1436623739}
@@ -3945,7 +3948,7 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 745679572}
   m_GameObject: {fileID: 152088685}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9d0b5f3bbe925a408bd595c79d0bf63, type: 3}
   m_Name: 
@@ -3968,17 +3971,21 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 0, b: 0, a: 1}
   mPivot: 4
-  mWidth: 239
-  mHeight: 78
+  mWidth: 336
+  mHeight: 255
   mDepth: 4
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.06410265
+  aspectRatio: 1.3176471
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 0}
   mFont: {fileID: 11400000, guid: 7a48ea22e80d1ac4b97fdd87f9009546, type: 2}
-  mText: ACCESS DENIED
+  mText: '====================
+
+    ! ACCESS DENIED !
+
+    ===================='
   mFontSize: 28
   mFontStyle: 0
   mEncoding: 1
@@ -3992,7 +3999,7 @@ MonoBehaviour:
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
-  mSpacingX: 0
+  mSpacingX: 2
   mSpacingY: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
@@ -4167,7 +4174,7 @@ GameObject:
   - 65: {fileID: 159619547}
   m_Layer: 0
   m_Name: Door Right
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10730,7 +10737,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 336715724}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5, y: 338, z: -67.4436951}
+  m_LocalPosition: {x: 5.27877808, y: 338, z: -67.4436951}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1454076398}
@@ -14423,7 +14430,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 402130498}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: .278778076, y: 0, z: 0}
   m_LocalScale: {x: .982812583, y: 1, z: 1}
   m_Children:
   - {fileID: 909061404}
@@ -15703,7 +15710,7 @@ GameObject:
   - 65: {fileID: 435011603}
   m_Layer: 0
   m_Name: Door Left
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16249,7 +16256,8 @@ MonoBehaviour:
   triggerList: []
   closeAfter: 5
   keyCardsToUnlock: 1
-  notorietyToLock: 1e+07
+  locksRandomly: 1
+  notorietyToLock: 10000
   guardsCanUnlock: 1
   openOnTrigger: 1
   openOnTriggerable: 1
@@ -20962,6 +20970,10 @@ Prefab:
       propertyPath: activated
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: c515096468275d640bd025ce98a205f0, type: 2}
+      propertyPath: spawnsRandomly
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c515096468275d640bd025ce98a205f0, type: 2}
   m_RootGameObject: {fileID: 1191333037}
@@ -21729,7 +21741,7 @@ GameObject:
   - 65: {fileID: 619377136}
   m_Layer: 0
   m_Name: Door Right
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23979,7 +23991,7 @@ GameObject:
   - 65: {fileID: 685678926}
   m_Layer: 0
   m_Name: Door Right
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -25736,7 +25748,7 @@ GameObject:
   - 65: {fileID: 737220302}
   m_Layer: 0
   m_Name: Door Right
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26122,7 +26134,7 @@ GameObject:
   - 65: {fileID: 743517853}
   m_Layer: 0
   m_Name: Door Left
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26407,6 +26419,10 @@ Prefab:
       propertyPath: m_TagString
       value: terminal
       objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 1da5901c806b47942aaca5e31dd06833, type: 2}
+      propertyPath: m_TagString
+      value: terminal
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1da5901c806b47942aaca5e31dd06833, type: 2}
   m_RootGameObject: {fileID: 2086280656}
@@ -26540,7 +26556,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 750820361}
   m_LocalRotation: {x: 0, y: 0, z: -8.74227766e-08, w: 1}
-  m_LocalPosition: {x: -362.000244, y: 336, z: 0}
+  m_LocalPosition: {x: -522.000305, y: 336, z: 0}
   m_LocalScale: {x: .766719043, y: .999924481, z: .999924481}
   m_Children:
   - {fileID: 1236108820}
@@ -28186,7 +28202,7 @@ GameObject:
   - 65: {fileID: 760283781}
   m_Layer: 0
   m_Name: Door Right
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -28441,7 +28457,7 @@ GameObject:
   - 65: {fileID: 767500826}
   m_Layer: 0
   m_Name: Door Left
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30480,7 +30496,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 817310687}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 463.000244, y: 337, z: 0}
+  m_LocalPosition: {x: 623.557861, y: 337, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1454076398}
@@ -30992,6 +31008,7 @@ MonoBehaviour:
   - {fileID: 1159771011}
   closeAfter: 100
   keyCardsToUnlock: 1
+  locksRandomly: 1
   notorietyToLock: 10000
   guardsCanUnlock: 1
   openOnTrigger: 0
@@ -32733,7 +32750,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 902191018}
   m_LocalRotation: {x: 0, y: 0, z: -8.74227766e-08, w: 1}
-  m_LocalPosition: {x: -407.000244, y: 312, z: 0}
+  m_LocalPosition: {x: -567.000305, y: 312, z: 0}
   m_LocalScale: {x: .766719043, y: .999924481, z: .999924481}
   m_Children:
   - {fileID: 870260229}
@@ -34922,7 +34939,8 @@ MonoBehaviour:
   triggerList: []
   closeAfter: 5
   keyCardsToUnlock: 1
-  notorietyToLock: 1e+07
+  locksRandomly: 1
+  notorietyToLock: 10000
   guardsCanUnlock: 1
   openOnTrigger: 1
   openOnTriggerable: 1
@@ -40575,7 +40593,7 @@ GameObject:
   - 65: {fileID: 1186909986}
   m_Layer: 0
   m_Name: Door Right
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -40850,7 +40868,7 @@ MonoBehaviour:
   playerDamage: 50
   hacked: 0
   activated: 0
-  notorietyToSpawn: 0
+  spawnsRandomly: 0
   explosionPrefab: {fileID: 11400000, guid: 49c0090d6c2c4b74fac120fec2ac4058, type: 2}
 --- !u!114 &1191333041
 MonoBehaviour:
@@ -41327,7 +41345,8 @@ MonoBehaviour:
   triggerList: []
   closeAfter: 5
   keyCardsToUnlock: 3
-  notorietyToLock: 1e+07
+  locksRandomly: 1
+  notorietyToLock: 10000
   guardsCanUnlock: 1
   openOnTrigger: 1
   openOnTriggerable: 1
@@ -43630,7 +43649,8 @@ MonoBehaviour:
   triggerList: []
   closeAfter: 5
   keyCardsToUnlock: 4
-  notorietyToLock: 1e+07
+  locksRandomly: 1
+  notorietyToLock: 10000
   guardsCanUnlock: 1
   openOnTrigger: 1
   openOnTriggerable: 1
@@ -47005,7 +47025,7 @@ GameObject:
   - 65: {fileID: 1393978860}
   m_Layer: 0
   m_Name: Door Left
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48543,7 +48563,7 @@ GameObject:
   - 65: {fileID: 1431540643}
   m_Layer: 0
   m_Name: Door Right
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48738,7 +48758,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3006
+  startingRenderQueue: 3003
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
@@ -51358,7 +51378,7 @@ GameObject:
   - 65: {fileID: 1512525141}
   m_Layer: 0
   m_Name: Door Left
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -54001,7 +54021,8 @@ MonoBehaviour:
   triggerList: []
   closeAfter: 5
   keyCardsToUnlock: 2
-  notorietyToLock: 1e+07
+  locksRandomly: 1
+  notorietyToLock: 10000
   guardsCanUnlock: 1
   openOnTrigger: 1
   openOnTriggerable: 1
@@ -55886,7 +55907,8 @@ MonoBehaviour:
   triggerList: []
   closeAfter: 5
   keyCardsToUnlock: 3
-  notorietyToLock: 1e+07
+  locksRandomly: 1
+  notorietyToLock: 10000
   guardsCanUnlock: 1
   openOnTrigger: 1
   openOnTriggerable: 1
@@ -56357,7 +56379,8 @@ MonoBehaviour:
   triggerList: []
   closeAfter: 5
   keyCardsToUnlock: 4
-  notorietyToLock: 1e+07
+  locksRandomly: 1
+  notorietyToLock: 10000
   guardsCanUnlock: 1
   openOnTrigger: 1
   openOnTriggerable: 1
@@ -56422,7 +56445,7 @@ GameObject:
   - 65: {fileID: 1646504190}
   m_Layer: 0
   m_Name: Door Right
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -67228,7 +67251,7 @@ GameObject:
   - 65: {fileID: 1873057892}
   m_Layer: 0
   m_Name: Door Left
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -69068,7 +69091,7 @@ GameObject:
   - 65: {fileID: 1934742024}
   m_Layer: 0
   m_Name: Door Left
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -69154,7 +69177,7 @@ GameObject:
   - 65: {fileID: 1935015278}
   m_Layer: 0
   m_Name: Door Left
-  m_TagString: Untagged
+  m_TagString: wood
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -69769,7 +69792,8 @@ MonoBehaviour:
   triggerList: []
   closeAfter: 5
   keyCardsToUnlock: 2
-  notorietyToLock: 1e+07
+  locksRandomly: 1
+  notorietyToLock: 10000
   guardsCanUnlock: 0
   openOnTrigger: 1
   openOnTriggerable: 1
