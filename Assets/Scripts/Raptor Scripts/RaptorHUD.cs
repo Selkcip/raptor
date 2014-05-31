@@ -27,7 +27,7 @@ public class RaptorHUD : MonoBehaviour {
 		useMessages.Add("Press E to enter your ship");//0
 		useMessages.Add("Press E to pick up the item");//1
 		useMessages.Add("Press E to begin hacking");//2
-		useMessages.Add("Press E to use the light switch");//3
+		useMessages.Add("Press E to use");//3
 		useMessages.Add("Hold E to defuse the trap");//4
 		useMessages.Add("Press E to toggle the trap");
 	}
