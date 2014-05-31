@@ -10,6 +10,25 @@ public class GrapicsToggles : MonoBehaviour {
 	static int _SSAOQuality = 1;
 	static int _BloomQuality = 2;
 
+	public bool overrideDefaults = false;
+	public int SSRQualityOverride = 1;
+	public int TiltShitQualityOverride = 1;
+	public int GlowQualityOverride = 1;
+	public int AAQualityOverride = 4;
+	public int SSAOQualityOverride = 1;
+	public int BloomQualityOverride = 2;
+
+	void Start() {
+		if(overrideDefaults) {
+			SSRQuality = SSRQualityOverride;
+			TiltShiftQuality = TiltShitQualityOverride;
+			GlowQuality = GlowQualityOverride;
+			AAQuality = AAQualityOverride;
+			SSRQuality = SSRQualityOverride;
+			BloomQuality = BloomQualityOverride;
+		}
+	}
+
 	public static int SSRQuality {
 		get {
 			return _SSRQuality;

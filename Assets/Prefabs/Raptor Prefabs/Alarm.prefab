@@ -13,7 +13,7 @@ GameObject:
   - 108: {fileID: 10800000}
   m_Layer: 0
   m_Name: Alarm
-  m_TagString: Untagged
+  m_TagString: lightswitch
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -201,6 +201,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17982cd1c26c9eb4db84d40ec87f2fcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  activateOnStateChange: 0
+  isTriggered: 0
+  or: 0
+  triggerList: []
   handle: {fileID: 400002}
 --- !u!1001 &100100000
 Prefab:

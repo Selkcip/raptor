@@ -41,7 +41,7 @@ public class SoundManager : MonoBehaviour {
 		newObj.transform.parent = Camera.main.transform;
 		AudioSource newSource = newObj.AddComponent<AudioSource>();
 		newSource.clip = clip;
-		newSource.volume = Volume(newSource, type) * volumeMult;
+		newSource.volume *= Volume(type) * volumeMult;
 		//print(newSource.audio.volume);
 		newSource.dopplerLevel = 0;
 		newSource.loop = loop;
@@ -58,7 +58,7 @@ public class SoundManager : MonoBehaviour {
 		newObj.transform.parent = obj.transform;
 		AudioSource newSource = newObj.AddComponent<AudioSource>() as AudioSource;
 		newSource.audio.clip = clip;
-		newSource.audio.volume = Volume(newSource, type);
+		newSource.audio.volume *= Volume(type);
 		if(reverb) {
 			AudioReverbFilter rFilter = newObj.AddComponent<AudioReverbFilter>() as AudioReverbFilter;
 			//arbitrary value since 0, the default and max, seemed too much
@@ -79,7 +79,7 @@ public class SoundManager : MonoBehaviour {
    newObj.transform.parent = source.transform;
    AudioSource newSource = newObj.AddComponent<AudioSource>() as AudioSource;
    newSource.audio.clip = clip;
-			newSource.audio.volume = Volume(newSource, type);
+			newSource.audio.volume = Volume(type);
    /*
    //Issue is that it kills sound when it is done playing the original sound, not when the echo is done.
    if(echo) {
@@ -100,15 +100,15 @@ public class SoundManager : MonoBehaviour {
   Destroy(obj);
  }
 
-	float Volume(AudioSource audio, SoundType type) {
+	float Volume(SoundType type) {
 		if(type == SoundType.Sfx) {
-			return audio.volume * sfxVolume;
+			return sfxVolume;
 		}
 		else if(type == SoundType.Music) {
-			return audio.volume * musicVolume;
+			return musicVolume;
 		}
 		else if(type == SoundType.Dialogue) {
-			return audio.volume * dialogueVolume;
+			return dialogueVolume;
 		}
 		return -1f; 
 	}

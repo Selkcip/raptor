@@ -22,6 +22,7 @@ public class PlanningNPC : MonoBehaviour {
 	public float standTime = 5f;
 	public float lookTime = 1f;
 	public Vector3 lookDis = new Vector3(1, 0.25f, 1);
+	public bool randomInitDir = true;
 	public float inspectTime = 5f;
 	public float useTime = 5f;
 	public float wanderTime = 5f;
@@ -124,7 +125,9 @@ public class PlanningNPC : MonoBehaviour {
 		player = GameObject.FindObjectOfType<RaptorInteraction>();
 		stamina = maxStamina;
 
-		transform.eulerAngles = new Vector3(0, Random.Range(0f, 360f), 0);
+		if(randomInitDir) {
+			transform.eulerAngles = new Vector3(0, Random.Range(0f, 360f), 0);
+		}
 
 		Move(Vector3.zero, head.position + head.forward*5);
 
@@ -279,6 +282,7 @@ public class PlanningNPC : MonoBehaviour {
 
 		float useTimer = 0;
 		Vector3 useTargetPos = Vector3.zero;
+		bool talkedAboutObject = false;
 		useObject = new State(
 			delegate() {
 				return hasUseTarget && usingObject && atTarget;
@@ -294,6 +298,11 @@ public class PlanningNPC : MonoBehaviour {
 
 				useTimer += Time.deltaTime;
 
+				if(!talkedAboutObject && useTarget.tag != "enemy") {
+					talkedAboutObject = true;
+					SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/whatdoesthisbuttondo"), SoundManager.SoundType.Dialogue, gameObject);
+				}
+
 				if(useTarget != null) {
 					useTargetPos = useTarget.position;
 					if(usingObject && (leftHandPos != useTargetPos || leftHandWeight < 1)) {
@@ -302,9 +311,6 @@ public class PlanningNPC : MonoBehaviour {
 						leftHandWeight = Mathf.Min(1, useTimer / useTime);
 					}
 					else {
-						if(useTarget.tag != "enemy") {
-							SoundManager.instance.Play3DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/enemies/Guard/whatdoesthisbuttondo"), SoundManager.SoundType.Dialogue, gameObject);
-						}
 						usingObject = false;
 						useTarget.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 						useTarget = null;

@@ -330,7 +330,7 @@ public class HackGame : MonoBehaviour {
 				//print("moving tile");
 				Vector3 diff = cur.pos - cur.transform.localPosition;
 				if(diff.magnitude > 0.05f) {
-					cur.transform.localPosition += diff * (moveTime > 0 ? Time.deltaTime / moveTime : 0);
+					cur.transform.localPosition += diff * Mathf.Min(1, (moveTime > 0 ? Time.deltaTime / moveTime : 1));
 				}
 				else {
 					//cur.renderer.material.color = Color.green;
@@ -355,7 +355,7 @@ public class HackGame : MonoBehaviour {
 		}
 		else {
 			if(hacking) {
-				if(!hackable || RebindableInput.GetKeyDown("Jump")) {
+				if(!hackable || RebindableInput.GetKeyDown("Jump") || RebindableInput.GetKeyDown("Pounce")) {
 					StopHacking();
 				}
 				else {

@@ -31,7 +31,7 @@ public class Pressureable : MonoBehaviour {
 			}
 
 			if(force.magnitude > 0) {
-				//transform.SendMessageUpwards("KnockOut", 20, SendMessageOptions.DontRequireReceiver);
+				transform.SendMessageUpwards("KnockOut", 20, SendMessageOptions.DontRequireReceiver);
 			}
 
 			rigidbody.AddForce(force);
