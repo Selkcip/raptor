@@ -1164,7 +1164,7 @@ GameObject:
   - 114: {fileID: 11400028}
   m_Layer: 0
   m_Name: 2048
-  m_TagString: Untagged
+  m_TagString: terminal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6586,8 +6586,8 @@ MonoBehaviour:
   or: 0
   triggerList: []
   closeAfter: 5
-  keyCardsToUnlock: 0
-  locksRandomly: 1
+  keyCardsToUnlock: 3
+  locksRandomly: 0
   notorietyToLock: 10000
   guardsCanUnlock: 1
   openOnTrigger: 1
@@ -6598,7 +6598,7 @@ MonoBehaviour:
   LeftDoor: {fileID: 400054}
   RightDoor: {fileID: 400220}
   isOpen: 0
-  isLocked: 0
+  isLocked: 1
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -47,6 +47,8 @@ public class PlayerShipController : MonoBehaviour {
 	public static List<UpgradeCount> consumables = new List<UpgradeCount>();
 	public static int currentConsumable = 0;
 
+	bool showHud = true;
+
 	public static void AddConsumable(ConsumableUpgrade upgrade) {
 		UpgradeCount count = consumables.Find(delegate(UpgradeCount cur) {
 			return cur.type == upgrade.name;
@@ -190,6 +192,15 @@ public class PlayerShipController : MonoBehaviour {
 					currentConsumable = 0;
 				}
 			}
+
+			//Hide hud
+			if(Input.GetKeyUp(KeyCode.Insert)) {
+				showHud = !showHud;
+				GameObject hud = GameObject.Find("Ship HUD");
+				if(hud) {
+					hud.SetActive(showHud);
+				}
+			}
 		}
 
 		if (reload > 0)
@@ -225,9 +236,11 @@ public class PlayerShipController : MonoBehaviour {
 			gameObject.SetActive(false);
 		}
 
-		Indicator indicator = Indicator.New(painIndicator, damage.pos);
-		indicator.tint = Color.red;
-		indicator.dontDestroy = false;
+		if(showHud) {
+			Indicator indicator = Indicator.New(painIndicator, damage.pos);
+			indicator.tint = Color.red;
+			indicator.dontDestroy = false;
+		}
 
 		//print(health);
 		//SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);

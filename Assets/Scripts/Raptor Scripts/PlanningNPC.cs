@@ -84,6 +84,7 @@ public class PlanningNPC : MonoBehaviour {
 	float bodyRemaining = 1;
 	bool mentionEnemyVisible = false;
 	float oldLightLevel = 0;
+	bool ignoreEnemy = false;
 
 	public Vector3 enemyPos;
 	public Transform useTarget;
@@ -130,6 +131,8 @@ public class PlanningNPC : MonoBehaviour {
 		}
 
 		Move(Vector3.zero, head.position + head.forward*5);
+
+		wanderTime = Random.Range(wanderTime, wanderTime * 3);
 
 		InitStates();
 
@@ -654,6 +657,10 @@ public class PlanningNPC : MonoBehaviour {
 
 		speed = running ? runSpeed : walkSpeed;
 
+		if(Input.GetKeyUp(KeyCode.Home)) {
+			ignoreEnemy = !ignoreEnemy;
+		}
+
 		if(!dead && !knockedOut) {
 			LookForEnemy();
 			CheckGrid();
@@ -682,7 +689,7 @@ public class PlanningNPC : MonoBehaviour {
 
 	protected void LookForEnemy() {
 		enemyVisible = false;
-		if(!knockedOut) {
+		if(!knockedOut && !ignoreEnemy) {
 			if(player != null && player.active && player.health > 0) {
 				Transform enemyHead = Camera.main.transform;
 				if(enemyHead != null) {
@@ -750,45 +757,47 @@ public class PlanningNPC : MonoBehaviour {
 		if(ShipGrid.instance != null) {
 			ShipGridCell cell = ShipGrid.GetPosI(transform.position);
 
-			//Listen for noise
-			ShipGridFluid noise;
-			cell.fluids.TryGetValue("noise", out noise);
-			if(noise != null) {
-				float curNoiseLevel = noise.level;
-				noiseLevel = noise.level;
-				//noiseDir.Set(0, 0, 0);
-				/*foreach(ShipGridCell neigh in cell.neighbors) {
-					neigh.fluids.TryGetValue("noise", out noise);
-					if(noise != null) {
-						if(noise.level > noiseLevel) {
-							noiseLevel = noise.level;
-							noiseDir += ShipGrid.IndexToPosI(neigh.x, neigh.y, neigh.z) - transform.position;
-						}
-					}
-				}*/
-				Vector3 diff = new Vector3();
-				ShipGridCell cur = cell;
-				noisePos = ShipGrid.IndexToPosI(cur.x, cur.y, cur.z);
-				for(int i = 0; i < 5; i++) {
-					List<ShipGridCell> neighs = cur.neighbors;
-					foreach(ShipGridCell neigh in neighs) {
+			if(!ignoreEnemy) {
+				//Listen for noise
+				ShipGridFluid noise;
+				cell.fluids.TryGetValue("noise", out noise);
+				if(noise != null) {
+					float curNoiseLevel = noise.level;
+					noiseLevel = noise.level;
+					//noiseDir.Set(0, 0, 0);
+					/*foreach(ShipGridCell neigh in cell.neighbors) {
 						neigh.fluids.TryGetValue("noise", out noise);
 						if(noise != null) {
-							if(noise.level > curNoiseLevel) {
-								curNoiseLevel = noise.level;
-								cur = neigh;
+							if(noise.level > noiseLevel) {
+								noiseLevel = noise.level;
+								noiseDir += ShipGrid.IndexToPosI(neigh.x, neigh.y, neigh.z) - transform.position;
 							}
-							/*diff.x = neigh.x - cell.x;
-							diff.y = neigh.y - cell.y;
-							diff.z = neigh.z - cell.z;
-							noiseDir += (diff * (noise.level - noiseLevel)).normalized * Mathf.Abs(noise.level);*/
+						}
+					}*/
+					Vector3 diff = new Vector3();
+					ShipGridCell cur = cell;
+					noisePos = ShipGrid.IndexToPosI(cur.x, cur.y, cur.z);
+					for(int i = 0; i < 5; i++) {
+						List<ShipGridCell> neighs = cur.neighbors;
+						foreach(ShipGridCell neigh in neighs) {
+							neigh.fluids.TryGetValue("noise", out noise);
+							if(noise != null) {
+								if(noise.level > curNoiseLevel) {
+									curNoiseLevel = noise.level;
+									cur = neigh;
+								}
+								/*diff.x = neigh.x - cell.x;
+								diff.y = neigh.y - cell.y;
+								diff.z = neigh.z - cell.z;
+								noiseDir += (diff * (noise.level - noiseLevel)).normalized * Mathf.Abs(noise.level);*/
 
+							}
 						}
 					}
+					noisePos = ShipGrid.IndexToPosI(cur.x, cur.y, cur.z);
+					//noiseDir.Normalize();
+					Debug.DrawLine(transform.position, noisePos, Color.blue);
 				}
-				noisePos = ShipGrid.IndexToPosI(cur.x, cur.y, cur.z);
-				//noiseDir.Normalize();
-				Debug.DrawLine(transform.position, noisePos, Color.blue);
 			}
 
 			ShipGridFluid cellLight;
