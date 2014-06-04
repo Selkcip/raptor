@@ -24,7 +24,7 @@ public class GameOverTopdown : MonoBehaviour {
 	// Update is called once per frame
 	void Update() {
 		if(player.health <= 0 && !gameOver) {
-			StartCoroutine("GameOverPanel", 5);
+			StartCoroutine("GameOverPanel", 3);
 		}
 	}
 

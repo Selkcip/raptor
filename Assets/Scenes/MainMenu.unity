@@ -31113,7 +31113,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: 7c7da8ac5d3ebae42b2b283def749e2d, type: 2}
+  - {fileID: 2100000, guid: 7f4b939689351c24abd590b8e399dd66, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -65097,7 +65097,8 @@ Prefab:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8100000, guid: c6da3845d3ac13b42a58961ee421d3cf, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: c6da3845d3ac13b42a58961ee421d3cf, type: 2}
   m_RootGameObject: {fileID: 1599701445}
   m_IsPrefabParent: 0
@@ -71569,6 +71570,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   volume: .25
+  muted: 0
   music:
   - {fileID: 8300000, guid: a6a999aa0fa8d55498e0f1980a79a156, type: 3}
   - {fileID: 8300000, guid: 44176873b987e3f44af3f8cf03481138, type: 3}
@@ -123351,7 +123353,6 @@ GameObject:
   - 4: {fileID: 1644238375}
   - 20: {fileID: 1644238378}
   - 114: {fileID: 1644238377}
-  - 81: {fileID: 1644238376}
   m_Layer: 9
   m_Name: Camera
   m_TagString: Untagged
@@ -123370,14 +123371,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1599701446}
---- !u!81 &1644238376
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 8100000, guid: c6da3845d3ac13b42a58961ee421d3cf,
-    type: 2}
-  m_PrefabInternal: {fileID: 850228505}
-  m_GameObject: {fileID: 1644238374}
-  m_Enabled: 1
 --- !u!114 &1644238377
 MonoBehaviour:
   m_ObjectHideFlags: 0

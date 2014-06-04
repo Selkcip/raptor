@@ -9,6 +9,7 @@ public class ContinueButton : MonoBehaviour {
 		string oldLevel = RaptorInteraction.level;
 		GameSaver.LoadGame(LoadButtonMain.fileName);
 		Time.timeScale = 1;
+		Pause.paused = false;
 		Application.LoadLevel(oldLevel);
 	}
 }

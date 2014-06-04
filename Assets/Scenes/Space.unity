@@ -34508,7 +34508,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: 7c7da8ac5d3ebae42b2b283def749e2d, type: 2}
+  - {fileID: 2100000, guid: 7f4b939689351c24abd590b8e399dd66, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -48789,17 +48789,17 @@ MonoBehaviour:
     absolute: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 62
+  mWidth: 84
   mHeight: 28
   mDepth: 20
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.21428561
+  aspectRatio: 1.5
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 0}
   mFont: {fileID: 11400000, guid: 7a48ea22e80d1ac4b97fdd87f9009546, type: 2}
-  mText: Buy
+  mText: Shop
   mFontSize: 28
   mFontStyle: 0
   mEncoding: 1
@@ -77956,6 +77956,22 @@ Prefab:
     - target: {fileID: 400184, guid: 28846c1455228224fb69b8408f68e434, type: 2}
       propertyPath: m_LocalRotation.w
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400238, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: mWidth
+      value: 84
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400238, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: mText
+      value: Shop
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400238, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: aspectRatio
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400238, guid: 28846c1455228224fb69b8408f68e434, type: 2}
+      propertyPath: mHeight
+      value: 28
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 28846c1455228224fb69b8408f68e434, type: 2}
@@ -137254,6 +137270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   volume: .25
+  muted: 0
   music:
   - {fileID: 8300000, guid: a6a999aa0fa8d55498e0f1980a79a156, type: 3}
   - {fileID: 8300000, guid: 44176873b987e3f44af3f8cf03481138, type: 3}

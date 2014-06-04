@@ -24,15 +24,13 @@ public class GameOver : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(player != null && player.health <= 0 && !gameOver) {
-			StartCoroutine("GameOverPanel", 5);
+			StartCoroutine("GameOverPanel", 3);
 		}
 		
 	}
 
 	IEnumerator GameOverPanel(int seconds) {
-
 		yield return new WaitForSeconds(seconds);
-		
 
 		Time.timeScale = 0;
 		gameOverPanel.gameObject.SetActive(true);
