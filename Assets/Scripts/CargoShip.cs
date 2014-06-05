@@ -15,6 +15,8 @@ public class CargoShip : MonoBehaviour {
 
 	GameObject player;
 
+    public Transform leftTurret, rightTurret;
+
 	// Use this for initialization
 	void Start() {
         player = GameObject.Find("PlayerShip");
@@ -41,19 +43,38 @@ public class CargoShip : MonoBehaviour {
 		return !player.GetComponent<PlayerShipController>().isCloaked && distance <= detectionRange;
 	}
 
-	void Shoot() {
-		if (reload <= 0) {
-			Vector3 targetDirection = player.transform.position - transform.position;
-			targetDirection += (Vector3)(player.rigidbody2D.velocity - rigidbody2D.velocity) * targetDirection.magnitude / bulletSpeed;
+    void Shoot()
+    {
+        Vector3 position, targetPosition, targetDirection;
+        targetDirection = player.transform.position - transform.position;
+        targetDirection += (Vector3)(player.rigidbody2D.velocity - rigidbody2D.velocity) * targetDirection.magnitude / bulletSpeed;
+        targetPosition = transform.position + targetDirection;
+        if (Vector2.Distance(rightTurret.transform.position, targetPosition) < Vector2.Distance(leftTurret.transform.position, targetPosition))
+        {
+            position = rightTurret.transform.position;
+            targetDirection = player.transform.position - position;
+            targetDirection += (Vector3)(player.rigidbody2D.velocity - rigidbody2D.velocity) * targetDirection.magnitude / (bulletSpeed);
+            targetPosition = rightTurret.transform.position + targetDirection;
+            rightTurret.LookAt(new Vector3(targetPosition.x, targetPosition.y, targetPosition.z));
+            leftTurret.transform.eulerAngles = new Vector3(270, 0, 0);
+        }
+        else {
+            position = leftTurret.transform.position;
+            targetDirection = player.transform.position - position;
+            targetDirection += (Vector3)(player.rigidbody2D.velocity - rigidbody2D.velocity) * targetDirection.magnitude / (bulletSpeed);
+            targetPosition = leftTurret.transform.position + targetDirection;
+            leftTurret.LookAt(new Vector3(targetPosition.x, targetPosition.y, targetPosition.z));
+            rightTurret.transform.eulerAngles = new Vector3(270, 0, 0);
+        }
+        //Debug.DrawRay(transform.position, targetDirection);
 
-            //Debug.DrawRay(transform.position, targetDirection);
-
-			GameObject shot = (GameObject)Instantiate(bullet, transform.position, Quaternion.FromToRotation(Vector3.up, targetDirection));
-			shot.layer = LayerMask.NameToLayer("Enemy");
-			shot.rigidbody2D.velocity = rigidbody2D.velocity + (Vector2)(shot.transform.up * bulletSpeed);
-			reload = reloadTime;
-		}
-	}
+        if (reload <= 0) {
+            GameObject shot = (GameObject)Instantiate(bullet, position, Quaternion.FromToRotation(Vector3.up, targetDirection));
+            shot.layer = LayerMask.NameToLayer("Enemy");
+            shot.rigidbody2D.velocity = rigidbody2D.velocity + (Vector2)(shot.transform.up * bulletSpeed);
+            reload = reloadTime;
+        }
+    }
 
     void OnCollisionEnter2D(Collision2D col) { 
         // detect if hit by a shot
