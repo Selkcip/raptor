@@ -18,19 +18,19 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 0}
+          m_Texture: {fileID: 2800000, guid: d5723219f3c696c44b1872351c856a77, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _Illum
+          name: _GlowTex
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _GlowTex
+          name: _Illum
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
@@ -42,12 +42,12 @@ Material:
         second: 1
       data:
         first:
-          name: _EmissionLM
-        second: 0
-      data:
-        first:
           name: _GlowStrength
         second: .200000003
+      data:
+        first:
+          name: _EmissionLM
+        second: 0
     m_Colors:
       data:
         first:
@@ -56,7 +56,7 @@ Material:
       data:
         first:
           name: _TintColor
-        second: {r: 1, g: 0, b: 0, a: 0}
+        second: {r: 1, g: 0, b: 0, a: 1}
       data:
         first:
           name: _GlowColor
