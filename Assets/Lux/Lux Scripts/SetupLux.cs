@@ -40,6 +40,8 @@ public class SetupLux : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		UpdateLuxIBLSettings();
+		Shader.DisableKeyword("LUX_LIGHTING_CT");
+		Shader.EnableKeyword("LUX_LIGHTING_BP");
 	}
 	
 	// Update is called once per frame

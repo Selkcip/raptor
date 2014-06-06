@@ -18,13 +18,14 @@ public class Cop : Guard {
 			},
 			delegate() {
 				actionName = "Check Room";
+				running = true;
 
 				agent.SetDestination(room.position);
 
 				// update the agents posiiton 
 				agent.transform.position = transform.position;
 
-				if(agent.remainingDistance <= targetChangeTolerance || agent.pathStatus == NavMeshPathStatus.PathPartial) {
+				if((room.position-transform.position).magnitude <= 5){// || agent.pathStatus == NavMeshPathStatus.PathPartial) {
 					roomChecked = true;
 					return true;
 				}
@@ -97,7 +98,7 @@ public class Cop : Guard {
 			});
 		aCheckRoom.name = "check room";
 		planner.Add(aCheckRoom);
-	}
+	}*/
 
 	// Update is called once per frame
 	public override void Update() {
@@ -110,5 +111,5 @@ public class Cop : Guard {
 
 		//This should be last in most cases
 		base.Update();
-	}*/
+	}
 }

@@ -8,8 +8,9 @@ public class MaterialColorizer : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		Color color = colors[Random.Range(0, colors.Count)];
 		foreach(Material mat in mats) {
-			mat.color = colors[Random.Range(0, colors.Count)];
+			mat.color = color;
 		}
 	}
 }
