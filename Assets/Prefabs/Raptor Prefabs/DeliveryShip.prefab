@@ -95,6 +95,7 @@ GameObject:
   - 33: {fileID: 3300004}
   - 23: {fileID: 2300004}
   - 61: {fileID: 6100002}
+  - 60: {fileID: 6000000}
   m_Layer: 8
   m_Name: Ship
   m_TagString: enemy
@@ -126,7 +127,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.166292787, y: 1.12623191, z: 0}
+  m_LocalPosition: {x: 20.2200432, y: -1.08720601, z: 0}
   m_LocalScale: {x: .5, y: .5, z: .5}
   m_Children:
   - {fileID: 400002}
@@ -301,6 +302,27 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
+--- !u!60 &6000000
+PolygonCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100010}
+  m_Enabled: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Poly:
+    m_Paths:
+    - - {x: -5.29449463, y: -.267977238}
+      - {x: -5.31381989, y: 4.78961658}
+      - {x: -3.09077835, y: 8.09285164}
+      - {x: 3.12369919, y: 8.04971027}
+      - {x: 5.29683685, y: 4.81814003}
+      - {x: 5.28099442, y: -.325974226}
+      - {x: 3.08882523, y: -1.67722678}
+      - {x: 2.39710617, y: -6.63971043}
+      - {x: -2.33171082, y: -6.63970947}
+      - {x: -3.08882141, y: -1.67722535}
 --- !u!61 &6100000
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -310,15 +332,15 @@ BoxCollider2D:
   m_Enabled: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Size: {x: 10.5, y: 16.1200008}
-  m_Center: {x: 0, y: 0}
+  m_Size: {x: 11.3501377, y: 11.7385406}
+  m_Center: {x: .0326919556, y: -2.19072986}
 --- !u!61 &6100002
 BoxCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100010}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Size: {x: 10.4877796, y: 14.6092815}
@@ -336,6 +358,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   dock: {fileID: 11400002}
+  stunTime: 0
   health: 100
 --- !u!114 &11400002
 MonoBehaviour:

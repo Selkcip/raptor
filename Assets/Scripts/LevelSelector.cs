@@ -57,6 +57,9 @@ public class LevelSelector : MonoBehaviour {
         lastDetectedLocation = transform.position;
 
         SpawnPolice(); // only time police spawn is at beginning of level? (ex: ships spot you and call police)
+
+        for (int i = 0; i < 20; i++)
+            UpdateBackground();
 	}
 
     public void SpawnPolice() {
@@ -357,5 +360,10 @@ public class CargoLane : SpaceyFeature {
     }
 }
 
+public class Delivery : SpaceyFeature
+{
+
+}
+
 // enum for different feature types
-public enum FeatureType { Empty, CargoLane, UpgradeShip, SpaceStation }
+public enum FeatureType { Empty, CargoLane, Delivery, SpaceStation }

@@ -7,6 +7,7 @@ public class DeliveryShip : MonoBehaviour {
 	public float stunTime = 0;
 
 	public float health = 100;
+    public float turnRate;
 
 	Transform playerShip;
 
@@ -26,6 +27,11 @@ public class DeliveryShip : MonoBehaviour {
 		if(stunTime <= 0) {
 			rigidbody2D.velocity = transform.up * speed;
 		}
+
+        // change angle by turn rate
+        transform.eulerAngles += new Vector3(0, 0, turnRate * Time.deltaTime);
+        // set velocity to new forward
+        rigidbody2D.velocity = transform.up * speed;
 	}
 
 	public void Hurt(Damage damage) {
