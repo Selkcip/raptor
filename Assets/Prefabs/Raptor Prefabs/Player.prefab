@@ -35,6 +35,7 @@ GameObject:
   - 114: {fileID: 11400036}
   - 114: {fileID: 11400022}
   - 95: {fileID: 9500002}
+  - 114: {fileID: 11400008}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -1781,6 +1782,7 @@ MonoBehaviour:
   crosshair: {fileID: 2800000, guid: 6126717f66eee427a971dfa205f7a21d, type: 3}
   noiseIndicator: {fileID: 2800000, guid: 3c052bc48c620a646a1df18bca5e388c, type: 3}
   painIndicator: {fileID: 2800000, guid: 039029b80919b75469427191d7a33680, type: 3}
+  drawReticle: 1
   eatTarget: {fileID: 0}
   raptorArms: {fileID: 0}
   pounceSpeed: 15
@@ -1874,6 +1876,25 @@ MonoBehaviour:
   moving: 0
   running: 0
   movingSpeed: {x: 0, y: 0, z: 0}
+--- !u!114 &11400008
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e43ff90ea5c78a44880f8c82510ca46d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mats:
+  - {fileID: 2100000, guid: 1a244504a422a094a80a8d09e01b3d0e, type: 2}
+  colors:
+  - {r: 1, g: 0, b: 0, a: 0}
+  - {r: .0344827175, g: 1, b: 0, a: 0}
+  - {r: .117241383, g: 0, b: 1, a: 0}
+  - {r: 1, g: .972413778, b: 0, a: 0}
+  - {r: 1, g: .517241359, b: 0, a: 0}
 --- !u!114 &11400010
 MonoBehaviour:
   m_ObjectHideFlags: 1

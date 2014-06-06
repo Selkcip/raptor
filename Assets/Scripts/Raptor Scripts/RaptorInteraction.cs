@@ -523,7 +523,7 @@ public class RaptorInteraction : MonoBehaviour {
 	}
 
 	void Pounce() {
-		print(stamina == 1.0f && !isPouncing && (fpc.grounded || climbing));
+		//print(stamina == 1.0f && !isPouncing && (fpc.grounded || climbing));
 		if(stamina == 1.0f && !isPouncing && (fpc.grounded || climbing)) {
 			rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 			rigidbody.isKinematic = false;
