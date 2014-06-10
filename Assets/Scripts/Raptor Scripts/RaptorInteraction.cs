@@ -328,24 +328,23 @@ public class RaptorInteraction : MonoBehaviour {
 
 			if(RebindableInput.GetKey("Use")) {
 				int mask = ~(1 << LayerMask.NameToLayer("Player"));
-				RaycastHit[] hits = Physics.SphereCastAll(Camera.main.transform.position, 0.25f, Camera.main.transform.forward, meleeRange, mask);
+				RaycastHit[] hits = Physics.SphereCastAll(Camera.main.transform.position, 0.05f, Camera.main.transform.forward, meleeRange, mask);
 				if(hits != null) {//if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2, mask)) {
 					foreach(RaycastHit hit in hits) {
-						hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
-						ikControl.UseObject(hit.point + Camera.main.transform.up, hit.transform);
+						//hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+						//ikControl.UseObject(hit.point + Camera.main.transform.up, hit.transform);
 						if(hit.transform.tag == "trap") {
-							//hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+							hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 							break;
 						}
 						else if(hit.transform.tag == "enemy") {
-							//hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
+							hit.transform.SendMessageUpwards("Use", gameObject, SendMessageOptions.DontRequireReceiver);
 						}
 						else if (hit.transform.tag != "Untagged") {
-							print(hit.transform.tag + " : " + hit.transform.name);
-							//ikControl.UseObject(hit.point + Camera.main.transform.up, hit.transform);
-							//if(hit.transform.tag != "trap") {
-							defusing = false;
-							//break;
+							ikControl.UseObject(hit.point + Camera.main.transform.up, hit.transform);
+							if(hit.transform.tag != "trap")
+								defusing = false;
+							break;
 						}
 						else {
 							defusing = false;
@@ -606,7 +605,7 @@ public class RaptorInteraction : MonoBehaviour {
 		Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * meleeRange, Color.red);
 	
 		//if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out inRange, meleeRange)) {
-		RaycastHit[] hits = Physics.SphereCastAll(Camera.main.transform.position, 0.25f, Camera.main.transform.forward, meleeRange);
+		RaycastHit[] hits = Physics.SphereCastAll(Camera.main.transform.position, 0.05f, Camera.main.transform.forward, meleeRange);
 		if (hits != null){
 			foreach(RaycastHit hit in hits) {
 			//	print(hit.collider.tag + " : " + useTable.ContainsKey(hit.collider.tag));
