@@ -13,6 +13,7 @@ GameObject:
   - 95: {fileID: 9500000}
   - 114: {fileID: 11400002}
   - 61: {fileID: 6100000}
+  - 60: {fileID: 6000000}
   m_Layer: 10
   m_Name: PlayerShip
   m_TagString: Player
@@ -128,7 +129,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_LocalRotation: {x: .707106829, y: 0, z: 0, w: .707106829}
-  m_LocalPosition: {x: 0, y: -.682213664, z: .180197656}
+  m_LocalPosition: {x: 0, y: -.533570647, z: -0}
   m_LocalScale: {x: 1, y: 1, z: .499999881}
   m_Children: []
   m_Father: {fileID: 400000}
@@ -190,13 +191,30 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
+--- !u!60 &6000000
+PolygonCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Poly:
+    m_Paths:
+    - - {x: -.531127214, y: .676292539}
+      - {x: 0, y: .646744251}
+      - {x: .532917023, y: .712737799}
+      - {x: 1.05638981, y: -.484598517}
+      - {x: .00337744132, y: -.809016943}
+      - {x: -1.0736146, y: -.484006107}
 --- !u!61 &6100000
 BoxCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Size: {x: 1.26999998, y: 1.19000006}
@@ -322,7 +340,7 @@ ParticleSystem:
   InitialModule:
     enabled: 1
     startLifetime:
-      scalar: 2.4000001
+      scalar: 1.89999998
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -355,7 +373,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: .400000006
+      scalar: .579999983
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -482,7 +500,7 @@ ParticleSystem:
         rgba: 4294942575
       minMaxState: 0
     startSize:
-      scalar: .379999995
+      scalar: .49000001
       maxCurve:
         serializedVersion: 2
         m_Curve:

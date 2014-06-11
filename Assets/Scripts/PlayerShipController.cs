@@ -246,7 +246,7 @@ public class PlayerShipController : MonoBehaviour {
 		//SoundManager.instance.Play2DSound((AudioClip)Resources.Load("Sounds/Raptor Sounds/raptor/hurt"), SoundManager.SoundType.Sfx);
 	}
 
-	void OnCollision2D(Collision2D col)
+	void OnCollisionEnter2D(Collision2D col)
 	{
 		if (col.gameObject.tag == "enemy" && isCloaked)
 			cloakCharge = 0;

@@ -3525,7 +3525,7 @@ MonoBehaviour:
   runSpeed: 1
   forceRun: 0
   maxStamina: 5
-  viewDis: 10
+  viewDis: 15
   fov: 45
   noticeTime: .100000001
   health: 100
@@ -3534,6 +3534,7 @@ MonoBehaviour:
   standTime: 5
   lookTime: 1
   lookDis: {x: 1, y: .25, z: 1}
+  randomInitDir: 1
   inspectTime: 1
   useTime: 1
   wanderTime: 5

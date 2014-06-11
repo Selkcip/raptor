@@ -220,7 +220,7 @@ RenderSettings:
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientLight: {r: 0, g: 0, b: 0, a: 1}
-  m_SkyboxMaterial: {fileID: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 2e03d6afceeb33340a9b04fe51e3941a, type: 2}
   m_HaloStrength: .5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -5128,6 +5128,7 @@ MonoBehaviour:
   crosshair: {fileID: 2800000, guid: 6126717f66eee427a971dfa205f7a21d, type: 3}
   noiseIndicator: {fileID: 2800000, guid: 3c052bc48c620a646a1df18bca5e388c, type: 3}
   painIndicator: {fileID: 2800000, guid: 039029b80919b75469427191d7a33680, type: 3}
+  drawReticle: 1
   eatTarget: {fileID: 0}
   raptorArms: {fileID: 0}
   pounceSpeed: 15
@@ -19106,7 +19107,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &976966891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19118,7 +19119,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5150484edfcaa4943b59d14d0568d098, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  volume: .25
+  baseVolume: 1
+  muted: 0
   music:
   - {fileID: 8300000, guid: 522267e2aaf4447d68e88cc7eddb8410, type: 3}
 --- !u!4 &976966892

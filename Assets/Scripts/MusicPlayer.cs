@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class MusicPlayer : MonoBehaviour {
 
-	public float volume = 0.25f;
+	public float baseVolume = 1;
 	public bool muted = false;
 	public List<AudioClip> music = new List<AudioClip>();
 	//AudioSource player;
@@ -27,7 +27,7 @@ public class MusicPlayer : MonoBehaviour {
 		}
 
 		index = index % music.Count;
-		audio.volume = muted ? 0 : SoundManager.musicVolume;
+		audio.volume = muted ? 0 : baseVolume * SoundManager.musicVolume;
 		if(audio.time >= audio.clip.length) {
 			audio.clip = music[index++];
 			audio.Play();
