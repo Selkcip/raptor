@@ -425,7 +425,7 @@ public class RaptorInteraction : MonoBehaviour {
 		}
 
 		//Video recording helpers
-		if(Input.GetKeyUp(KeyCode.Insert)) {
+		/*if(Input.GetKeyUp(KeyCode.Insert)) {
 			drawReticle = !drawReticle;
 			if(hud) {
 				hud.gameObject.SetActive(drawReticle);
@@ -442,7 +442,7 @@ public class RaptorInteraction : MonoBehaviour {
 		}
 		if(Input.GetKeyUp(KeyCode.PageDown)) {
 			Application.LoadLevel("CameraGuard");
-		}
+		}*/
 	}
 
 	void Slash() {

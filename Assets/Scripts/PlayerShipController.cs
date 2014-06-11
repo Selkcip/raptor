@@ -194,13 +194,13 @@ public class PlayerShipController : MonoBehaviour {
 			}
 
 			//Hide hud
-			if(Input.GetKeyUp(KeyCode.Insert)) {
+			/*if(Input.GetKeyUp(KeyCode.Insert)) {
 				showHud = !showHud;
 				GameObject hud = GameObject.Find("Ship HUD");
 				if(hud) {
 					hud.SetActive(showHud);
 				}
-			}
+			}*/
 		}
 
 		if (reload > 0)
