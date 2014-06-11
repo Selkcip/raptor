@@ -371,6 +371,12 @@ public class RaptorInteraction : MonoBehaviour {
 				//eating stuff
 				eatTarget = null;
 				//toggleRotator(true); not used anymore
+				GetComponent<SimpleMouseRotator>().enabled = true;
+				SimpleMouseRotator[] smrs = GetComponentsInChildren<SimpleMouseRotator>();
+				foreach(SimpleMouseRotator smr in smrs) {
+					smr.enabled = true;
+				}
+
 				rigidbody.freezeRotation = false;
 				rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 				arms.SetBool("isEating", false);
@@ -666,6 +672,13 @@ public class RaptorInteraction : MonoBehaviour {
 		}
 
 		toggleRotator(false);
+		GetComponent<SimpleMouseRotator>().enabled = false;
+		SimpleMouseRotator[] smrs = GetComponentsInChildren<SimpleMouseRotator>();
+		foreach(SimpleMouseRotator smr in smrs) {
+			smr.enabled = false;
+		}
+
+		rigidbody.constraints = RigidbodyConstraints.FreezeAll;
 		rigidbody.freezeRotation = true;
 		arms.SetBool("isEating", true);
 
