@@ -4202,7 +4202,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!23 &159619546
 Renderer:
   m_ObjectHideFlags: 0
@@ -8399,6 +8399,7 @@ MonoBehaviour:
   crosshair: {fileID: 2800000, guid: 6126717f66eee427a971dfa205f7a21d, type: 3}
   noiseIndicator: {fileID: 2800000, guid: 3c052bc48c620a646a1df18bca5e388c, type: 3}
   painIndicator: {fileID: 2800000, guid: 039029b80919b75469427191d7a33680, type: 3}
+  drawReticle: 1
   eatTarget: {fileID: 0}
   raptorArms: {fileID: 0}
   pounceSpeed: 15
@@ -10778,7 +10779,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 336715724}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.10058594, y: 338, z: -67.4436951}
+  m_LocalPosition: {x: 5.42572021, y: 338, z: -67.4436951}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1454076398}
@@ -14471,7 +14472,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 402130498}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .100585938, y: 0, z: 0}
+  m_LocalPosition: {x: .425720215, y: 0, z: 0}
   m_LocalScale: {x: .982812583, y: 1, z: 1}
   m_Children:
   - {fileID: 909061404}
@@ -15779,7 +15780,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!23 &435011602
 Renderer:
   m_ObjectHideFlags: 0
@@ -18602,6 +18603,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   volume: .25
+  muted: 0
   music:
   - {fileID: 8300000, guid: 44176873b987e3f44af3f8cf03481138, type: 3}
   - {fileID: 8300000, guid: a6a999aa0fa8d55498e0f1980a79a156, type: 3}
@@ -21926,7 +21928,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!23 &619377138
 Renderer:
   m_ObjectHideFlags: 0
@@ -24176,7 +24178,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!23 &685678928
 Renderer:
   m_ObjectHideFlags: 0
@@ -25933,7 +25935,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!23 &737220304
 Renderer:
   m_ObjectHideFlags: 0
@@ -26319,7 +26321,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!23 &743517855
 Renderer:
   m_ObjectHideFlags: 0
@@ -28387,7 +28389,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!23 &760283783
 Renderer:
   m_ObjectHideFlags: 0
@@ -28642,7 +28644,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!23 &767500828
 Renderer:
   m_ObjectHideFlags: 0
@@ -30699,7 +30701,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 817310687}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 623.200806, y: 337, z: 0}
+  m_LocalPosition: {x: 623.851746, y: 337, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1454076398}
@@ -35191,6 +35193,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   volume: .25
+  muted: 0
   music:
   - {fileID: 8300000, guid: 522267e2aaf4447d68e88cc7eddb8410, type: 3}
 --- !u!4 &976966892
@@ -40905,7 +40908,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!23 &1186909988
 Renderer:
   m_ObjectHideFlags: 0
@@ -47337,7 +47340,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!23 &1393978862
 Renderer:
   m_ObjectHideFlags: 0
@@ -48875,7 +48878,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!23 &1431540645
 Renderer:
   m_ObjectHideFlags: 0
@@ -49029,7 +49032,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3006
+  startingRenderQueue: 3003
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
@@ -51690,7 +51693,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!23 &1512525143
 Renderer:
   m_ObjectHideFlags: 0
@@ -54467,7 +54470,7 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   renderQueue: 0
-  startingRenderQueue: 3006
+  startingRenderQueue: 3000
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
@@ -56797,7 +56800,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!23 &1646504192
 Renderer:
   m_ObjectHideFlags: 0
@@ -67603,7 +67606,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!23 &1873057894
 Renderer:
   m_ObjectHideFlags: 0
@@ -69431,7 +69434,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!23 &1934742026
 Renderer:
   m_ObjectHideFlags: 0
@@ -69529,7 +69532,7 @@ NavMeshObstacle:
   m_Radius: .5
   m_Height: .25
   m_MoveThreshold: 0
-  m_Carve: 1
+  m_Carve: 0
 --- !u!23 &1935015280
 Renderer:
   m_ObjectHideFlags: 0

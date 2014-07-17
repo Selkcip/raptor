@@ -54,7 +54,7 @@ public class RaptorDoor : Triggerable {
 			}
 		}
 
-		if(RaptorInteraction.notoriety >= notorietyToLock) {
+		if(keyCardsToUnlock > 0 && RaptorInteraction.notoriety >= notorietyToLock) {
 			LockDoor(true);
 		}
 

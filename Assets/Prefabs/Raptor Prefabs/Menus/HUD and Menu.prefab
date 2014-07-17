@@ -10955,7 +10955,6 @@ MonoBehaviour:
   musicSlider: {fileID: 100068}
   sfxSlider: {fileID: 100226}
   dialogueSlider: {fileID: 100276}
-  guiCamera: {fileID: 2000000}
 --- !u!114 &11400268
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -16325,6 +16324,7 @@ MonoBehaviour:
   keycard: {fileID: 11400518}
   timer: {fileID: 11400532}
   usePrompt: {fileID: 11400568}
+  goal: {fileID: 0}
 --- !u!114 &11400556
 MonoBehaviour:
   m_ObjectHideFlags: 1

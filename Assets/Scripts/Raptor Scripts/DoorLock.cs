@@ -82,7 +82,7 @@ public class DoorLock : MonoBehaviour {
 		Material[] mats = mr.sharedMaterials;
 		for(int m = 0; m < mats.Length; m++) {
 			mats[m] = closedMat;
-			if(!door.isLocked || door.keysUsed-1 >= m) {
+			if(!door.isLocked || door.keyCardsToUnlock <= 0 || door.keysUsed-1 >= m) {
 				mats[m] = openMat;
 			}
 		}

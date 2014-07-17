@@ -11220,7 +11220,6 @@ MonoBehaviour:
   musicSlider: {fileID: 100130}
   sfxSlider: {fileID: 100240}
   dialogueSlider: {fileID: 100116}
-  guiCamera: {fileID: 0}
 --- !u!114 &11400328
 MonoBehaviour:
   m_ObjectHideFlags: 1
